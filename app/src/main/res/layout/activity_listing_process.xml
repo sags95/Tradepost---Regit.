@@ -18,14 +18,19 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         />
 
-
+    <ImageView
+        android:id="@+id/expanded_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/scrollView"
         android:layout_gravity="center_horizontal"
-
+        android:visibility="visible"
         >
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -180,7 +185,7 @@
                     >
 
                     <ImageView
-                        android:id="@+id/section2_item_img1"
+                        android:id="@+id/section2_item_img_1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:src="@mipmap/ic_image_thumbnail"
@@ -197,7 +202,7 @@
                         />
 
                     <ImageView
-                        android:id="@+id/section2_item_img2"
+                        android:id="@+id/section2_item_img_2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:src="@mipmap/ic_image_thumbnail"
@@ -214,7 +219,7 @@
                         />
 
                     <ImageView
-                        android:id="@+id/section2_item_img3"
+                        android:id="@+id/section2_item_img_3"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:src="@mipmap/ic_image_thumbnail"
@@ -231,7 +236,7 @@
                         />
 
                     <ImageView
-                        android:id="@+id/section2_item_img4"
+                        android:id="@+id/section2_item_img_4"
 
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -736,9 +741,6 @@
                     />
 
             </RelativeLayout>
-
-
-
 
         </LinearLayout>
     </ScrollView>
