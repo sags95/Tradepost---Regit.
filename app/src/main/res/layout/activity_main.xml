@@ -57,7 +57,7 @@
                     android:layout_weight="12"
                     >
 
-                    <TextView
+                    <CustomWidget.CustomTextView
                         android:id="@+id/community_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -68,6 +68,7 @@
                         android:paddingRight="16dp"
                         android:paddingLeft="16dp"
                         android:layout_alignParentTop="true"
+                        style="@style/Op"
                         />
 
                     <TextView

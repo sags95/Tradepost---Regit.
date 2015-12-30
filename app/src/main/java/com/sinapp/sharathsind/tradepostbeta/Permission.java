@@ -17,24 +17,26 @@ import services.Mylocation;
  * Created by sharathsind on 2015-10-29.
  */
 public class Permission implements  ActivityCompat.OnRequestPermissionsResultCallback {
-  Activity context;
-  LocationManager locationManager
-          ;
 
-Permission(Activity c, LocationManager l)
-{
+    Activity context;
+
+    LocationManager locationManager;
+
+    Permission(Activity c, LocationManager l) {
     context=c;
     locationManager=l;
-}
- public int checkPermission( String permissions)
- {
-     int permissionCheck = ContextCompat.checkSelfPermission(context, permissions);
-return permissionCheck;
- }
+    }
+
+
+
+    public int checkPermission( String permissions) {
+        int permissionCheck = ContextCompat.checkSelfPermission(context, permissions);
+        return permissionCheck;
+
+    }
+
     public void askPermission(String permission[],int MY_PERMISSIONS_REQUEST_READ_CONTACTS){
-        ActivityCompat.requestPermissions(context,
-                permission,
-                MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+        ActivityCompat.requestPermissions(context, permission, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
 
     }
 
