@@ -9,7 +9,7 @@
     android:background="@drawable/welcome_background"
     >
 
-    <Model.CustomTextView
+    <CustomWidget.CustomTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -21,7 +21,7 @@
         style="@style/OpenSansLight"
         />
 
-    <Model.CustomTextView
+    <CustomWidget.CustomTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -55,7 +55,7 @@
         android:paddingBottom="16dp"
         android:layout_below="@id/fb_sign_in_btn" />
 
-    <Model.CustomTextView
+    <CustomWidget.CustomTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -68,7 +68,7 @@
         style="@style/OpenSansRegular"
         />
 
-    <Model.CustomButton
+    <CustomWidget.CustomButton
         style="@style/OpenSansLight"
         android:id="@+id/sign_in_button1"
         android:layout_width="match_parent"

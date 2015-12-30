@@ -9,7 +9,7 @@
 
     >
 
-    <TextView
+    <CustomWidget.CustomTextView
 
         android:id="@+id/tag_name"
         android:layout_width="wrap_content"
