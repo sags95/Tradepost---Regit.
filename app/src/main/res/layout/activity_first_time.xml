@@ -1,0 +1,83 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/welcome_background"
+    >
+
+    <Model.CustomTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:id="@+id/welcome"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:textSize="40sp"
+        android:text="@string/hello_world"
+        style="@style/OpenSansLight"
+        />
+
+    <Model.CustomTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/title"
+        android:layout_below="@id/welcome"
+        android:textColor="@color/white"
+        android:textSize="60sp"
+        android:text="@string/app_name"
+        style="@style/OpenSansRegular"
+        />
+
+    <com.facebook.login.widget.LoginButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:id="@+id/fb_sign_in_btn"
+        android:layout_alignLeft="@+id/google_sign_in_btn"
+        android:layout_alignRight="@+id/google_sign_in_btn"
+
+        />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/google_sign_in_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:layout_below="@id/fb_sign_in_btn" />
+
+    <Model.CustomTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"
+        android:id="@+id/or"
+        android:layout_below="@id/google_sign_in_btn"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:text="OR"
+        style="@style/OpenSansRegular"
+        />
+
+    <Model.CustomButton
+        style="@style/OpenSansLight"
+        android:id="@+id/sign_in_button1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Sign in with email"
+        android:textColor="@color/white"
+        android:background="@drawable/b"
+        android:layout_below="@id/or" />
+
+</RelativeLayout>

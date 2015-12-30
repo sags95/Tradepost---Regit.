@@ -10,8 +10,7 @@ import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
-import datamanager.userdata;
-import services.Mylocation;
+
 
 /**
  * Created by sharathsind on 2015-10-29.
