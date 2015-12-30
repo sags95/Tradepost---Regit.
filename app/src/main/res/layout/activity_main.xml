@@ -68,7 +68,7 @@
                         android:paddingRight="16dp"
                         android:paddingLeft="16dp"
                         android:layout_alignParentTop="true"
-                        style="@style/Op"
+                        style="@style/OpenSansRegular"
                         />
 
                     <TextView
