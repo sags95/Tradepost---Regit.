@@ -1,42 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#000</color>
-    <color name="blackTransparent">#c9000000</color>
-    <color name="blue">#00f</color>
+    <color name="colorPrimary">#65b88e</color>
+    <color name="colorPrimaryDark">#488A66</color>
+    <color name="colorAccent">#EB5A5D</color>
+    <color name="colorBackgroundGray">#F2F2F2</color>
+    <color name="colorLightWhite">#B8B8B8</color>
+    <color name="gray_5E5E5E">#5E5E5E</color>
     <color name="red">#f00000</color>
-    <color name="fab_primaryColor">#eb5a5d</color>
-    <color name="background">#65b88e</color>
-    <color name="statusBar_color">#488A66</color>
-    <color name="ColorPrimary">#65b88e</color>
-    <color name="ColorPrimaryDark">#2CA88C</color>
-    <color name="tabsScrollColor">#1193C3</color>
-    <color name="white">#FFFFFF</color>
-    <color name="darkwhite">#99D3D3D3</color>
-    <color name="darkgrey">#9E9E9E</color>
-    <color name="lightgrey">#80F5F5F5</color>
-    <color name="blue_fab_primary">#33b5e5</color>
-    <color name="blue_fab_primary_dark">#1193C3</color>
-    <color name="cokered_trans">#80f40000</color>
-    <color name="grey_trans">#665e5e5e</color>
-    <color name="grey">#5e5e5e</color>
 
-    <color name="myAccentColor">#FF4081</color>
-    <color name="myDrawerBackground">#FFF</color>
-    <color name="myWindowBackground">#FFF</color>
-    <color name="myTextPrimaryColor">#212121</color>
-    <color name="myNavigationColor">#000</color>
-    <color name="lightgrey_chat">#5e5e5e</color>
-    <color name="green">#32B141</color>
-    <color name="dark_primary_color">#388E3C</color>
-    <color name="color_background_gray">#F2F2F2</color>
-
-
-    <color name="text_color">#B8B8B8</color>
-    <color name="text_color_dark">#565656</color>
-    <color name="favorite_background">#69645e</color>
-    <drawable name="pressed_gray">#0c000000</drawable>
-    <drawable name="selected_gray">#2c000000</drawable>
-    <color name="eight_f">#8f8f8f</color>
-    <color name="eight_d">#8d8d8d</color>
 
 </resources>

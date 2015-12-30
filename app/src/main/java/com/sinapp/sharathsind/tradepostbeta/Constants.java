@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
  */
 public class Constants {
     public final static String URl="http:73.37.238.238:8084/";
-public static String GCM_Key,username;
+    public static String GCM_Key,username;
     public static int userid;
-public static SQLiteDatabase db;
+    public static SQLiteDatabase db;
 
 }

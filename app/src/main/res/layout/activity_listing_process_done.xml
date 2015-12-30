@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_background_gray"
+    android:background="@color/colorBackgroundGray"
     android:padding="16dp"
     android:gravity="center_vertical">
 
@@ -22,7 +22,7 @@
         android:gravity="center_vertical"
         >
 
-        <Model.CustomTextView
+        <CustomWidget.CustomTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Listing"
@@ -35,14 +35,14 @@
 
             />
 
-        <Model.CustomTextView
+        <CustomWidget.CustomTextView
             android:id="@+id/listing_process_done_posted"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="POSTED"
             style="@style/OpenSansSemiBold"
             android:textSize="32sp"
-            android:textColor="@color/ColorPrimary"
+            android:textColor="@color/colorPrimary"
             android:layout_marginBottom="8dp"
             android:layout_below="@+id/listing_process_done"
             android:layout_centerHorizontal="true"
@@ -55,9 +55,9 @@
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/ic_check"
+            android:src="@mipmap/ic_check"
             app:border_width="4dp"
-            app:border_color="@color/ColorPrimary"
+            app:border_color="@color/colorPrimary"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/listing_process_done_posted"
             android:id="@+id/listing_process_done_pic"
@@ -66,7 +66,7 @@
             />
 
 
-        <Model.CustomTextView
+        <CustomWidget.CustomTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Happy Trading :)"
@@ -83,23 +83,26 @@
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:orientation="vertical">
-    <Model.CustomButton
+
+
+    <CustomWidget.CustomButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="View My Post"
         style="@style/OpenSansLight"
-        android:textColor="@color/white"
+        android:textColor="@android:color/white"
         android:background="@drawable/listing_process_success"
 
     />
-    <Model.CustomButton
+
+    <CustomWidget.CustomButton
         android:id="@+id/b"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Share on facebook"
         android:layout_marginTop="5dp"
         style="@style/OpenSansLight"
-        android:textColor="@color/white"
+        android:textColor="@android:color/white"
         android:background="@drawable/listing_process_success"
 
         />
@@ -120,7 +123,7 @@
             android:gravity="center_vertical"
             >
 
-            <Model.CustomTextView
+            <CustomWidget.CustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Listing"
@@ -133,14 +136,14 @@
 
                 />
 
-            <Model.CustomTextView
+            <CustomWidget.CustomTextView
                 android:id="@+id/listing_process_failed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="FAILED"
                 style="@style/OpenSansSemiBold"
                 android:textSize="32sp"
-                android:textColor="@color/fab_primaryColor"
+                android:textColor="@color/colorAccent"
                 android:layout_marginBottom="8dp"
                 android:layout_below="@+id/listing_process_done_failed"
                 android:layout_centerHorizontal="true"
@@ -153,9 +156,9 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:src="@drawable/ic_close"
+                android:src="@mipmap/ic_close"
                 app:border_width="4dp"
-                app:border_color="@color/fab_primaryColor"
+                app:border_color="@color/colorAccent"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/listing_process_failed"
                 android:id="@+id/listing_process_failed_pic"
@@ -164,7 +167,7 @@
                 />
 
 
-            <Model.CustomTextView
+            <CustomWidget.CustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Oops..."
@@ -177,12 +180,12 @@
 
         </RelativeLayout>
 
-        <Model.CustomButton
+        <CustomWidget.CustomButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Go Back"
             style="@style/OpenSansLight"
-            android:textColor="@color/white"
+            android:textColor="@android:color/white"
             android:background="@drawable/listing_process_failed"
             android:layout_alignParentBottom="true"
             />

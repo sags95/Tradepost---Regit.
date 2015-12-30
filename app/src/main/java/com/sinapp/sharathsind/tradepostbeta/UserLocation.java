@@ -5,5 +5,5 @@ package com.sinapp.sharathsind.tradepostbeta;
  */
 public class UserLocation {
     String city;
-  public   float Longitude,latitude;
+    public float Longitude,latitude;
 }

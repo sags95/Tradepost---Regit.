@@ -2,8 +2,11 @@ package com.sinapp.sharathsind.tradepostbeta;
 
 import android.*;
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
@@ -14,6 +17,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
@@ -33,10 +38,11 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -54,15 +60,14 @@ import org.ksoap2.transport.HttpTransportSE;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import Model.CustomEditText;
-import Model.CustomSpinnerAdapter;
-import Model.CustomTextView;
-import Model.LimitedEditText;
+import CustomWidget.CustomEditText;
+import CustomWidget.CustomSpinnerAdapter;
+import CustomWidget.CustomTextView;
+import CustomWidget.LimitedEditText;
 import Model.RegisterWebService;
 
 import webservices.MainWebService;
@@ -71,6 +76,18 @@ import webservices.MainWebService;
  * Created by HenryChiang on 15-05-31.
  */
 public class ListingProcessActivity extends AppCompatActivity {
+
+    /**
+     * Hold a reference to the current animator, so that it can be canceled mid-way.
+     */
+    private Animator mCurrentAnimator;
+
+    /**
+     * The system "short" animation time duration, in milliseconds. This duration is ideal for
+     * subtle animations or animations that occur very frequently.
+     */
+    private int mShortAnimationDuration;
+
 
     final int MAX_NUM_TAGS = 5;
     int TAGS_COUNT = 0;
@@ -81,7 +98,8 @@ public class ListingProcessActivity extends AppCompatActivity {
     private int requestCodeCam = 0;
     private int requestCodeGal = 1;
     private int currentImgPos = 0;
-    private Toolbar toolbar;
+    private ArrayList<Bitmap> tempBitmap = new ArrayList<>();
+    private ArrayList<ImageView> imageViewArrayList = new ArrayList<>();
     private Uri mImageUri;
     private CustomTextView tagsCount;
     private ColorStateList oldColors;
@@ -99,27 +117,26 @@ public class ListingProcessActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listing_process);
         tagFlowLayout = (FlowLayout) findViewById(R.id.section5_tags);
-       // GCMService.b = true;
+
+        // GCMService.b = true;
         Permission permission = new Permission(this, null);
         if (permission.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || permission.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
         {
             permission.askPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
 
-            //toolbar
         }
-        toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        toolbar.setTitle("Post Your Item");
-        toolbar.setTitleTextColor(getResources().getColor(R.color.ColorPrimary));
-        setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Welcome Back Sample User!");
+        setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         tags=new ArrayList<String>();
         bits=new ArrayList<Bitmap>();
@@ -147,7 +164,18 @@ public class ListingProcessActivity extends AppCompatActivity {
         itemImg2 = (ImageView) findViewById(R.id.section2_item_img2);
         itemImg3 = (ImageView) findViewById(R.id.section2_item_img3);
         itemImg4 = (ImageView) findViewById(R.id.section2_item_img4);
-        ///spinner=(Spinner)findViewById(R.id.sp)
+
+        itemImg1.setTag(0);
+        itemImg2.setTag(1);
+        itemImg3.setTag(2);
+        itemImg4.setTag(3);
+
+
+        imageViewArrayList.add(0,itemImg1);
+        imageViewArrayList.add(1,itemImg2);
+        imageViewArrayList.add(2,itemImg3);
+        imageViewArrayList.add(3,itemImg4);
+
         camera = (ImageView) findViewById(R.id.section2_img_camera);
         folder = (ImageView) findViewById(R.id.section2_img_folder);
 
@@ -167,7 +195,7 @@ public class ListingProcessActivity extends AppCompatActivity {
                     }
                 }
                 CustomTextView temp2 =(CustomTextView)seekBarLi.getChildAt(progress);
-                temp2.setTextColor(getResources().getColor(R.color.fab_primaryColor));
+                temp2.setTextColor(getResources().getColor(R.color.colorAccent));
             }
 
             @Override
@@ -207,7 +235,7 @@ public class ListingProcessActivity extends AppCompatActivity {
                 boolean handled = false;
                 if (actionId == 6) {
                     if (tagInput.getText().length() > 0 && tagFlowLayout.getChildCount() < MAX_NUM_TAGS) {
-                        singleTagLayout = (LinearLayout) View.inflate(getApplicationContext(), R.layout.single_tag, null);
+                        singleTagLayout = (LinearLayout) View.inflate(getApplicationContext(), R.layout.layout_tag, null);
                         singleTagLayout.setId(TAGS_COUNT);
                         //Button for removing Tag
                         ImageView cancelTag = (ImageView)singleTagLayout.findViewById(R.id.tag_cancel_btn);
@@ -233,7 +261,7 @@ public class ListingProcessActivity extends AppCompatActivity {
                 return handled;
             }
         });
-        tagInput.setOnKeyListener(y);
+        tagInput.setOnKeyListener(tagOnKeyListener);
         ImageView addTags = (ImageView) findViewById(R.id.section5_plus);
         addTags.setOnClickListener(addTagButtonListener);
         tagsCount = (CustomTextView)findViewById(R.id.section5_tag_count);
@@ -279,7 +307,7 @@ public class ListingProcessActivity extends AppCompatActivity {
         MenuItem item;
 
         item = menu.add("POST");
-        item.setIcon(R.drawable.ic_send);
+        item.setIcon(R.mipmap.ic_send);
         MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
 
         return super.onCreateOptionsMenu(menu);
@@ -383,7 +411,7 @@ public class ListingProcessActivity extends AppCompatActivity {
                             int i=0;
                             if(bits.size()==0)
                             {
-                                Drawable myDrawable = ContextCompat.getDrawable(ListingProcessActivity.this, R.drawable.sample_img);
+                                Drawable myDrawable = ContextCompat.getDrawable(ListingProcessActivity.this, R.mipmap.ic_image_thumbnail);
                                 Bitmap myLogo = ((BitmapDrawable) myDrawable).getBitmap();
                                 bits.add(myLogo);
                             }
@@ -449,14 +477,14 @@ public class ListingProcessActivity extends AppCompatActivity {
         object.addProperty("tag",im);
         return     MainWebService.getMsg(object, "http://73.37.238.238:8084/TDserverWeb/AddItems?wsdl", "http://webser/AddItems/addtagRequest");
     }
-    public View.OnKeyListener y=new View.OnKeyListener() {
+    public View.OnKeyListener tagOnKeyListener = new View.OnKeyListener() {
         @Override
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             if (event.getAction() == KeyEvent.ACTION_DOWN
                     && event.getKeyCode() ==       KeyEvent.KEYCODE_ENTER)
             {
                 if (tagInput.getText().length() > 0 && tagFlowLayout.getChildCount() < MAX_NUM_TAGS) {
-                    singleTagLayout = (LinearLayout) View.inflate(getApplicationContext(), R.layout.single_tag, null);
+                    singleTagLayout = (LinearLayout) View.inflate(getApplicationContext(), R.layout.layout_tag, null);
                     singleTagLayout.setId(TAGS_COUNT);
                     //Button for removing Tag
                     ImageView cancelTag = (ImageView)singleTagLayout.findViewById(R.id.tag_cancel_btn);
@@ -490,7 +518,7 @@ public class ListingProcessActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             if (tagInput.getText().length() > 0 && tagFlowLayout.getChildCount() < MAX_NUM_TAGS) {
-                singleTagLayout = (LinearLayout) View.inflate(getApplicationContext(), R.layout.single_tag, null);
+                singleTagLayout = (LinearLayout) View.inflate(getApplicationContext(), R.layout.layout_tag, null);
                 singleTagLayout.setId(TAGS_COUNT);
                 //Button for removing Tag
                 ImageView cancelTag = (ImageView)singleTagLayout.findViewById(R.id.tag_cancel_btn);
@@ -708,7 +736,8 @@ public class ListingProcessActivity extends AppCompatActivity {
                 setImage(imageBitmap);
                 bits.add(imageBitmap);
                 */
-                setImage(grabImage());
+                //setImage(grabImage());
+                tempBitmap.add(grabImage());
                 //       bits.add(grabImage());
                 //... some code to inflate/create/find appropriate ImageView to place grabbed image
 
@@ -734,30 +763,204 @@ public class ListingProcessActivity extends AppCompatActivity {
                 options.inJustDecodeBounds = false;
                 cursor.close();
                 bm = BitmapFactory.decodeFile(selectedImagePath, options);
-                setImage(bm);
+                //setImage(bm);
+                tempBitmap.add(grabImage());
+
             }
         }
+
+        for (int i = 0 ; i < tempBitmap.size() ; i++){
+            imageViewArrayList.get(i).setImageBitmap(getResizedBitmap(tempBitmap.get(i),imageViewArrayList.get(i).getWidth(),imageViewArrayList.get(i).getHeight()));
+            imageViewArrayList.get(i).setOnClickListener(expandImgOnClick);
+            imageViewArrayList.get(i).setOnLongClickListener(deleteImgOnClick);
+        }
+
     }
 
-    public void setImage(Bitmap imageBitmap){
-        if(currentImgPos<5) {
-            switch (currentImgPos) {
-                case 0:
-                    itemImg1.setImageBitmap(getResizedBitmap(imageBitmap,itemImg1.getWidth(),itemImg1.getHeight()));
-                    break;
-                case 1:
-                    itemImg2.setImageBitmap(getResizedBitmap(imageBitmap,itemImg1.getWidth(),itemImg1.getHeight()));
-                    break;
-                case 2:
-                    itemImg3.setImageBitmap(getResizedBitmap(imageBitmap,itemImg1.getWidth(),itemImg1.getHeight()));
-                    break;
-                case 3:
-                    itemImg4.setImageBitmap(getResizedBitmap(imageBitmap,itemImg1.getWidth(),itemImg1.getHeight()));
-                    break;
-            }
-            bits.add(imageBitmap);
-            currentImgPos++;
+    private View.OnClickListener expandImgOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            zoomImageFromThumb(v, ((BitmapDrawable) ((ImageView)v).getDrawable()).getBitmap());
 
         }
+    };
+
+    private View.OnLongClickListener deleteImgOnClick = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+
+            Toast.makeText(getApplicationContext(),"DELETED",Toast.LENGTH_SHORT).show();
+            tempBitmap.remove(Integer.parseInt(v.getTag().toString()));
+
+            for (int i = 0 ; i < imageViewArrayList.size(); i++){
+                imageViewArrayList.get(i).setImageResource(R.mipmap.ic_image_thumbnail);
+                imageViewArrayList.get(i).setOnClickListener(null);
+                imageViewArrayList.get(i).setOnLongClickListener(null);
+            }
+
+            for (int i = 0; i < tempBitmap.size(); i++) {
+                imageViewArrayList.get(i).setImageBitmap(getResizedBitmap(tempBitmap.get(i),imageViewArrayList.get(i).getWidth(),imageViewArrayList.get(i).getHeight()));
+                imageViewArrayList.get(i).setOnClickListener(expandImgOnClick);
+                imageViewArrayList.get(i).setOnLongClickListener(deleteImgOnClick);
+            }
+
+
+
+            return true;
+        }
+    };
+
+    /**
+     * "Zooms" in a thumbnail view by assigning the high resolution image to a hidden "zoomed-in"
+     * image view and animating its bounds to fit the entire activity content area. More
+     * specifically:
+     *
+     * <ol>
+     *   <li>Assign the high-res image to the hidden "zoomed-in" (expanded) image view.</li>
+     *   <li>Calculate the starting and ending bounds for the expanded view.</li>
+     *   <li>Animate each of four positioning/sizing properties (X, Y, SCALE_X, SCALE_Y)
+     *       simultaneously, from the starting bounds to the ending bounds.</li>
+     *   <li>Zoom back out by running the reverse animation on click.</li>
+     * </ol>
+     *
+     * @param thumbView  The thumbnail view to zoom in.
+     * @param image The high-resolution version of the image represented by the thumbnail.
+     */
+    private void zoomImageFromThumb(final View thumbView, Bitmap image) {
+        // If there's an animation in progress, cancel it immediately and proceed with this one.
+        if (mCurrentAnimator != null) {
+            mCurrentAnimator.cancel();
+        }
+
+        // Load the high-resolution "zoomed-in" image.
+        final ImageView expandedImageView = (ImageView) findViewById(R.id.expanded_image);
+        expandedImageView.setImageBitmap(image);
+
+        final ScrollView scrollView = (ScrollView) findViewById(R.id.scrollView);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+
+        // Calculate the starting and ending bounds for the zoomed-in image. This step
+        // involves lots of math. Yay, math.
+        final Rect startBounds = new Rect();
+        final Rect finalBounds = new Rect();
+        final Point globalOffset = new Point();
+
+        // The start bounds are the global visible rectangle of the thumbnail, and the
+        // final bounds are the global visible rectangle of the container view. Also
+        // set the container view's offset as the origin for the bounds, since that's
+        // the origin for the positioning animation properties (X, Y).
+        thumbView.getGlobalVisibleRect(startBounds);
+        findViewById(R.id.listing_proecss_layout).getGlobalVisibleRect(finalBounds, globalOffset);
+        startBounds.offset(-globalOffset.x, -globalOffset.y);
+        finalBounds.offset(-globalOffset.x, -globalOffset.y);
+
+        // Adjust the start bounds to be the same aspect ratio as the final bounds using the
+        // "center crop" technique. This prevents undesirable stretching during the animation.
+        // Also calculate the start scaling factor (the end scaling factor is always 1.0).
+        float startScale;
+        if ((float) finalBounds.width() / finalBounds.height()
+                > (float) startBounds.width() / startBounds.height()) {
+            // Extend start bounds horizontally
+            startScale = (float) startBounds.height() / finalBounds.height();
+            float startWidth = startScale * finalBounds.width();
+            float deltaWidth = (startWidth - startBounds.width()) / 2;
+            startBounds.left -= deltaWidth;
+            startBounds.right += deltaWidth;
+        } else {
+            // Extend start bounds vertically
+            startScale = (float) startBounds.width() / finalBounds.width();
+            float startHeight = startScale * finalBounds.height();
+            float deltaHeight = (startHeight - startBounds.height()) / 2;
+            startBounds.top -= deltaHeight;
+            startBounds.bottom += deltaHeight;
+        }
+
+        // Hide the thumbnail and show the zoomed-in view. When the animation begins,
+        // it will position the zoomed-in view in the place of the thumbnail.
+        thumbView.setAlpha(0f);
+        scrollView.setVisibility(View.GONE);
+        toolbar.setVisibility(View.GONE);
+        expandedImageView.setVisibility(View.VISIBLE);
+
+        // Set the pivot point for SCALE_X and SCALE_Y transformations to the top-left corner of
+        // the zoomed-in view (the default is the center of the view).
+        expandedImageView.setPivotX(0f);
+        expandedImageView.setPivotY(0f);
+
+        // Construct and run the parallel animation of the four translation and scale properties
+        // (X, Y, SCALE_X, and SCALE_Y).
+        AnimatorSet set = new AnimatorSet();
+        set
+                .play(ObjectAnimator.ofFloat(expandedImageView, View.X, startBounds.left,
+                        finalBounds.left))
+                .with(ObjectAnimator.ofFloat(expandedImageView, View.Y, startBounds.top,
+                        finalBounds.top))
+                .with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_X, startScale, 1f))
+                .with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_Y, startScale, 1f));
+        set.setDuration(mShortAnimationDuration);
+        set.setInterpolator(new DecelerateInterpolator());
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mCurrentAnimator = null;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                mCurrentAnimator = null;
+            }
+        });
+        set.start();
+        mCurrentAnimator = set;
+
+        // Upon clicking the zoomed-in image, it should zoom back down to the original bounds
+        // and show the thumbnail instead of the expanded image.
+        final float startScaleFinal = startScale;
+        expandedImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mCurrentAnimator != null) {
+                    mCurrentAnimator.cancel();
+                }
+
+                // Animate the four positioning/sizing properties in parallel, back to their
+                // original values.
+                AnimatorSet set = new AnimatorSet();
+                set
+                        .play(ObjectAnimator.ofFloat(expandedImageView, View.X, startBounds.left))
+                        .with(ObjectAnimator.ofFloat(expandedImageView, View.Y, startBounds.top))
+                        .with(ObjectAnimator
+                                .ofFloat(expandedImageView, View.SCALE_X, startScaleFinal))
+                        .with(ObjectAnimator
+                                .ofFloat(expandedImageView, View.SCALE_Y, startScaleFinal));
+                set.setDuration(mShortAnimationDuration);
+                set.setInterpolator(new DecelerateInterpolator());
+                set.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        thumbView.setAlpha(1f);
+                        toolbar.setVisibility(View.VISIBLE);
+                        expandedImageView.setVisibility(View.GONE);
+                        scrollView.setVisibility(View.VISIBLE);
+
+
+                        mCurrentAnimator = null;
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        thumbView.setAlpha(1f);
+                        toolbar.setVisibility(View.VISIBLE);
+                        expandedImageView.setVisibility(View.GONE);
+                        scrollView.setVisibility(View.VISIBLE);
+
+                        mCurrentAnimator = null;
+                    }
+                });
+                set.start();
+                mCurrentAnimator = set;
+            }
+        });
     }
 }

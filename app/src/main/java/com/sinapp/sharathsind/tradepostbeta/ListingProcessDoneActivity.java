@@ -17,7 +17,7 @@ import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
 
-import Model.CustomButton;
+import CustomWidget.CustomButton;
 
 /**
  * Created by HenryChiang on 15-08-27.
