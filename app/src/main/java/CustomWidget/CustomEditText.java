@@ -8,7 +8,7 @@ import android.util.Log;
 import android.widget.EditText;
 
 
-import com.sinapp.sharathsind.tradepostbeta.R;
+import com.sinapp.sharathsind.tradepost.R;
 
 import Utilities.FontManager;
 

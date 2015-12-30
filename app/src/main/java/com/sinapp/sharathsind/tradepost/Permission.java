@@ -1,4 +1,4 @@
-package com.sinapp.sharathsind.tradepostbeta;
+package com.sinapp.sharathsind.tradepost;
 
 import android.Manifest;
 import android.app.Activity;
@@ -48,7 +48,8 @@ public class Permission implements  ActivityCompat.OnRequestPermissionsResultCal
             case 0:
                 if(grantResults.length>0&&grantResults[0]== PackageManager.PERMISSION_GRANTED&& checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)==PackageManager.PERMISSION_GRANTED)
                 {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, Welcome.service);
+                   // locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, Welcome.service);
+                   // locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, Welcome.service);
                     Criteria criteria = new Criteria();
                     String provider = locationManager.getBestProvider(criteria, false);
                     Location location = locationManager.getLastKnownLocation(provider);

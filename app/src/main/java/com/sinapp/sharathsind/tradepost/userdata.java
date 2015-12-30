@@ -1,4 +1,4 @@
-package com.sinapp.sharathsind.tradepostbeta;
+package com.sinapp.sharathsind.tradepost;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 

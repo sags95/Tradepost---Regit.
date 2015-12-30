@@ -1,4 +1,4 @@
-package com.sinapp.sharathsind.tradepostbeta;
+package com.sinapp.sharathsind.tradepost;
 
 /**
  * Created by sharathsind on 2015-09-12.

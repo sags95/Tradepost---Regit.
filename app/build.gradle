@@ -6,7 +6,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.sinapp.sharathsind.tradepostbeta"
+        applicationId "com.sinapp.sharathsind.tradepost"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1

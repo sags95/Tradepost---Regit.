@@ -1,4 +1,4 @@
-package com.sinapp.sharathsind.tradepostbeta;
+package com.sinapp.sharathsind.tradepost;
 
 import android.content.Intent;
 import android.graphics.Bitmap;

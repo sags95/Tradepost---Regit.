@@ -1,4 +1,4 @@
-package com.sinapp.sharathsind.tradepostbeta;
+package com.sinapp.sharathsind.tradepost;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

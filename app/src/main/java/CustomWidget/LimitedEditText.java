@@ -10,7 +10,7 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.sinapp.sharathsind.tradepostbeta.R;
+import com.sinapp.sharathsind.tradepost.R;
 
 import Utilities.FontManager;
 

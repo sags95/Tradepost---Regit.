@@ -1,19 +1,17 @@
 package Model;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.util.Base64;
 
 
-import com.sinapp.sharathsind.tradepostbeta.Constants;
-import com.sinapp.sharathsind.tradepostbeta.userdata;
+import com.sinapp.sharathsind.tradepost.Constants;
+import com.sinapp.sharathsind.tradepost.userdata;
 
 import org.ksoap2.HeaderProperty;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.KvmSerializable;
-import org.ksoap2.serialization.MarshalBase64;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
@@ -21,9 +19,7 @@ import org.ksoap2.transport.HttpTransportSE;
 
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Vector;
 
 
