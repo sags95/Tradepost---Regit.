@@ -118,6 +118,8 @@ public class ListingProcessActivity extends AppCompatActivity {
             requestPermissions(perms, permsRequestCode);
         }
 
+        mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
         //section 1
         LimitedEditText itemName = (LimitedEditText) findViewById(R.id.section1_edit);
         itemName.setMaxLines(1);
