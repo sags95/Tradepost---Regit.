@@ -277,29 +277,29 @@ public class ListingProcessActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        GCMService.b=false;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        GCMService.b=true;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        GCMService.b=false;
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        GCMService.b=false;
-    }
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        GCMService.b=false;
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        GCMService.b=true;
+//    }
+//
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        GCMService.b=false;
+//    }
+//
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        GCMService.b=false;
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
