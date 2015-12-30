@@ -17,7 +17,7 @@ public static ArrayList<Integer> items,favourites,offers;
     public  static int radius;
 public static ArrayList<ItemResult>i;
     public static String city;
-    public  static Mylocation mylocation;
+    public  static UserLocation mylocation;
     public static boolean loc;
     public static String name;
 public static GoogleApiClient m;

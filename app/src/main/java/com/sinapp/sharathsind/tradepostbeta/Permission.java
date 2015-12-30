@@ -52,7 +52,7 @@ return permissionCheck;
                     Location location = locationManager.getLastKnownLocation(provider);
 
                     if(location!=null) {
-                        userdata.mylocation=new Mylocation();
+                        userdata.mylocation=new UserLocation();
 
                         userdata.mylocation.Longitude =(float) location.getLongitude();
                         userdata.mylocation.latitude = (float)location.getLatitude();
