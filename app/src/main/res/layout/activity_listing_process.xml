@@ -5,32 +5,22 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackgroundGray"
+    android:background="@color/color_background_gray"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true">
 
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/toolbar_default">
+    </include>
 
-    <android.support.v7.widget.Toolbar android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ActionBarTheme"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        />
-
-    <ImageView
-        android:id="@+id/expanded_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/scrollView"
         android:layout_gravity="center_horizontal"
-        android:visibility="visible"
+
         >
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -47,7 +37,7 @@
                 android:paddingTop="24dp"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                android:background="@color/colorBackgroundGray"
+                android:background="@color/color_background_gray"
                 >
 
                 <LinearLayout
@@ -57,7 +47,7 @@
                     android:orientation="horizontal"
                     android:layout_marginBottom="8dp"
                     >
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section1_img"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
@@ -65,21 +55,23 @@
                         android:background="@drawable/circle"
                         android:text="1"
                         android:gravity="center"
-                        android:textColor="@android:color/white"
+
+                        style="@style/OpenSansLight"
+                        android:textColor="@color/white"
 
                         />
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section1_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/section1_text"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="4dp"
+                        style="@style/OpenSansRegular"
                         />
-
                 </LinearLayout>
 
-                <CustomWidget.LimitedEditText
+                <Model.LimitedEditText
                     android:id="@+id/section1_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -87,8 +79,8 @@
                     android:layout_below="@+id/section1_title"
                     android:singleLine="true"
                     android:imeOptions="actionDone"
+                    style="@style/OpenSansLight"
                     />
-
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -98,29 +90,32 @@
                     android:gravity="center"
 
                     >
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section1_char_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
                         android:layout_gravity="center_vertical"
+                        style="@style/OpenSansLight"
                         />
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section1_char_count_slash"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="/"
                         android:layout_gravity="center_vertical"
                         android:layout_toRightOf="@+id/section1_char_count"
+                        style="@style/OpenSansLight"
                         />
 
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section1_char_count_max"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="70"
                         android:layout_gravity="center_vertical"
                         android:layout_toRightOf="@+id/section1_char_count_slash"
+                        style="@style/OpenSansLight"
                         />
                 </RelativeLayout>
 
@@ -133,7 +128,7 @@
                 android:paddingBottom="30dp"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                android:background="@color/colorBackgroundGray"
+                android:background="@color/color_background_gray"
 
                 >
 
@@ -145,7 +140,7 @@
                     android:layout_marginBottom="16dp"
                     >
 
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section2_img"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
@@ -153,16 +148,19 @@
                         android:background="@drawable/circle"
                         android:text="2"
                         android:gravity="center"
-                        android:textColor="@android:color/white"
+
+                        style="@style/OpenSansLight"
+                        android:textColor="@color/white"
                         />
 
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section2_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/section2_text"
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="4dp"
+                        style="@style/OpenSansRegular"
 
                         />
                 </LinearLayout>
@@ -171,7 +169,7 @@
                     android:id="@+id/section2_scroll_top_div"
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
-                    android:background="@color/colorBackgroundGray"
+                    android:background="@color/color_background_gray"
                     android:layout_below="@id/section2_title"
                     />
 
@@ -185,66 +183,66 @@
                     >
 
                     <ImageView
-                        android:id="@+id/section2_item_img_1"
+                        android:id="@+id/section2_item_img1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@mipmap/ic_image_thumbnail"
+                        android:src="@drawable/ic_image_thumbnail"
                         android:layout_weight="1"
                         android:layout_gravity="center"
                         android:scaleType="centerCrop"
-                        android:background="@android:color/white"
+                        android:background="@color/white"
                         />
 
                     <View
                         android:layout_width="3dp"
                         android:layout_height="match_parent"
-                        android:background="@color/colorBackgroundGray"
+                        android:background="@color/color_background_gray"
                         />
 
                     <ImageView
-                        android:id="@+id/section2_item_img_2"
+                        android:id="@+id/section2_item_img2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@mipmap/ic_image_thumbnail"
+                        android:src="@drawable/ic_image_thumbnail"
                         android:layout_weight="1"
                         android:layout_gravity="center"
                         android:scaleType="centerCrop"
-                        android:background="@android:color/white"
+                        android:background="@color/white"
                         />
 
                     <View
                         android:layout_width="3dp"
                         android:layout_height="match_parent"
-                        android:background="@color/colorBackgroundGray"
+                        android:background="@color/color_background_gray"
                         />
 
                     <ImageView
-                        android:id="@+id/section2_item_img_3"
+                        android:id="@+id/section2_item_img3"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@mipmap/ic_image_thumbnail"
+                        android:src="@drawable/ic_image_thumbnail"
                         android:layout_weight="1"
                         android:layout_gravity="center"
                         android:scaleType="centerCrop"
-                        android:background="@android:color/white"
+                        android:background="@color/white"
                         />
 
                     <View
                         android:layout_width="3dp"
                         android:layout_height="match_parent"
-                        android:background="@color/colorBackgroundGray"
+                        android:background="@color/color_background_gray"
                         />
 
                     <ImageView
-                        android:id="@+id/section2_item_img_4"
+                        android:id="@+id/section2_item_img4"
 
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@mipmap/ic_image_thumbnail"
+                        android:src="@drawable/ic_image_thumbnail"
                         android:layout_weight="1"
                         android:layout_gravity="center"
                         android:scaleType="centerCrop"
-                        android:background="@android:color/white"
+                        android:background="@color/white"
                         />
 
                 </LinearLayout>
@@ -276,13 +274,13 @@
                             android:clickable="true"
                             android:background="@drawable/circle_white"
                             android:layout_gravity="center_horizontal"
-                            android:src="@mipmap/ic_camera"
+                            android:src="@drawable/ic_camera"
 
 
 
                             />
 
-                        <TextView
+                        <Model.CustomTextView
                             android:id="@+id/section2_text_cam"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -290,18 +288,20 @@
                             android:gravity="center"
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="4dp"
+                            style="@style/OpenSansLight"
                             />
 
 
                     </LinearLayout>
 
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section2_or"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="OR"
                         android:layout_gravity="center"
                         android:gravity="center"
+                        style="@style/OpenSansRegular"
                         />
 
                     <LinearLayout
@@ -320,12 +320,12 @@
                             android:clickable="true"
                             android:background="@drawable/circle_white"
                             android:layout_gravity="center_horizontal"
-                            android:src="@mipmap/ic_folder"
+                            android:src="@drawable/ic_folder"
 
 
                             />
 
-                        <TextView
+                        <Model.CustomTextView
                             android:id="@+id/section2_text_folder"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -333,6 +333,9 @@
                             android:gravity="center"
                             android:layout_gravity="center_horizontal"
                             android:layout_marginTop="4dp"
+
+                            style="@style/OpenSansLight"
+
                             />
 
 
@@ -352,7 +355,7 @@
                 android:paddingBottom="16dp"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                android:background="@color/colorBackgroundGray"
+                android:background="@color/color_background_gray"
                 >
 
                 <LinearLayout
@@ -364,7 +367,7 @@
 
                     >
 
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section3_img"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
@@ -372,16 +375,19 @@
                         android:background="@drawable/circle"
                         android:text="3"
                         android:gravity="center"
-                        android:textColor="@android:color/white"
+
+                        style="@style/OpenSansLight"
+                        android:textColor="@color/white"
                         />
 
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section3_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/section3_text"
                         android:layout_gravity="center_vertical"
                         android:paddingLeft="4dp"
+                        style="@style/OpenSansRegular"
                         />
 
                 </LinearLayout>
@@ -416,9 +422,10 @@
                         >
 
 
-                        <TextView
+                        <Model.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            style="@style/OpenSansRegular"
                             android:text="Poor"
                             android:layout_weight="1"
                             android:gravity="left"
@@ -426,10 +433,11 @@
 
                             />
 
-                        <TextView
+                        <Model.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Fair"
+                            style="@style/OpenSansRegular"
                             android:layout_weight="3"
                             android:gravity="center_horizontal"
                             android:textSize="12sp"
@@ -438,9 +446,10 @@
 
                             />
 
-                        <TextView
+                        <Model.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            style="@style/OpenSansRegular"
                             android:text="Great"
                             android:layout_weight="2"
                             android:gravity="center_horizontal"
@@ -449,9 +458,10 @@
 
 
                             />
-                        <TextView
+                        <Model.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            style="@style/OpenSansRegular"
                             android:text="Mint"
                             android:layout_weight="3"
                             android:gravity="center_horizontal"
@@ -460,9 +470,10 @@
 
                             />
 
-                        <TextView
+                        <Model.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            style="@style/OpenSansRegular"
                             android:text="New"
                             android:layout_weight="1"
                             android:gravity="right"
@@ -488,7 +499,7 @@
                 android:paddingTop="16dp"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
-                android:background="@color/colorBackgroundGray"
+                android:background="@color/color_background_gray"
                 >
 
                 <LinearLayout
@@ -499,7 +510,7 @@
                     android:layout_marginBottom="16dp"
                     >
 
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section4_img"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
@@ -507,23 +518,26 @@
                         android:background="@drawable/circle"
                         android:text="4"
                         android:gravity="center"
-                        android:textColor="@android:color/white"
+
+                        style="@style/OpenSansLight"
+                        android:textColor="@color/white"
                         />
 
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section4_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/section4_text"
                         android:layout_gravity="center_vertical"
                         android:paddingLeft="4dp"
+                        style="@style/OpenSansRegular"
                         />
 
                 </LinearLayout>
 
 
 
-                <CustomWidget.LimitedEditText
+                <Model.LimitedEditText
                     android:id="@+id/section4_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -532,6 +546,7 @@
                     android:lines="5"
                     android:maxLines="5"
                     android:gravity="left|top"
+                    style="@style/OpenSansLight"
                     android:padding="8dp"
                     />
 
@@ -544,33 +559,36 @@
                     android:gravity="center"
 
                     >
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section4_char_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
                         android:layout_gravity="center_vertical"
+                        style="@style/OpenSansLight"
                         />
-
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section4_char_count_slash"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="/"
                         android:layout_gravity="center_vertical"
                         android:layout_toRightOf="@+id/section4_char_count"
+                        style="@style/OpenSansLight"
                         />
 
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section4_char_count_max"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="250"
                         android:layout_gravity="center_vertical"
                         android:layout_toRightOf="@+id/section4_char_count_slash"
+                        style="@style/OpenSansLight"
                         />
-
                 </RelativeLayout>
+
+
 
             </RelativeLayout>
 
@@ -582,7 +600,7 @@
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:id="@+id/section5"
-                android:background="@color/colorBackgroundGray"
+                android:background="@color/color_background_gray"
                 >
 
                 <LinearLayout
@@ -593,7 +611,7 @@
                     android:layout_marginBottom="16dp"
                     >
 
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section5_img"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
@@ -601,16 +619,20 @@
                         android:background="@drawable/circle"
                         android:text="5"
                         android:gravity="center"
-                        android:textColor="@android:color/white"
+
+                        style="@style/OpenSansLight"
+                        android:textColor="@color/white"
                         />
 
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section5_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/section5_text"
                         android:paddingLeft="4dp"
                         android:layout_gravity="center_vertical"
+                        style="@style/OpenSansRegular"
+
                         />
 
                 </LinearLayout>
@@ -622,37 +644,39 @@
                     android:layout_alignBottom="@+id/section5_title"
                     android:layout_alignTop="@+id/section5_title"
                     android:gravity="center"
-                    >
 
-                    <TextView
+                    >
+                    <Model.CustomTextView
                         android:id="@+id/section5_tag_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"
                         android:layout_gravity="center_vertical"
+                        style="@style/OpenSansLight"
                         />
-
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section5_tag_count_slash"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="/"
                         android:layout_gravity="center_vertical"
                         android:layout_toRightOf="@+id/section5_tag_count"
+                        style="@style/OpenSansLight"
                         />
 
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section5_tag_count_max"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="5"
                         android:layout_gravity="center_vertical"
                         android:layout_toRightOf="@+id/section5_tag_count_slash"
+                        style="@style/OpenSansLight"
                         />
-
                 </RelativeLayout>
 
-                <EditText
+
+                <Model.CustomEditText
                     android:id="@+id/section5_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -661,13 +685,14 @@
                     android:layout_toLeftOf="@+id/section5_plus"
                     android:singleLine="true"
                     android:imeOptions="actionDone"
+                    style="@style/OpenSansLight"
                     />
 
                 <ImageView
                     android:id="@+id/section5_plus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/ic_fab_primary"
+                    android:src="@drawable/ic_fab_primary"
                     android:layout_below="@+id/section5_title"
                     android:layout_alignParentRight="true"
                     android:clickable="true"
@@ -681,7 +706,9 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     f:layoutDirection="ltr"
+
                     >
+
 
                 </org.apmem.tools.layouts.FlowLayout>
 
@@ -695,7 +722,7 @@
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:id="@+id/section6"
-                android:background="@color/colorBackgroundGray"
+                android:background="@color/color_background_gray"
                 >
 
                 <LinearLayout
@@ -706,7 +733,7 @@
                     android:layout_marginBottom="16dp"
                     >
 
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section6_img"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
@@ -714,19 +741,22 @@
                         android:background="@drawable/circle"
                         android:text="6"
                         android:gravity="center"
-                        android:textColor="@android:color/white"
+
+                        style="@style/OpenSansLight"
+                        android:textColor="@color/white"
                         />
 
-                    <TextView
+                    <Model.CustomTextView
                         android:id="@+id/section6_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/section6_text"
                         android:layout_gravity="center_vertical"
                         android:paddingLeft="4dp"
+                        style="@style/OpenSansRegular"
                         />
 
-                </LinearLayout>
+                    </LinearLayout>
 
 
                 <Spinner
@@ -734,13 +764,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/section6_title"
-                    android:background="@android:color/white"
+                    android:background="@color/white"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:singleLine="true"
                     />
 
             </RelativeLayout>
+
+
+
 
         </LinearLayout>
     </ScrollView>

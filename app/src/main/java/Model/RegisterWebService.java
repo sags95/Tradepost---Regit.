@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.util.Base64;
 
 
+import com.sinapp.sharathsind.tradepostbeta.Constants;
 import com.sinapp.sharathsind.tradepostbeta.userdata;
 
 import org.ksoap2.HeaderProperty;
