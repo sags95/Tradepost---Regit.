@@ -1,10 +1,12 @@
 package com.sinapp.sharathsind.tradepostbeta;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
+import android.*;
+import android.Manifest;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -12,15 +14,15 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Build;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -31,130 +33,120 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.ArrayAdapter;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apmem.tools.layouts.FlowLayout;
+import org.ksoap2.HeaderProperty;
+import org.ksoap2.SoapEnvelope;
+import org.ksoap2.serialization.MarshalBase64;
+import org.ksoap2.serialization.MarshalFloat;
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
+import org.ksoap2.serialization.SoapSerializationEnvelope;
+import org.ksoap2.transport.HttpTransportSE;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import CustomWidget.LimitedEditText;
+import Model.CustomEditText;
+import Model.CustomSpinnerAdapter;
+import Model.CustomTextView;
+import Model.LimitedEditText;
+import Model.RegisterWebService;
+
+import webservices.MainWebService;
 
 /**
- * Created by HenryChiang on 2015-12-28.
+ * Created by HenryChiang on 15-05-31.
  */
 public class ListingProcessActivity extends AppCompatActivity {
 
-    /**
-     * Hold a reference to the current animator, so that it can be canceled mid-way.
-     */
-    private Animator mCurrentAnimator;
-
-    /**
-     * The system "short" animation time duration, in milliseconds. This duration is ideal for
-     * subtle animations or animations that occur very frequently.
-     */
-    private int mShortAnimationDuration;
-
-
-
-    private ImageView camera, folder, itemImg1, itemImg2, itemImg3, itemImg4;
-    private ColorStateList oldColors;
-
-    //section 2
-    private final int REQUEST_CODE_CAM = 0;
-    private final int REQUEST_CODE_GAL = 1;
-    private Uri mImageUri;
-    private int currentImgPos = 0;
-    private ArrayList<Bitmap> tempBitmap = new ArrayList<>();
-    private ArrayList<ImageView> imageViewArrayList = new ArrayList<>();
-    final String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE","android.permission.READ_EXTERNAL_STORAGE"};
-    final int permsRequestCode = 200;
-
-
-    //section 5
-    private EditText tagInput;
+    final int MAX_NUM_TAGS = 5;
+    int TAGS_COUNT = 0;
     private FlowLayout tagFlowLayout;
     private LinearLayout singleTagLayout;
-    private final int MAX_NUM_TAGS = 5;
-    private int TAGS_COUNT = 0;
-    private TextView tagsCount;
+    private String[] categories;
+    private ImageView camera, folder, itemImg1, itemImg2, itemImg3, itemImg4;
+    private int requestCodeCam = 0;
+    private int requestCodeGal = 1;
+    private int currentImgPos = 0;
+    private Toolbar toolbar;
+    private Uri mImageUri;
+    private CustomTextView tagsCount;
+    private ColorStateList oldColors;
 
-    //section 6
-    private Spinner spinner;
 
 
 
+    public ArrayList<String> tags;
+    public ArrayList<Bitmap>bits;
+    private CustomEditText tagInput;
+    Spinner spinner;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listing_process);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Add Your Item");
+        tagFlowLayout = (FlowLayout) findViewById(R.id.section5_tags);
+       // GCMService.b = true;
+        Permission permission = new Permission(this, null);
+        if (permission.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || permission.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        {
+            permission.askPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+
+            //toolbar
+        }
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        toolbar.setTitle("Post Your Item");
+        toolbar.setTitleTextColor(getResources().getColor(R.color.ColorPrimary));
         setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        if(Build.VERSION.SDK_INT> Build.VERSION_CODES.LOLLIPOP_MR1) {
-            requestPermissions(perms, permsRequestCode);
-        }
-
-        mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        tags=new ArrayList<String>();
+        bits=new ArrayList<Bitmap>();
 
         //section 1
         LimitedEditText itemName = (LimitedEditText) findViewById(R.id.section1_edit);
         itemName.setMaxLines(1);
         itemName.setMaxCharacters(70);
-        final TextView itemNameCharCount = (TextView)findViewById(R.id.section1_char_count);
+        final CustomTextView itemNameCharCount = (CustomTextView)findViewById(R.id.section1_char_count);
         itemName.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void afterTextChanged(Editable s) {
             }
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 //This sets a textview to the current length
                 itemNameCharCount.setText(String.valueOf(s.length()));
             }
+
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         //section 2
-        itemImg1 = (ImageView) findViewById(R.id.section2_item_img_1);
-        itemImg2 = (ImageView) findViewById(R.id.section2_item_img_2);
-        itemImg3 = (ImageView) findViewById(R.id.section2_item_img_3);
-        itemImg4 = (ImageView) findViewById(R.id.section2_item_img_4);
-
-        itemImg1.setTag(0);
-        itemImg2.setTag(1);
-        itemImg3.setTag(2);
-        itemImg4.setTag(3);
-
-
-        imageViewArrayList.add(0,itemImg1);
-        imageViewArrayList.add(1,itemImg2);
-        imageViewArrayList.add(2,itemImg3);
-        imageViewArrayList.add(3,itemImg4);
-
+        itemImg1 = (ImageView) findViewById(R.id.section2_item_img1);
+        itemImg2 = (ImageView) findViewById(R.id.section2_item_img2);
+        itemImg3 = (ImageView) findViewById(R.id.section2_item_img3);
+        itemImg4 = (ImageView) findViewById(R.id.section2_item_img4);
         ///spinner=(Spinner)findViewById(R.id.sp)
         camera = (ImageView) findViewById(R.id.section2_img_camera);
         folder = (ImageView) findViewById(R.id.section2_img_folder);
@@ -168,22 +160,24 @@ public class ListingProcessActivity extends AppCompatActivity {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                for (int i = 0; i < seekBarLi.getChildCount(); i++) {
-                    if (i != progress) {
-                        TextView temp = (TextView) seekBarLi.getChildAt(i);
+                for(int i=0;i<seekBarLi.getChildCount();i++){
+                    if(i!=progress){
+                        CustomTextView temp = (CustomTextView)seekBarLi.getChildAt(i);
                         temp.setTextColor(oldColors);
                     }
                 }
-                TextView temp2 = (TextView) seekBarLi.getChildAt(progress);
-                temp2.setTextColor(getResources().getColor(R.color.colorAccent));
+                CustomTextView temp2 =(CustomTextView)seekBarLi.getChildAt(progress);
+                temp2.setTextColor(getResources().getColor(R.color.fab_primaryColor));
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
 
@@ -191,35 +185,40 @@ public class ListingProcessActivity extends AppCompatActivity {
         LimitedEditText desEditText = (LimitedEditText) findViewById(R.id.section4_edit);
         desEditText.setMaxLines(5);
         desEditText.setMaxCharacters(250);
-        final TextView itemDesCharCount = (TextView)findViewById(R.id.section4_char_count);
+        final CustomTextView itemDesCharCount = (CustomTextView)findViewById(R.id.section4_char_count);
         desEditText.addTextChangedListener(new TextWatcher() {
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            public void afterTextChanged(Editable s) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 //This sets a textview to the current length
                 itemDesCharCount.setText(String.valueOf(s.length()));
             }
+
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         //section 5
-        tagInput = (EditText) findViewById(R.id.section5_edit);
-        tagFlowLayout = (FlowLayout) findViewById(R.id.section5_tags);
+        tagInput = (CustomEditText) findViewById(R.id.section5_edit);
         tagInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == 6) {
                     if (tagInput.getText().length() > 0 && tagFlowLayout.getChildCount() < MAX_NUM_TAGS) {
-                        singleTagLayout = (LinearLayout) View.inflate(getApplicationContext(), R.layout.layout_tag, null);
+                        singleTagLayout = (LinearLayout) View.inflate(getApplicationContext(), R.layout.single_tag, null);
                         singleTagLayout.setId(TAGS_COUNT);
                         //Button for removing Tag
-                        ImageView cancelTag = (ImageView) singleTagLayout.findViewById(R.id.tag_cancel_btn);
+                        ImageView cancelTag = (ImageView)singleTagLayout.findViewById(R.id.tag_cancel_btn);
                         cancelTag.setId(TAGS_COUNT);
                         cancelTag.setOnClickListener(tagCancelButtonListener);
 
                         //Tag Name
-                        TextView tagName = (TextView) singleTagLayout.findViewById(R.id.tag_name);
+                        CustomTextView tagName = (CustomTextView) singleTagLayout.findViewById(R.id.tag_name);
+                        //tagName.setId(TAGS_COUNT);
                         tagName.setText(tagInput.getText().toString().trim());
+                        //tags.add(tagInput.getText().toString().trim());
                         tagName.setTag(tagInput.getText().toString());
 
                         tagInput.setText("");
@@ -234,19 +233,44 @@ public class ListingProcessActivity extends AppCompatActivity {
                 return handled;
             }
         });
-
-        tagInput.setOnKeyListener(tagOnKeyListener);
+        tagInput.setOnKeyListener(y);
         ImageView addTags = (ImageView) findViewById(R.id.section5_plus);
         addTags.setOnClickListener(addTagButtonListener);
-        tagsCount = (TextView)findViewById(R.id.section5_tag_count);
+        tagsCount = (CustomTextView)findViewById(R.id.section5_tag_count);
         oldColors =  tagsCount.getTextColors(); //save original colors
 
         //using section 6 (Choose a category)
-        String[] categories = getResources().getStringArray(R.array.category_array);
+        categories = getResources().getStringArray(R.array.category_array);
         spinner = (Spinner) findViewById(R.id.section6_spinner);
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, Arrays.asList(getResources().getStringArray(R.array.category_array)));
+        CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(
+                this, android.R.layout.simple_spinner_dropdown_item, Arrays.asList(getResources().getStringArray(R.array.category_array)));
         spinner.setAdapter(adapter);
 
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        GCMService.b=false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        GCMService.b=true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        GCMService.b=false;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        GCMService.b=false;
     }
 
     @Override
@@ -254,14 +278,291 @@ public class ListingProcessActivity extends AppCompatActivity {
 
         MenuItem item;
 
-        item = menu.add("Post");
-        item.setIcon(R.mipmap.ic_send);
+        item = menu.add("POST");
+        item.setIcon(R.drawable.ic_send);
         MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
 
         return super.onCreateOptionsMenu(menu);
     }
+    String result;
+    ProgressDialog pg;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-    private View.OnClickListener camBtnListener = new View.OnClickListener() {
+        switch (item.getTitle().toString()) {
+            case "POST": {
+                final   EditText tv=(EditText)findViewById(R.id.section1_edit);
+                final    EditText desc=(EditText)findViewById(R.id.section4_edit);
+                final     SeekBar s=(SeekBar)findViewById(R.id.seekBar1);
+                final      int i=s.getProgress();
+                final String title=tv.getText().toString();
+                final String description=desc.getText().toString();
+                final String cat=spinner.getSelectedItem().toString();
+
+//pg.show();
+                new AsyncTask<String,String,String>()
+                {
+                    boolean cancel;
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        if(title==null||title.trim().length()<=0)
+                        {
+                            new AlertDialog.Builder(ListingProcessActivity.this)
+                                    .setTitle("Error")
+                                    .setMessage("item title cannot be empty")
+                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // continue with delete
+                                        }
+                                    })
+
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                            cancel=true;
+                            return;
+                        }
+                        if( getAllTagNames(tagFlowLayout).size()<=0)
+                        {
+                            new AlertDialog.Builder(ListingProcessActivity.this)
+                                    .setTitle("Error")
+                                    .setMessage("Please create atleast one tag")
+                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            // continue with delete
+                                        }
+                                    })
+
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .show();
+                            cancel=true;
+                        }
+                        else {
+                            pg=ProgressDialog.show(ListingProcessActivity.this,"Please Wait","adding",false,false);
+                            pg.setCancelable(false);
+                            pg.setMessage("please wait..");
+                        }
+                    }
+
+                    @Override
+                    protected void onPostExecute(String s) {
+                        super.onPostExecute(s);
+                        if(cancel)
+                            return;
+                        pg.dismiss();
+                        Intent i = new Intent(getApplicationContext(),ListingProcessDoneActivity.class);
+                        if(s.equals("success")){
+                            i.putExtra("isSuccess", true);
+                            i.putExtra("im",bits.get(0));
+                            startActivity(i);
+                            finish();
+
+                        }else{
+                            i.putExtra("isSuccess", false);
+                            startActivity(i);
+                        }
+
+                    }
+
+                    @Override
+                    protected String doInBackground(String... voids) {
+                        if(cancel)
+                            return null;
+                        try {
+                            tags=getAllTagNames(tagFlowLayout);
+                            String[] tagarray = new String[tags.size()];
+
+                            for(int i=0;i<tags.size();i++)
+                            {
+                                tagarray[i]=tags.get(i);
+                            }
+
+                            //     int i=s.get;
+                            SoapPrimitive r= RegisterWebService.sendDataToServer(title,description,tagarray,bits.toArray(),i, userdata.userid,cat);
+                            result=r.getValue().toString();
+                            int i=0;
+                            if(bits.size()==0)
+                            {
+                                Drawable myDrawable = ContextCompat.getDrawable(ListingProcessActivity.this, R.drawable.sample_img);
+                                Bitmap myLogo = ((BitmapDrawable) myDrawable).getBitmap();
+                                bits.add(myLogo);
+                            }
+
+                            for(Bitmap b:bits)
+                            {
+                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                b.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                byte[] byteArray = stream.toByteArray();
+                                sendDImage(Integer.parseInt(result),byteArray,i);
+
+                                i++;
+                            }
+                            for(String t:tags)
+                                sendtag(Integer.parseInt(result),t);
+//
+                            return "success";
+
+                        } catch (Exception e) {
+                            result=e.toString();
+                            e.printStackTrace();
+                            return "failed";
+
+                        }
+
+                    }
+                }.execute(null, null);
+                //        a.execute(" ","","");
+                //         break;
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        return resizedBitmap;
+    }
+    public SoapPrimitive sendDImage(int id,byte[] im,int pic)
+    {
+        SoapObject object = new SoapObject("http://webser/", "addimage");
+        object.addProperty("itemid", id);
+        object.addProperty("pic",pic);
+        object.addProperty("image",im);
+        return     MainWebService.getMsg(object, "http://73.37.238.238:8084/TDserverWeb/AddItems?wsdl", "http://webser/AddItems/addimageRequest");
+    }
+    public SoapPrimitive sendtag(int id,String im)
+    {
+        SoapObject object = new SoapObject("http://webser/", "addtag");
+        object.addProperty("itemid", id);
+
+        object.addProperty("tag",im);
+        return     MainWebService.getMsg(object, "http://73.37.238.238:8084/TDserverWeb/AddItems?wsdl", "http://webser/AddItems/addtagRequest");
+    }
+    public View.OnKeyListener y=new View.OnKeyListener() {
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN
+                    && event.getKeyCode() ==       KeyEvent.KEYCODE_ENTER)
+            {
+                if (tagInput.getText().length() > 0 && tagFlowLayout.getChildCount() < MAX_NUM_TAGS) {
+                    singleTagLayout = (LinearLayout) View.inflate(getApplicationContext(), R.layout.single_tag, null);
+                    singleTagLayout.setId(TAGS_COUNT);
+                    //Button for removing Tag
+                    ImageView cancelTag = (ImageView)singleTagLayout.findViewById(R.id.tag_cancel_btn);
+                    cancelTag.setId(TAGS_COUNT);
+                    cancelTag.setOnClickListener(tagCancelButtonListener);
+
+                    //Tag Name
+                    CustomTextView tagName = (CustomTextView) singleTagLayout.findViewById(R.id.tag_name);
+                    //tagName.setId(TAGS_COUNT);
+                    tagName.setText(tagInput.getText().toString().trim());
+                    //tags.add(tagInput.getText().toString().trim());
+                    tagName.setTag(tagInput.getText().toString());
+
+                    tagInput.setText("");
+                    TAGS_COUNT++;
+                    tagFlowLayout.addView(singleTagLayout);
+                    tagsCount.setText(String.valueOf(tagFlowLayout.getChildCount()));
+                    Log.d("Child Added", "Add 1, total: " + String.valueOf(tagFlowLayout.getChildCount()));
+
+                }
+
+
+                return false;
+            }
+
+            return false;
+        }
+    };
+    public View.OnClickListener addTagButtonListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            if (tagInput.getText().length() > 0 && tagFlowLayout.getChildCount() < MAX_NUM_TAGS) {
+                singleTagLayout = (LinearLayout) View.inflate(getApplicationContext(), R.layout.single_tag, null);
+                singleTagLayout.setId(TAGS_COUNT);
+                //Button for removing Tag
+                ImageView cancelTag = (ImageView)singleTagLayout.findViewById(R.id.tag_cancel_btn);
+                cancelTag.setId(TAGS_COUNT);
+                cancelTag.setOnClickListener(tagCancelButtonListener);
+
+                //Tag Name
+                CustomTextView tagName = (CustomTextView) singleTagLayout.findViewById(R.id.tag_name);
+                //tagName.setId(TAGS_COUNT);
+                tagName.setText(tagInput.getText().toString().trim());
+                //tags.add(tagInput.getText().toString().trim());
+                tagName.setTag(tagInput.getText().toString());
+
+                tagInput.setText("");
+                TAGS_COUNT++;
+                tagFlowLayout.addView(singleTagLayout);
+                tagsCount.setText(String.valueOf(tagFlowLayout.getChildCount()));
+                Log.d("Child Added", "Add 1, total: " + String.valueOf(tagFlowLayout.getChildCount()));
+
+            }
+
+        }
+    };
+
+    public View.OnClickListener tagCancelButtonListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            tagFlowLayout.removeView((View) v.getParent());
+            //tags.add(((TextView) v).getText().toString().trim());
+            tagsCount.setText(String.valueOf(tagFlowLayout.getChildCount()));
+
+            Log.d("Child Removed", "Remove 1, total: " + String.valueOf(tagFlowLayout.getChildCount()));
+
+
+        }
+
+    };
+
+    public ArrayList<String> getAllTagNames(FlowLayout fl) {
+        ArrayList<String> tagNames = new ArrayList<>();
+
+        for (int i = 0; i < fl.getChildCount(); i++) {
+            View child = fl.getChildAt(i);
+            CustomTextView getTagName = (CustomTextView) (child.findViewById(R.id.tag_name));
+            tagNames.add(getTagName.getText().toString().trim());
+        }
+        return tagNames;
+
+    }
+
+    public String[] getAllTags() {
+        String[] tagNames = new String[tagFlowLayout.getChildCount()];
+
+        for (int i = 0; i < tagFlowLayout.getChildCount(); i++) {
+            View child = tagFlowLayout.getChildAt(i);
+            CustomTextView getTagName = (CustomTextView) (child.findViewById(R.id.tag_name));
+            tagNames[i] = getTagName.getText().toString().trim();
+        }
+        return tagNames;
+
+    }
+    public View.OnClickListener testingBtnListener2 = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d("Clicked", "You CLicked");
+
+        }
+
+
+    };
+
+    public View.OnClickListener camBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -279,13 +580,14 @@ public class ListingProcessActivity extends AppCompatActivity {
             //start camera intent
 
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(takePictureIntent, REQUEST_CODE_CAM);
+                startActivityForResult(takePictureIntent, requestCodeCam);
             }
 
         }
     };
 
-    private File createTemporaryFile(String part, String ext) throws Exception {
+    private File createTemporaryFile(String part, String ext) throws Exception
+    {
         File tempDir= Environment.getExternalStorageDirectory();
         tempDir=new File(tempDir.getAbsolutePath()+"/.temp/");
         if(!tempDir.exists())
@@ -295,33 +597,118 @@ public class ListingProcessActivity extends AppCompatActivity {
         return File.createTempFile(part, ext, tempDir);
     }
 
-    private View.OnClickListener galleryBtnListener = new View.OnClickListener() {
+    public Bitmap grabImage() {
+        this.getContentResolver().notifyChange(mImageUri, null);
+        ContentResolver cr = this.getContentResolver();
+
+
+        Bitmap bm;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        //  android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
+        BitmapFactory.decodeFile(mImageUri.getPath(), options);
+        final int REQUIRED_SIZE = 200;
+        int scale = 1;
+        while (options.outWidth / scale / 2 >= REQUIRED_SIZE
+                && options.outHeight / scale / 2 >= REQUIRED_SIZE)
+            scale *= 2;
+        options.inSampleSize = scale;
+        options.inJustDecodeBounds = false;
+
+        bm =          BitmapFactory.decodeFile(mImageUri.getPath(), options);
+        ExifInterface ei = null;
+        try {
+            ei = new ExifInterface(mImageUri.getPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+        switch(orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                bm=       RotateBitmap(bm, 90);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                bm=      RotateBitmap(bm, 180);
+                break;
+            // etc.
+        }
+        //  setImage(bm);
+
+        return bm;
+    }
+    public static Bitmap RotateBitmap(Bitmap source, float angle)
+    {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
+    public View.OnClickListener galleryBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-        /*
-        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(pickPhoto , 0);
-        */
+            /*
+
+  gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg                                                                            Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(pickPhoto , 0);
+            */
 
             Intent intent = new Intent( Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intent.setType("image/*");
-            startActivityForResult(Intent.createChooser(intent, "Select File"), REQUEST_CODE_GAL);
+            startActivityForResult( Intent.createChooser(intent, "Select File"), requestCodeGal);
         }
     };
+
+    private static final String SOAP_ACTION = "http://webser/AddItems/additemRequest";
+    private static final String METHOD_NAME = "additem";
+    private static final String NAMESPACE = "http://webser/";
+    private static final String URL ="http://73.37.238.238:8084/TDserverWeb/AddItems?wsdl";
+    public SoapPrimitive sendDataToServer(String itemTitle, String descrpition, String[] tags, Object[] images, int condition, int userid, String category) {
+
+        SoapObject object = new SoapObject(NAMESPACE, METHOD_NAME);
+        object.addProperty("itemname", itemTitle);
+        object.addProperty("description",descrpition);
+        object.addProperty("latitude", userdata.mylocation.latitude);
+        object.addProperty("longitude", userdata.mylocation.Longitude);
+        object.addProperty("userid", userdata.userid);
+        object.addProperty("category", category);
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        ArrayList<HeaderProperty> headerPropertyArrayList = new ArrayList<HeaderProperty>();
+        headerPropertyArrayList.add(new HeaderProperty("Connection", "close"));
+        envelope.setOutputSoapObject(object);
+        MarshalFloat m=new MarshalFloat();
+        m.register(envelope);
+        new MarshalBase64().register(envelope);
+        HttpTransportSE ht = new HttpTransportSE( URL);
+        try {
+            ht.call(SOAP_ACTION, envelope);
+            SoapPrimitive response = (SoapPrimitive) envelope.getResponse();
+            //  String res = response.ge().toString();
+            return response;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return MainWebService.getMsg(object, "http://73.37.238.238:8084/TDserverWeb/AddItems?wsdl", "http://webser/AddItems/additemRequest");
+
+    }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
         if (resultCode == RESULT_OK) {
-            if(requestCode == 0){
+            if(requestCode ==0){
                /*
                 Bundle extras = data.getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
                 setImage(imageBitmap);
                 bits.add(imageBitmap);
                 */
-                //setImage(grabImage());
-                tempBitmap.add(grabImage());
+                setImage(grabImage());
                 //       bits.add(grabImage());
                 //... some code to inflate/create/find appropriate ImageView to place grabbed image
 
@@ -345,98 +732,12 @@ public class ListingProcessActivity extends AppCompatActivity {
                     scale *= 2;
                 options.inSampleSize = scale;
                 options.inJustDecodeBounds = false;
-                bm = BitmapFactory.decodeFile(selectedImagePath, options);
-                //setImage(bm);
-                tempBitmap.add(bm);
                 cursor.close();
+                bm = BitmapFactory.decodeFile(selectedImagePath, options);
+                setImage(bm);
             }
-        }
-
-
-        for (int i = 0 ; i < tempBitmap.size() ; i++){
-            imageViewArrayList.get(i).setImageBitmap(getResizedBitmap(tempBitmap.get(i),imageViewArrayList.get(i).getWidth(),imageViewArrayList.get(i).getHeight()));
-            imageViewArrayList.get(i).setOnClickListener(expandImgOnClick);
-            imageViewArrayList.get(i).setOnLongClickListener(deleteImgOnClick);
         }
     }
-
-    private View.OnClickListener expandImgOnClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            zoomImageFromThumb(v, ((BitmapDrawable) ((ImageView)v).getDrawable()).getBitmap());
-
-        }
-    };
-
-    private View.OnLongClickListener deleteImgOnClick = new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(View v) {
-
-            Toast.makeText(getApplicationContext(),"DELETED",Toast.LENGTH_SHORT).show();
-            tempBitmap.remove(Integer.parseInt(v.getTag().toString()));
-
-            for (int i = 0 ; i < imageViewArrayList.size(); i++){
-                imageViewArrayList.get(i).setImageResource(R.mipmap.ic_image_thumbnail);
-                imageViewArrayList.get(i).setOnClickListener(null);
-                imageViewArrayList.get(i).setOnLongClickListener(null);
-            }
-
-            for (int i = 0; i < tempBitmap.size(); i++) {
-                imageViewArrayList.get(i).setImageBitmap(getResizedBitmap(tempBitmap.get(i),imageViewArrayList.get(i).getWidth(),imageViewArrayList.get(i).getHeight()));
-                imageViewArrayList.get(i).setOnClickListener(expandImgOnClick);
-                imageViewArrayList.get(i).setOnLongClickListener(deleteImgOnClick);
-            }
-
-
-
-            return true;
-        }
-    };
-
-    public Bitmap grabImage() {
-        this.getContentResolver().notifyChange(mImageUri, null);
-        ContentResolver cr = this.getContentResolver();
-        Bitmap bm;
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        //  android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
-        BitmapFactory.decodeFile(mImageUri.getPath(), options);
-        final int REQUIRED_SIZE = 400;
-        int scale = 1;
-        while (options.outWidth / scale / 2 >= REQUIRED_SIZE
-                && options.outHeight / scale / 2 >= REQUIRED_SIZE)
-            scale *= 2;
-            options.inSampleSize = scale;
-            options.inJustDecodeBounds = false;
-            bm = BitmapFactory.decodeFile(mImageUri.getPath(), options);
-            ExifInterface ei = null;
-            try {
-                ei = new ExifInterface(mImageUri.getPath());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-
-        switch(orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                bm = RotateBitmap(bm, 90);
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                bm = RotateBitmap(bm, 180);
-                break;
-        }
-        //  setImage(bm);
-
-        return bm;
-    }
-
-    public static Bitmap RotateBitmap(Bitmap source, float angle) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
-    }
-
 
     public void setImage(Bitmap imageBitmap){
         if(currentImgPos<5) {
@@ -454,272 +755,9 @@ public class ListingProcessActivity extends AppCompatActivity {
                     itemImg4.setImageBitmap(getResizedBitmap(imageBitmap,itemImg1.getWidth(),itemImg1.getHeight()));
                     break;
             }
+            bits.add(imageBitmap);
             currentImgPos++;
 
         }
-    }
-
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false);
-        return resizedBitmap;
-    }
-
-    private View.OnClickListener addTagButtonListener = new View.OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-            if (tagInput.getText().length() > 0 && tagFlowLayout.getChildCount() < MAX_NUM_TAGS) {
-                singleTagLayout = (LinearLayout) View.inflate(getApplicationContext(), R.layout.layout_tag, null);
-                singleTagLayout.setId(TAGS_COUNT);
-                //Button for removing Tag
-                ImageView cancelTag = (ImageView)singleTagLayout.findViewById(R.id.tag_cancel_btn);
-                cancelTag.setId(TAGS_COUNT);
-                cancelTag.setOnClickListener(tagCancelButtonListener);
-
-                //Tag Name
-                TextView tagName = (TextView) singleTagLayout.findViewById(R.id.tag_name);
-                //tagName.setId(TAGS_COUNT);
-                tagName.setText(tagInput.getText().toString().trim());
-                //tags.add(tagInput.getText().toString().trim());
-                tagName.setTag(tagInput.getText().toString());
-
-                tagInput.setText("");
-                TAGS_COUNT++;
-                tagFlowLayout.addView(singleTagLayout);
-                tagsCount.setText(String.valueOf(tagFlowLayout.getChildCount()));
-                Log.d("Child Added", "Add 1, total: " + String.valueOf(tagFlowLayout.getChildCount()));
-
-            }
-
-        }
-    };
-
-    private View.OnClickListener tagCancelButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            tagFlowLayout.removeView((View) v.getParent());
-            //tags.add(((TextView) v).getText().toString().trim());
-            tagsCount.setText(String.valueOf(tagFlowLayout.getChildCount()));
-
-            Log.d("Child Removed", "Remove 1, total: " + String.valueOf(tagFlowLayout.getChildCount()));
-
-
-        }
-
-    };
-
-    private View.OnKeyListener tagOnKeyListener = new View.OnKeyListener() {
-        @Override
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                if (tagInput.getText().length() > 0 && tagFlowLayout.getChildCount() < MAX_NUM_TAGS) {
-                    singleTagLayout = (LinearLayout) View.inflate(getApplicationContext(), R.layout.layout_tag, null);
-                    singleTagLayout.setId(TAGS_COUNT);
-                    //Button for removing Tag
-                    ImageView cancelTag = (ImageView)singleTagLayout.findViewById(R.id.tag_cancel_btn);
-                    cancelTag.setId(TAGS_COUNT);
-                    cancelTag.setOnClickListener(tagCancelButtonListener);
-
-                    //Tag Name
-                    TextView tagName = (TextView) singleTagLayout.findViewById(R.id.tag_name);
-                    //tagName.setId(TAGS_COUNT);
-                    tagName.setText(tagInput.getText().toString().trim());
-                    //tags.add(tagInput.getText().toString().trim());
-                    tagName.setTag(tagInput.getText().toString());
-
-                    tagInput.setText("");
-                    TAGS_COUNT++;
-                    tagFlowLayout.addView(singleTagLayout);
-                    tagsCount.setText(String.valueOf(tagFlowLayout.getChildCount()));
-                    Log.d("Child Added", "Add 1, total: " + String.valueOf(tagFlowLayout.getChildCount()));
-
-                }
-
-                return false;
-            }
-
-            return false;
-        }
-    };
-
-    @Override
-    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults) {
-
-        switch (grantResults[0]) {
-
-            case 0:
-                Toast.makeText(getApplicationContext(),"granted",Toast.LENGTH_SHORT).show();
-                break;
-            case -1:
-                Toast.makeText(getApplicationContext(),"denied and finish()",Toast.LENGTH_SHORT).show();
-                finish();
-                break;
-
-        }
-    }
-
-    /**
-     * "Zooms" in a thumbnail view by assigning the high resolution image to a hidden "zoomed-in"
-     * image view and animating its bounds to fit the entire activity content area. More
-     * specifically:
-     *
-     * <ol>
-     *   <li>Assign the high-res image to the hidden "zoomed-in" (expanded) image view.</li>
-     *   <li>Calculate the starting and ending bounds for the expanded view.</li>
-     *   <li>Animate each of four positioning/sizing properties (X, Y, SCALE_X, SCALE_Y)
-     *       simultaneously, from the starting bounds to the ending bounds.</li>
-     *   <li>Zoom back out by running the reverse animation on click.</li>
-     * </ol>
-     *
-     * @param thumbView  The thumbnail view to zoom in.
-     * @param image The high-resolution version of the image represented by the thumbnail.
-     */
-    private void zoomImageFromThumb(final View thumbView, Bitmap image) {
-        // If there's an animation in progress, cancel it immediately and proceed with this one.
-        if (mCurrentAnimator != null) {
-            mCurrentAnimator.cancel();
-        }
-
-        // Load the high-resolution "zoomed-in" image.
-        final ImageView expandedImageView = (ImageView) findViewById(R.id.expanded_image);
-        expandedImageView.setImageBitmap(image);
-
-        final ScrollView scrollView = (ScrollView) findViewById(R.id.scrollView);
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-
-        // Calculate the starting and ending bounds for the zoomed-in image. This step
-        // involves lots of math. Yay, math.
-        final Rect startBounds = new Rect();
-        final Rect finalBounds = new Rect();
-        final Point globalOffset = new Point();
-
-        // The start bounds are the global visible rectangle of the thumbnail, and the
-        // final bounds are the global visible rectangle of the container view. Also
-        // set the container view's offset as the origin for the bounds, since that's
-        // the origin for the positioning animation properties (X, Y).
-        thumbView.getGlobalVisibleRect(startBounds);
-        findViewById(R.id.listing_proecss_layout).getGlobalVisibleRect(finalBounds, globalOffset);
-        startBounds.offset(-globalOffset.x, -globalOffset.y);
-        finalBounds.offset(-globalOffset.x, -globalOffset.y);
-
-        // Adjust the start bounds to be the same aspect ratio as the final bounds using the
-        // "center crop" technique. This prevents undesirable stretching during the animation.
-        // Also calculate the start scaling factor (the end scaling factor is always 1.0).
-        float startScale;
-        if ((float) finalBounds.width() / finalBounds.height()
-                > (float) startBounds.width() / startBounds.height()) {
-            // Extend start bounds horizontally
-            startScale = (float) startBounds.height() / finalBounds.height();
-            float startWidth = startScale * finalBounds.width();
-            float deltaWidth = (startWidth - startBounds.width()) / 2;
-            startBounds.left -= deltaWidth;
-            startBounds.right += deltaWidth;
-        } else {
-            // Extend start bounds vertically
-            startScale = (float) startBounds.width() / finalBounds.width();
-            float startHeight = startScale * finalBounds.height();
-            float deltaHeight = (startHeight - startBounds.height()) / 2;
-            startBounds.top -= deltaHeight;
-            startBounds.bottom += deltaHeight;
-        }
-
-        // Hide the thumbnail and show the zoomed-in view. When the animation begins,
-        // it will position the zoomed-in view in the place of the thumbnail.
-        thumbView.setAlpha(0f);
-        scrollView.setVisibility(View.GONE);
-        toolbar.setVisibility(View.GONE);
-        expandedImageView.setVisibility(View.VISIBLE);
-
-        // Set the pivot point for SCALE_X and SCALE_Y transformations to the top-left corner of
-        // the zoomed-in view (the default is the center of the view).
-        expandedImageView.setPivotX(0f);
-        expandedImageView.setPivotY(0f);
-
-        // Construct and run the parallel animation of the four translation and scale properties
-        // (X, Y, SCALE_X, and SCALE_Y).
-        AnimatorSet set = new AnimatorSet();
-        set
-                .play(ObjectAnimator.ofFloat(expandedImageView, View.X, startBounds.left,
-                        finalBounds.left))
-                .with(ObjectAnimator.ofFloat(expandedImageView, View.Y, startBounds.top,
-                        finalBounds.top))
-                .with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_X, startScale, 1f))
-                .with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_Y, startScale, 1f));
-        set.setDuration(mShortAnimationDuration);
-        set.setInterpolator(new DecelerateInterpolator());
-        set.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mCurrentAnimator = null;
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                mCurrentAnimator = null;
-            }
-        });
-        set.start();
-        mCurrentAnimator = set;
-
-        // Upon clicking the zoomed-in image, it should zoom back down to the original bounds
-        // and show the thumbnail instead of the expanded image.
-        final float startScaleFinal = startScale;
-        expandedImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mCurrentAnimator != null) {
-                    mCurrentAnimator.cancel();
-                }
-
-                // Animate the four positioning/sizing properties in parallel, back to their
-                // original values.
-                AnimatorSet set = new AnimatorSet();
-                set
-                        .play(ObjectAnimator.ofFloat(expandedImageView, View.X, startBounds.left))
-                        .with(ObjectAnimator.ofFloat(expandedImageView, View.Y, startBounds.top))
-                        .with(ObjectAnimator
-                                .ofFloat(expandedImageView, View.SCALE_X, startScaleFinal))
-                        .with(ObjectAnimator
-                                .ofFloat(expandedImageView, View.SCALE_Y, startScaleFinal));
-                set.setDuration(mShortAnimationDuration);
-                set.setInterpolator(new DecelerateInterpolator());
-                set.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        thumbView.setAlpha(1f);
-                        toolbar.setVisibility(View.VISIBLE);
-                        expandedImageView.setVisibility(View.GONE);
-                        scrollView.setVisibility(View.VISIBLE);
-
-
-                        mCurrentAnimator = null;
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                        thumbView.setAlpha(1f);
-                        toolbar.setVisibility(View.VISIBLE);
-                        expandedImageView.setVisibility(View.GONE);
-                        scrollView.setVisibility(View.VISIBLE);
-
-                        mCurrentAnimator = null;
-                    }
-                });
-                set.start();
-                mCurrentAnimator = set;
-            }
-        });
     }
 }
