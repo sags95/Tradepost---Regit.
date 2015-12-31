@@ -19,9 +19,13 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.ksoap2.serialization.SoapObject;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
+import webservices.MainWebService;
 
 /**
  * Created by HenryChiang on 2015-12-28.
@@ -75,16 +79,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         final RadioButton rBtnLocScr = (RadioButton) dialogView.findViewById(R.id.radioButton_locService);
         final RadioButton rBtnPosCode = (RadioButton) dialogView.findViewById(R.id.radioButton_postalCode);
 
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Agree", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (rBtnLocScr.isChecked()) {
-                    Toast.makeText(getApplicationContext(), "Location Service", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                }else if (rBtnPosCode.isChecked()) {
-                    Toast.makeText(getApplicationContext(), "Postal Code", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                }
+                SoapObject soapObject =new SoapObject("http://webser/","setLogin");
+                soapObject.addProperty("userid",Constants.userid);
+               soapObject.addProperty("lat", String.format("%.2f", userdata.mylocation.latitude));
+
+
+                //object.addProperty("tags",tag);
+                soapObject.addProperty("longi", String.format("%.2f",userdata.mylocation.Longitude));
+                soapObject.addProperty("city",userdata.mylocation.city);
+                MainWebService.getMsg(soapObject,"http://73.37.238.238:8084/TDserverWeb/NewWebServi?wsdl","http://webser/NewWebServi/setLoginRequest");
             }
         });
 
@@ -130,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
         String cityName = addresses.get(0).getLocality();
         String stateName = addresses.get(0).getAdminArea();
-
+userdata.mylocation.city=cityName+","+stateName;
      //   customTextView.setText(cityName + "," + stateName);
        // AsyncTaskRunner runner = new AsyncTaskRunner();
         //runner.execute();
