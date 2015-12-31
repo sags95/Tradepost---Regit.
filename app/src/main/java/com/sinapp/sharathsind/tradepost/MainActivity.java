@@ -2,6 +2,10 @@ package com.sinapp.sharathsind.tradepost;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
@@ -15,10 +19,14 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 /**
  * Created by HenryChiang on 2015-12-28.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,6 +115,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onLocationChanged(Location location) {
+        userdata.mylocation=new UserLocation();
+        userdata.mylocation.Longitude=(float) location.getLongitude();
 
+        userdata.mylocation.latitude = (float) location.getLatitude();
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(userdata.mylocation.latitude, userdata.mylocation.Longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String cityName = addresses.get(0).getLocality();
+        String stateName = addresses.get(0).getAdminArea();
 
+     //   customTextView.setText(cityName + "," + stateName);
+       // AsyncTaskRunner runner = new AsyncTaskRunner();
+        //runner.execute();
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
 }

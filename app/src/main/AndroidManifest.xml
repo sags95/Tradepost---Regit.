@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sinapp.sharathsind.tradepost">
 
@@ -16,80 +17,68 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
-
-
     <application
-        android:allowBackup="true"
         android:name=".TradePost"
+        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
             android:name=".GCMService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
-
-
-
         <service
             android:name=".IDService"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
+
         <activity
-            android:name="com.sinapp.sharathsind.tradepost.LaunchActivity"
+            android:name=".LaunchActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
-            >
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="com.sinapp.sharathsind.tradepost.MainActivity"
+            android:name=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name="com.sinapp.sharathsind.tradepost.ListingProcessActivity"
+            android:name=".ListingProcessActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name="com.sinapp.sharathsind.tradepost.ListingProcessDoneActivity"
+            android:name=".ListingProcessDoneActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name="com.sinapp.sharathsind.tradepost.EditListingActivity"
+            android:name=".EditListingActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name="com.sinapp.sharathsind.tradepost.FirstTime"
+            android:name=".FirstTime"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name="com.sinapp.sharathsind.tradepost.SingleListingActivity"
+            android:name=".SingleListingActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".ItemActivity"
+            android:label="@string/title_activity_item"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

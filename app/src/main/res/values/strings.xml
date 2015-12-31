@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">TradePostBeta</string>
-
+    <string name="app_name">TradePost</string>
+    <string name="myItems_empty">You Do Not Have Any Item</string>
+    <string name="myItems_empty_btn">Post New Item</string>
 
     <!-- listing process -->
     <string name="section1_text">Name Your Item</string>
@@ -25,6 +26,8 @@
         <item>Video Games</item>
         <item>Misc</item>
     </string-array>
+    <string name="title_activity_item">ItemActivity</string>
+    <string name="action_settings">Settings</string>
 
 
 </resources>
