@@ -8,8 +8,11 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
@@ -39,6 +42,42 @@ Cursor c;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
         boolean b = doesDatabaseExist(new ContextWrapper(getBaseContext()), "tradepostdb.db");
+        final ImageView launchImg = (ImageView)findViewById(R.id.launch_img);
+        final Button testBtn = (Button)findViewById(R.id.launch_testBtn);
+        testBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
+            }
+        });
+
+        final Thread launchThread = new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    super.run();
+                    sleep(5000); //Delay of 10 seconds
+                    //If internet connection (Verify Model number)
+
+                } catch (InterruptedException e) {
+                    Log.d("thread", "is interrupted!" + e.toString());
+                } finally {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            launchImg.setVisibility(View.GONE);
+                            testBtn.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+                }
+            }
+        };
+
+        launchThread.start();
+
 
         if(b) {
           //  isDatabaseExist=true;
@@ -163,6 +202,7 @@ Cursor c;
 
         }else{
            // isDatabaseExist=false;
+
             try{
                 Constants.db=openOrCreateDatabase("tradepostdb.db",MODE_PRIVATE,null);
                 try {
@@ -223,14 +263,7 @@ Cursor c;
         }
 
 
-        Button testBtn = (Button)findViewById(R.id.launch_testBtn);
-        testBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                finish();
-            }
-        });
+
     }
     public static boolean doesDatabaseExist(ContextWrapper context, String dbName) {
         File dbFile = context.getDatabasePath(dbName);
