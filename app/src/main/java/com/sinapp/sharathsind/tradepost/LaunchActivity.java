@@ -41,16 +41,6 @@ Cursor c;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
-        boolean b = doesDatabaseExist(new ContextWrapper(getBaseContext()), "tradepostdb.db");
-        final ImageView launchImg = (ImageView)findViewById(R.id.launch_img);
-        final Button testBtn = (Button)findViewById(R.id.launch_testBtn);
-        testBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                finish();
-            }
-        });
 
         final Thread launchThread = new Thread() {
 
@@ -64,36 +54,32 @@ Cursor c;
                 } catch (InterruptedException e) {
                     Log.d("thread", "is interrupted!" + e.toString());
                 } finally {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            launchImg.setVisibility(View.GONE);
-                            testBtn.setVisibility(View.VISIBLE);
-                        }
-                    });
-
+                    isSaved(doesDatabaseExist(new ContextWrapper(getBaseContext()), "tradepostdb.db"));
                 }
             }
         };
 
         launchThread.start();
 
+    }
 
-        if(b) {
-          //  isDatabaseExist=true;
-            try{
-                Constants.db=openOrCreateDatabase("tradepostdb.db",MODE_PRIVATE,null);
-                c=Constants.db.rawQuery("select * from login",null);
+
+    private void isSaved(Boolean b){
+        if (b) {
+            //  isDatabaseExist=true;
+            try {
+                Constants.db = openOrCreateDatabase("tradepostdb.db", MODE_PRIVATE, null);
+                c = Constants.db.rawQuery("select * from login", null);
                 c.moveToFirst();
-                Constants.userid=c.getInt(c.getColumnIndex("userid"));
-                Variables.email=c.getString(c.getColumnIndex("email"));
-                Variables.username=c.getString(c.getColumnIndex("username"));
-                userdata.name=Variables.username;
-                userdata.userid=Constants.userid;
+                Constants.userid = c.getInt(c.getColumnIndex("userid"));
+                Variables.email = c.getString(c.getColumnIndex("email"));
+                Variables.username = c.getString(c.getColumnIndex("username"));
+                userdata.name = Variables.username;
+                userdata.userid = Constants.userid;
 
-                c=Constants.db.rawQuery("select * from gcm",null);
+                c = Constants.db.rawQuery("select * from gcm", null);
 
-                if(c.getCount()>0) {
+                if (c.getCount() > 0) {
                     c.moveToFirst();
                     Constants.GCM_Key = c.getString(0);
 
@@ -187,24 +173,42 @@ Cursor c;
                     }.execute(null, null, null);
 
                     //URL url = new URL("http://73.37.238.238:8084/TDserverWeb/images/"+Constants.userid+"/profile.png");
-                }
-                else {
+                } else {
 
                 }
                 //Variables.profilepic = Picasso.with(this).load(Uri.parse("http://73.37.238.238:8084/TDserverWeb/images/"+Constants.userid+"/profile.png")).get();
                 //Constants.username=c.getString(c.getColumnIndex("username"));
 
 
-            } catch(Exception e) {
-                String s=e.toString();
+            } catch (Exception e) {
+                String s = e.toString();
             }
 
 
-        }else{
-           // isDatabaseExist=false;
+        } else {
+            // isDatabaseExist=false;
 
-            try{
-                Constants.db=openOrCreateDatabase("tradepostdb.db",MODE_PRIVATE,null);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    final ImageView launchImg = (ImageView) findViewById(R.id.launch_img);
+                    final Button testBtn = (Button) findViewById(R.id.launch_testBtn);
+                    testBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            finish();
+                        }
+                    });
+                    testBtn.setVisibility(View.VISIBLE);
+                    launchImg.setVisibility(View.GONE);
+
+                }
+            });
+
+
+            try {
+                Constants.db = openOrCreateDatabase("tradepostdb.db", MODE_PRIVATE, null);
                 try {
                     try {
                         Constants.db.execSQL("Create table IF NOT EXISTS login (" +
@@ -217,54 +221,52 @@ Cursor c;
                                 "  userid int(10))");
 
 
-
-
-
                         Constants.db.execSQL("Create table IF NOT EXISTS GCM (gcmkey varchar)");
 
 
                         instanceID = InstanceID.getInstance(this);
 
                         try {
-                            new AsyncTask<String,String,String>()
-                            {
+                            new AsyncTask<String, String, String>() {
                                 @Override
                                 protected String doInBackground(String... params) {
                                     try {
                                         String token = instanceID.getToken("923650940708",
                                                 GoogleCloudMessaging.INSTANCE_ID_SCOPE);
                                         Constants.GCM_Key = token;
-                                        ContentValues cv=new ContentValues();
+                                        ContentValues cv = new ContentValues();
                                         cv.put("gcmkey", token);
                                         Constants.db.insert("GCM", null, cv);
 
-                                    } catch(Exception e) {
-                                        String s=e.toString();
+                                    } catch (Exception e) {
+                                        String s = e.toString();
                                     }
                                     return null;
                                 }
-                            }.execute(null,null,null);
+                            }.execute(null, null, null);
 
-                        } catch(Exception e) {
-                            String s=e.toString();
+                        } catch (Exception e) {
+                            String s = e.toString();
                         }
-                    } catch(Exception e) {
-                        String s=e.toString();
+                    } catch (Exception e) {
+                        String s = e.toString();
                     }
-                } catch(Exception e) {
-                    String s=e.toString();
+                } catch (Exception e) {
+                    String s = e.toString();
                 }
 
-            } catch(Exception e) {
-                String s=e.toString();
+            } catch (Exception e) {
+                String s = e.toString();
             }
 
 
         }
 
-
-
     }
+
+
+
+
     public static boolean doesDatabaseExist(ContextWrapper context, String dbName) {
         File dbFile = context.getDatabasePath(dbName);
         return dbFile.exists();
