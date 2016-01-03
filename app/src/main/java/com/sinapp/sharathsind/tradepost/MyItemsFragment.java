@@ -44,17 +44,6 @@ public class MyItemsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowCustomEnabled(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        LayoutInflater inflator = LayoutInflater.from(getActivity());
-        View v = inflator.inflate(R.layout.toolbar_custom_title, null);
-        TextView title1 = (TextView) v.findViewById(R.id.toolbar_title1);
-        TextView title2 = (TextView) v.findViewById(R.id.toolbar_title2);
-        title1.setText("My Items");
-        title2.setVisibility(View.GONE);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setCustomView(v);
-
-
     }
 
 
@@ -145,7 +134,7 @@ public class MyItemsFragment extends Fragment {
             return cal;                                  // return the date part
         }
 
-        public  String daysBetween(Date startDate) {
+        public String daysBetween(Date startDate) {
             Calendar sDate = getDatePart(startDate);
             Calendar eDate = getDatePart(new Date());
 
@@ -156,10 +145,10 @@ public class MyItemsFragment extends Fragment {
             }
 
             String daysOffset;
-            if((int)daysBetween==0){
+            if((int)daysBetween == 0){
                 daysOffset = "Today";
 
-            }else if((int)daysBetween==1){
+            }else if((int)daysBetween == 1){
                 daysOffset = (int)daysBetween + " day ago";
 
             }else{

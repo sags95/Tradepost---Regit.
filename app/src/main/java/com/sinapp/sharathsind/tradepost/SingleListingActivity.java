@@ -46,8 +46,6 @@ public class SingleListingActivity extends AppCompatActivity {
     private CustomPagerAdapter mCustomPagerAdapter;
     private ViewPager mViewPager;
     private List<ImageView> dots;
-    private Toolbar toolbar;
-
 
     private FloatingActionButton offerFab;
     private CustomTextView itemTitle,itemDescription,itemCondition,itemDateAdded,itemUsername,itemDistance;
@@ -243,17 +241,9 @@ public class SingleListingActivity extends AppCompatActivity {
         //mCustomPagerAdapter = new CustomPagerAdapter(this,m.image);
 
         //setup actionbar
-        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Item");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View v = inflater.inflate(R.layout.toolbar_custom_title, null);
-        TextView title1 = (TextView) v.findViewById(R.id.toolbar_title1);
-        TextView title2 = (TextView) v.findViewById(R.id.toolbar_title2);
-        title1.setText("Item Details");
-        title2.setVisibility(View.GONE);
-        getSupportActionBar().setCustomView(v);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

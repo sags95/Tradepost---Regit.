@@ -88,7 +88,7 @@
 
         </activity>
         <activity
-            android:name=".ItemActivity"
+            android:name=".MyItemActivity"
             android:label="@string/title_activity_item"
             android:theme="@style/AppTheme.NoActionBar">
 
