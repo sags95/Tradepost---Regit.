@@ -127,7 +127,7 @@ public class ListingProcessActivity extends AppCompatActivity {
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Welcome Back Sample User!");
+        toolbar.setTitle("Add Your Item");
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

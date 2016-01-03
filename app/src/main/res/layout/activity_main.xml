@@ -45,7 +45,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/sample_img3"
+                    android:src="@drawable/community_logo"
                     android:scaleType="fitXY"
                     android:adjustViewBounds="true"
                     android:layout_weight="9"
@@ -149,7 +149,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/sample_img3"
+                    android:src="@drawable/item_logo"
                     android:scaleType="fitXY"
                     android:adjustViewBounds="true"
                     android:layout_weight="9"
