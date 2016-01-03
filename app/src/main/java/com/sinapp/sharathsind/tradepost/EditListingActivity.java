@@ -140,7 +140,7 @@ cursor.close();
         //toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Edit Your Item");
-        toolbar.setTitleTextColor(getResources().getColor(R.color.ColorPrimary));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.colorPrimary));
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

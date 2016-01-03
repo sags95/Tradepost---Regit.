@@ -12,15 +12,15 @@ public class Constants {
     public static String GCM_Key,username;
     public static int userid;
     public static SQLiteDatabase db;
-    private void shareTextUrl(Activity a) {
+    public void shareTextUrl(Activity a) {
         Intent share = new Intent(android.content.Intent.ACTION_SEND);
         share.setType("text/plain");
         share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
 
         // Add data to the intent, the receiving app will decide
         // what to do with it.
-        share.putExtra(Intent.EXTRA_SUBJECT, "Title Of The Post");
-        share.putExtra(Intent.EXTRA_TEXT, "https://72.37.238.238:8084/TDserverWeb");
+        share.putExtra(Intent.EXTRA_SUBJECT, "Check out Tradepost! It lets you trade anything locally.");
+        share.putExtra(Intent.EXTRA_TEXT, "http://73.37.238.238:8084/TDserverWeb");
 
        a. startActivity(Intent.createChooser(share, "Share link!"));
     }

@@ -185,6 +185,9 @@ public class FbFragment extends Fragment {
                         });
 
 
+                Bundle parameters = new Bundle();
+                parameters.putString("fields","email,name,id");
+                request.setParameters(parameters);
                 request.executeAsync();
 
             }

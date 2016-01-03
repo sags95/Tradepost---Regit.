@@ -472,7 +472,7 @@ public class SingleListingActivity extends AppCompatActivity {
 
         CustomTextView newTag = new CustomTextView(getApplicationContext());
         newTag.setText(tag.toUpperCase());
-        newTag.setTextColor(getResources().getColor(R.color.white));
+        newTag.setTextColor(getResources().getColor(android.R.color.white));
         newTag.setClickable(true);
         newTag.settingOpenSansLight();
         newTag.setBackgroundResource(R.drawable.tag_btn_shape);

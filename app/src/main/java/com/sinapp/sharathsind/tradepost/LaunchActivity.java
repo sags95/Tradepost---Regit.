@@ -34,7 +34,8 @@ import webservices.MainWebService;
  * Created by HenryChiang on 2015-12-28.
  */
 public class LaunchActivity extends AppCompatActivity {
-Cursor c;
+
+    Cursor c;
     private InstanceID instanceID;
 
     @Override
@@ -54,7 +55,13 @@ Cursor c;
                 } catch (InterruptedException e) {
                     Log.d("thread", "is interrupted!" + e.toString());
                 } finally {
-                    isSaved(doesDatabaseExist(new ContextWrapper(getBaseContext()), "tradepostdb.db"));
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            isSaved(doesDatabaseExist(new ContextWrapper(getBaseContext()), "tradepostdb.db"));
+
+                        }
+                    });
                 }
             }
         };
@@ -71,12 +78,16 @@ Cursor c;
                 Constants.db = openOrCreateDatabase("tradepostdb.db", MODE_PRIVATE, null);
                 c = Constants.db.rawQuery("select * from login", null);
                 c.moveToFirst();
-                Constants.userid = c.getInt(c.getColumnIndex("userid"));
-                Variables.email = c.getString(c.getColumnIndex("email"));
-                Variables.username = c.getString(c.getColumnIndex("username"));
-                userdata.name = Variables.username;
-                userdata.userid = Constants.userid;
-
+                if(c.getCount()>0) {
+                    Constants.userid = c.getInt(c.getColumnIndex("userid"));
+                    Variables.email = c.getString(c.getColumnIndex("email"));
+                    Variables.username = c.getString(c.getColumnIndex("username"));
+                    userdata.name = Variables.username;
+                    userdata.userid = Constants.userid;
+                }
+                else{
+                    startActivity(new Intent(LaunchActivity.this,FirstTime.class));
+                }
                 c = Constants.db.rawQuery("select * from gcm", null);
 
                 if (c.getCount() > 0) {
@@ -130,6 +141,7 @@ Cursor c;
                     //URL url = new URL("http://73.37.238.238:8084/TDserverWeb/images/"+Constants.userid+"/profile.png");
                 } else {
 
+                startActivity(new Intent(LaunchActivity.this,FirstTime.class));
                 }
                 //Variables.profilepic = Picasso.with(this).load(Uri.parse("http://73.37.238.238:8084/TDserverWeb/images/"+Constants.userid+"/profile.png")).get();
                 //Constants.username=c.getString(c.getColumnIndex("username"));
@@ -151,7 +163,7 @@ Cursor c;
                     testBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            startActivity(new Intent(getApplicationContext(), FirstTime.class));
                             finish();
                         }
                     });

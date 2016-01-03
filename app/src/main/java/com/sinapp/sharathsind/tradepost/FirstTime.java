@@ -82,7 +82,7 @@ public class FirstTime extends FragmentActivity implements OnClickListener,
 
 
     public void start() {
-    //    startActivity(new Intent(FirstTime.this, NavigationDrawer.class));
+       startActivity(new Intent(FirstTime.this, MainActivity.class));
         finish();
     }
 

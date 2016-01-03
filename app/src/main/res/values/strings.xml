@@ -3,6 +3,9 @@
     <string name="myItems_empty">You Do Not Have Any Item</string>
     <string name="myItems_empty_btn">Post New Item</string>
 
+    <string name="app_id">766732026780315</string>
+
+
     <!-- listing process -->
     <string name="section1_text">Name Your Item</string>
     <string name="section2_text">Upload a Photo</string>

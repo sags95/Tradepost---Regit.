@@ -132,7 +132,7 @@
             android:layout_height="wrap_content"
             android:text="CONDITION"
             android:textSize="10sp"
-            android:textColor="@color/white"
+            android:textColor="@android:color/white"
             android:background="@drawable/condition_background"
             android:layout_marginTop="8dp"
             android:layout_marginRight="8dp"

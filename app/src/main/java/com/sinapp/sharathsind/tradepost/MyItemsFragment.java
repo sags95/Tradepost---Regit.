@@ -2,6 +2,7 @@ package com.sinapp.sharathsind.tradepost;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -53,23 +54,38 @@ public class MyItemsFragment extends Fragment {
         emptyView = rootView.findViewById(R.id.myItems_emptyView);
         mRecyclerView = (EmptyRecyclerView)rootView.findViewById(R.id.myItems_recyclerview);
 
-        userdata.i=new ArrayList<>();
-        ArrayList<Integer> i1= ItemWebService.getItems(Constants.userid);
-        for(Integer i:i1)
-        userdata.i.add(ItemWebService.getItem(i));
 
-        if(userdata.i!=null) {
-            for (int i = 0; i < userdata.i.size(); i++) {
-                MyItems myItem = new MyItems(userdata.i.get(i).item.getItemname(), userdata.i.get(i).item.getItemid(), userdata.userid);
-                myItems.add(myItem);
+        new AsyncTask<String,String,String>(){
+
+            @Override
+            protected String doInBackground(String... params) {
+                userdata.i=new ArrayList<>();
+                ArrayList<Integer> i1= ItemWebService.getItems(Constants.userid);
+                for(Integer i:i1)
+                    userdata.i.add(ItemWebService.getItem(i));
+
+                if(userdata.i!=null) {
+                    for (int i = 0; i < userdata.i.size(); i++) {
+                        MyItems myItem = new MyItems(userdata.i.get(i).item.getItemname(), userdata.i.get(i).item.getItemid(), userdata.userid);
+                        myItems.add(myItem);
+                    }
+                }else{
+                    myItems = null;
+                }
+
+                return null;
             }
-        }else{
-            myItems = null;
-        }
+
+            @Override
+            protected void onPostExecute(String s) {
+                myItemsAdapter = new MyItemsAdapter(getActivity().getApplicationContext(),myItems,myItemClickListener);
+                mRecyclerView.setAdapter(myItemsAdapter);
+            }
+        }.execute();
 
         //SwipeToRefresh
         mSwipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.myItems_swipe_refresh_layout);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.ColorPrimary);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -95,8 +111,6 @@ public class MyItemsFragment extends Fragment {
         });
 
 
-
-        myItemsAdapter = new MyItemsAdapter(getActivity().getApplicationContext(),myItems,myItemClickListener);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setSwipeRefreshLayout(mSwipeRefreshLayout);
@@ -110,7 +124,7 @@ public class MyItemsFragment extends Fragment {
                 })
         );
 
-        mRecyclerView.setAdapter(myItemsAdapter);
+
         applyLinearLayoutManager();
 
 

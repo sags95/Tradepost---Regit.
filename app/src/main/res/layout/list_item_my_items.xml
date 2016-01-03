@@ -5,7 +5,7 @@
     android:id="@+id/profile_feedback_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardBackgroundColor="@color/white"
+    card_view:cardBackgroundColor="@android:color/white"
     card_view:cardCornerRadius="0dp"
     card_view:cardUseCompatPadding="false"
     card_view:cardElevation="0dp"
