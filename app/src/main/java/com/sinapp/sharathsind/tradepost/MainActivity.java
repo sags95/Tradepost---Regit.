@@ -2,6 +2,7 @@ package com.sinapp.sharathsind.tradepost;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
 
 import java.io.IOException;
 import java.util.List;
@@ -82,19 +84,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         builder.setPositiveButton("Agree", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                SoapObject soapObject =new SoapObject("http://webser/","setLogin");
-                soapObject.addProperty("userid",Constants.userid);
-               soapObject.addProperty("lat", String.format("%.2f", userdata.mylocation.latitude));
 
+                SoapObject soapObject = new SoapObject("http://webser/", "setLogin");
+                soapObject.addProperty("userid", Constants.userid);
+                soapObject.addProperty("lat", String.format("%.2f", userdata.mylocation.latitude));
 
+                SharedPreferences.Editor editor = MainActivity.this.getSharedPreferences("loctradepost", MainActivity.this.MODE_PRIVATE).edit();
+                //editor.putInt("rad", radius);
+                editor.putFloat("lat", userdata.mylocation.latitude);
+                editor.putFloat("long", userdata.mylocation.Longitude);
+                editor.putString("city",userdata.mylocation.city);
+                editor.commit();
                 //object.addProperty("tags",tag);
-                soapObject.addProperty("longi", String.format("%.2f",userdata.mylocation.Longitude));
-                soapObject.addProperty("city",userdata.mylocation.city);
-                MainWebService.getMsg(soapObject,"http://73.37.238.238:8084/TDserverWeb/NewWebServi?wsdl","http://webser/NewWebServi/setLoginRequest");
+                soapObject.addProperty("longi", String.format("%.2f", userdata.mylocation.Longitude));
+                soapObject.addProperty("city", userdata.mylocation.city);
+                SoapPrimitive msg = MainWebService.getMsg(soapObject, "http://73.37.238.238:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
             }
         });
 
-        builder.setNegativeButton("Cancel", null);
+//        builder.setNegativeButton("Cancel", null);
         builder.setView(getLayoutInflater().inflate(dialogLayout, null, false));
 
         AlertDialog dialog = builder.create();

@@ -10,6 +10,10 @@ import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
+import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
+
+import webservices.MainWebService;
 
 
 /**
@@ -79,6 +83,15 @@ public class Permission implements  ActivityCompat.OnRequestPermissionsResultCal
                         editor.putFloat("lat", userdata.mylocation.latitude);
                         editor.putFloat("long",userdata. mylocation.Longitude);
                         editor.commit();
+                        SoapObject soapObject =new SoapObject("http://webser/","setLogin");
+                        soapObject.addProperty("userid",Constants.userid);
+                        soapObject.addProperty("lat", String.format("%.2f", userdata.mylocation.latitude));
+
+
+                        //object.addProperty("tags",tag);
+                        soapObject.addProperty("longi", String.format("%.2f", userdata.mylocation.Longitude));
+                        soapObject.addProperty("city", userdata.mylocation.city);
+                        SoapPrimitive msg= MainWebService.getMsg(soapObject, "http://73.37.238.238:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
 
 
 

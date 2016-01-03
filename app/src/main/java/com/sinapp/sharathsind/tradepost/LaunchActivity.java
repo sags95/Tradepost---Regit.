@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -112,60 +113,15 @@ Cursor c;
 
                         @Override
                         protected String doInBackground(String... params) {
-                            SoapObject object = new SoapObject("http://webser/", "getuseritems");
-                            //SoapObject object = new SoapObject("http://webser/", "getuseritems");
-                            object.addProperty("userid", userdata.userid);
-                            Vector object1 = MainWebService.getMsg1(object, "http://73.37.238.238:8084/TDserverWeb/Search?wsdl", "http://webser/Search/getuseritemsRequest");
-                            userdata.items = new ArrayList<Integer>();
-
-
-                            if (object1 != null) {
-                                for (Object i : object1) {
-                                    userdata.items.add(Integer.parseInt(((SoapPrimitive) i).getValue().toString()));
-                                }
-                            }
-                            userdata.i = new ArrayList<ItemResult>();
-
-                            for (int i : userdata.items) {
-
-                                SoapObject obje = new SoapObject("http://webser/", "getItembyId");
-                                obje.addProperty("itemid", i);
-                                KvmSerializable result1 = MainWebService.getMsg2(obje, "http://73.37.238.238:8084/TDserverWeb/GetItems?wsdl"
-                                        , "http://webser/GetItems/getItembyIdRequest");
-
-                                ItemResult ir = new ItemResult();
-                                ir.item = new Item();
-
-                                SoapObject object12 = (SoapObject) result1.getProperty(0);
-                                //for(int u=0;u<object.getPropertyCount())
-                                ir.item.set(object12);
-                                //SoapObject o7=(SoapObject)result1;
-                                //Object j=       o.getProperty("images");
-                                int i1 = result1.getPropertyCount();
-                                ir.images = new String[i1 - 1];
-
-                                for (int u1 = 1; u1 < i1; u1++) {
-                                    ir.images[u1 - 1] = result1.getProperty(u1).toString();
-
-                                }
-                                obje = new SoapObject("http://webser/", "searchbyint");
-                                obje.addProperty("name", i);
-                                Vector result2 = MainWebService.getMsg1(obje, "http://73.37.238.238:8084/TDserverWeb/NewWebService?wsdl"
-                                        , "http://webser/NewWebService/searchbyintRequest");
-                                if (result2 != null) {
-
-                                    int index = 0;
-                                    ir.tags = new String[result2.size()];
-
-                                    for (Object o : result2) {
-                                        ir.tags[index] = ((SoapPrimitive) o).getValue().toString();
-                                        index++;
-
-                                    }
-                                }
-
-                                userdata.i.add(ir);
-
+                            SharedPreferences prefs =LaunchActivity.this.getSharedPreferences("loctradepost", LaunchActivity.MODE_PRIVATE);
+                         float restoredText = prefs.getFloat("lat", 0);
+                          float restoredText1 = prefs.getFloat("long", 0);
+                            String restoredText2 = prefs.getString("city", null);
+                            if(restoredText2!=null) {
+                                userdata.mylocation = new UserLocation();
+                                userdata.mylocation.city=restoredText2;
+                                userdata.mylocation.latitude=restoredText;
+                                userdata.mylocation.Longitude=restoredText1;
                             }
                             return null;
                         }
