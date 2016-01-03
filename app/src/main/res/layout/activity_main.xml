@@ -45,7 +45,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/sample_img3"
+                    android:src="@drawable/community_logo"
                     android:scaleType="fitXY"
                     android:adjustViewBounds="true"
                     android:layout_weight="9"
@@ -71,7 +71,7 @@
                         style="@style/OpenSansRegular"
                         />
 
-                    <TextView
+                    <CustomWidget.CustomTextView
                         android:id="@+id/community_subTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -81,9 +81,11 @@
                         android:paddingTop="4dp"
                         android:paddingRight="16dp"
                         android:paddingLeft="16dp"
+                        style="@style/OpenSansLight"
+
                         />
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <CustomWidget.CustomTextView
                         android:id="@+id/community_setBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -96,9 +98,10 @@
                         android:textSize="14sp"
                         android:paddingRight="16dp"
                         android:paddingLeft="16dp"
+                        style="@style/OpenSansSemiBold"
                         />
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <CustomWidget.CustomTextView
                         android:id="@+id/community_viewBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -113,6 +116,7 @@
                         android:paddingRight="16dp"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
+                        style="@style/OpenSansSemiBold"
                         />
 
 
@@ -145,7 +149,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/sample_img3"
+                    android:src="@drawable/item_logo"
                     android:scaleType="fitXY"
                     android:adjustViewBounds="true"
                     android:layout_weight="9"
@@ -157,7 +161,7 @@
                     android:layout_weight="12"
                     >
 
-                    <TextView
+                    <CustomWidget.CustomTextView
                         android:id="@+id/add_item_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -168,9 +172,10 @@
                         android:paddingRight="16dp"
                         android:paddingLeft="16dp"
                         android:layout_alignParentTop="true"
+                        style="@style/OpenSansRegular"
                         />
 
-                    <TextView
+                    <CustomWidget.CustomTextView
                         android:id="@+id/add_item_subTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -179,9 +184,11 @@
                         android:layout_below="@+id/add_item_title"
                         android:paddingRight="16dp"
                         android:paddingLeft="16dp"
+                        style="@style/OpenSansLight"
+
                         />
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <CustomWidget.CustomTextView
                         android:id="@+id/add_item_addBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -195,9 +202,11 @@
                         android:paddingRight="16dp"
                         android:paddingLeft="16dp"
                         android:background="@null"
+                        style="@style/OpenSansSemiBold"
+
                         />
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <CustomWidget.CustomTextView
                         android:id="@+id/add_item_viewBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -212,6 +221,8 @@
                         android:paddingRight="16dp"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
+                        style="@style/OpenSansSemiBold"
+
                         />
 
 

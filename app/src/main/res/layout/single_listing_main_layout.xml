@@ -44,7 +44,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="24dp"
-                android:background="@color/grey_trans"
+                android:background="@color/colorBackgroundGray"
 
                 />
 
@@ -58,12 +58,12 @@
             android:layout_height="match_parent"
             android:id="@+id/single_listing_other_layout"
             android:layout_below="@+id/single_listing_img_layout"
-            android:background="@color/color_background_gray"
+            android:background="@color/colorBackgroundGray"
             android:paddingRight="16dp"
             android:paddingLeft="16dp"
             >
 
-            <Model.CustomTextView
+            <CustomWidget.CustomTextView
 
                 android:id="@+id/single_listing_text"
                 android:layout_width="wrap_content"
@@ -71,7 +71,7 @@
                 android:text="I am looking for: "
                 android:layout_marginTop="16dp"
                 android:textSize="14sp"
-                android:textColor="@color/text_color_dark"
+                android:textColor="@color/textColorDark"
                 style="@style/OpenSansRegular"
 
 
@@ -93,7 +93,7 @@
 
             </org.apmem.tools.layouts.FlowLayout>
 
-            <Model.CustomTextView
+            <CustomWidget.CustomTextView
                 android:id="@+id/single_listing_des_text"
                 android:layout_below="@+id/single_listing_tags"
                 android:layout_width="match_parent"
@@ -102,15 +102,14 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp"
                 android:textSize="14sp"
-                android:textColor="@color/text_color_dark"
+                android:textColor="@color/textColorDark"
                 style="@style/OpenSansRegular"
                 />
 
-            <Model.CustomTextView
+            <CustomWidget.CustomTextView
                 android:id="@+id/single_listing_des_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/chatpage_empty_detail"
                 android:layout_below="@+id/single_listing_des_text"
                 android:background="@drawable/round_white_background"
                 android:padding="16dp"
@@ -121,13 +120,13 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="16dp"
-                android:background="@color/color_background_gray"
+                android:background="@color/colorBackgroundGray"
                 android:layout_below="@+id/single_listing_des_input"
                 />
 
         </RelativeLayout>
 
-        <Model.CustomTextView
+        <CustomWidget.CustomTextView
             android:id="@+id/single_listing_item_condition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -160,18 +159,19 @@
 
     </RelativeLayout>
 
+   <android.support.design.widget.FloatingActionButton
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:clickable="true"
-        android:src="@drawable/fab_offers"
-        android:scaleType="center"
-        app:backgroundTint="@color/fab_primaryColor"
-        app:layout_anchor="@id/single_listing_img_layout"
-        app:layout_anchorGravity="bottom|right|end"/>
+       android:id="@+id/fab"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_margin="16dp"
+       android:clickable="true"
+       android:scaleType="center"
+       app:backgroundTint="@color/fab_primaryColor"
+       app:layout_anchor="@id/single_listing_img_layout"
+       app:layout_anchorGravity="bottom|right|end"/>
+
+
 
 
 
