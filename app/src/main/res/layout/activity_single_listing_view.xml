@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_background_gray"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/toolbar_default">
+    </include>
+
+
+    <include
+        layout="@layout/single_listing_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/single_listing_header"
+        android:layout_below="@+id/tool_bar"
+        />
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/single_listing_scroll"
+        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/single_listing_header"
+        >
+
+
+
+            <!--
+            <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/single_listing_img_layout"
+                >
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    >
+                </android.support.v4.view.ViewPager>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dots"
+                    android:layout_alignBottom="@+id/pager"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:paddingBottom="4dp"
+
+                    />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/single_listing_other_layout"
+                android:layout_below="@+id/single_listing_img_layout"
+                android:background="@color/lightgrey"
+                android:paddingRight="16dp"
+                android:paddingLeft="16dp"
+                >
+                <Model.CustomTextView
+                    android:id="@+id/single_listing_item_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="20dp"
+                    android:textSize="18sp"
+                    style="@style/TextViewRegular"
+
+                    />
+
+                <Model.CustomTextView
+                    android:layout_below="@+id/single_listing_item_title"
+                    android:id="@+id/single_listing_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LOOKING FOR"
+                    android:layout_marginBottom="8dp"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    style="@style/TextViewRegular"
+
+
+                    />
+
+                <LinearLayout
+                    android:id="@+id/single_listing_tags"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp"
+                    android:layout_below="@+id/single_listing_text"
+
+                    >
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tag1"/>
+
+                </LinearLayout>
+
+                <Model.CustomTextView
+                    android:id="@+id/single_listing_des_text"
+                    android:layout_below="@+id/single_listing_tags"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Description"
+                    android:background="@color/white"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:textStyle="bold"
+                    style="@style/TextViewSemiBold"
+
+                    />
+
+                <Model.CustomTextView
+                    android:id="@+id/single_listing_des_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:text="Sample Description"
+                    android:layout_below="@+id/single_listing_des_text"
+                    android:background="@color/white"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    style="@style/TextViewRegular"
+
+                    />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_below="@+id/single_listing_des_input"
+                    />
+
+            </RelativeLayout>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/offer_fab2"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:src="@drawable/fab_plus_icon"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="16dp"
+                app:backgroundTint="@color/ColorPrimary"
+                app:borderWidth="0dp"
+                />
+
+
+            <Model.CustomTextView
+                android:id="@+id/single_listing_itemCondition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="condition"
+                android:textColor="@color/white"
+                android:background="@drawable/tag_btn_shape"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="4dp"
+                android:layout_alignTop="@+id/single_listing_img_layout"
+                android:layout_toLeftOf="@+id/single_listing_itemDistance"
+                style="@style/TextViewLight"
+                />
+
+            <Model.CustomTextView
+                android:id="@+id/single_listing_itemDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2km"
+                android:textColor="@color/white"
+                android:background="@drawable/tag_btn_shape"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_alignRight="@+id/single_listing_img_layout"
+                android:layout_alignTop="@+id/single_listing_img_layout"
+                style="@style/TextViewLight"
+
+
+                />
+
+        </RelativeLayout>
+        -->
+
+        <include
+            android:id="@+id/single_listing_main_layout"
+            layout="@layout/single_listing_main_layout">
+        </include>
+
+
+
+    </ScrollView>
+
+
+
+</RelativeLayout>

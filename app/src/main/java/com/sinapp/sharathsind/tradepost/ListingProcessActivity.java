@@ -24,9 +24,11 @@ import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -122,7 +124,6 @@ public class ListingProcessActivity extends AppCompatActivity {
         Permission permission = new Permission(this, null);
         if (permission.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || permission.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
         {
-            permission.askPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
 
         }
 
@@ -593,25 +594,37 @@ public class ListingProcessActivity extends AppCompatActivity {
     public View.OnClickListener camBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            File photo=null;
-            try {
-                // place where to store camera taken picture
-                photo = createTemporaryFile("temp", ".jpg");
-                photo.delete();
-            } catch (Exception e) {
-                Log.v("camera", "Can't create file to take picture!");
-                Toast.makeText(getApplicationContext(), "Please check SD card! Image shot is impossible!", Toast.LENGTH_SHORT);
-            }
-            mImageUri = Uri.fromFile(photo);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-            //start camera intent
 
-            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(takePictureIntent, requestCodeCam);
-            }
+            Permission per = new Permission(ListingProcessActivity.this, null);
+            if (per.isPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE) == 0 && per.isPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE) == 0) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                File photo = null;
+                try {
+                    // place where to store camera taken picture
+                    photo = createTemporaryFile("temp", ".jpg");
+                    photo.delete();
+                } catch (Exception e) {
+                    Log.v("camera", "Can't create file to take picture!");
+                    Toast.makeText(getApplicationContext(), "Please check SD card! Image shot is impossible!", Toast.LENGTH_SHORT);
+                }
+                mImageUri = Uri.fromFile(photo);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+                //start camera intent
 
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, requestCodeCam);
+                }
+            } else if (per.isPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE) == 1 && per.isPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE) == 1) {
+per.askPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+
+            }
+            else{
+
+
+            }
         }
+
+
     };
 
     private File createTemporaryFile(String part, String ext) throws Exception

@@ -25,6 +25,22 @@ public class Permission implements  ActivityCompat.OnRequestPermissionsResultCal
     context=c;
     locationManager=l;
     }
+    public  int isPermissionDenied(String permision) {
+        int i = 0;
+        boolean b = false;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            b = this.context.shouldShowRequestPermissionRationale(permision);
+        } else
+            return 0;
+        if (checkPermission(permision) == PackageManager.PERMISSION_GRANTED)
+            return 0;
+
+        if (!b)
+            return 2;
+        else return 1;
+
+
+    }
 
 
 
@@ -70,6 +86,7 @@ public class Permission implements  ActivityCompat.OnRequestPermissionsResultCal
 
                 }
                 else{
+
 
                 }
 

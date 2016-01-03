@@ -35,10 +35,9 @@ import java.util.List;
 
 import CustomWidget.CustomPagerAdapter;
 import CustomWidget.CustomTextView;
-import Model.MarketPlaceData;
-import Model.MarketPlaceStaggeredAdapter;
+
 import de.hdodenhof.circleimageview.CircleImageView;
-import webservices.FavouriteWebService;
+
 
 /**
  * Created by HenryChiang on 15-06-06.
@@ -59,7 +58,7 @@ public class SingleListingActivity extends AppCompatActivity {
 
 
     private RelativeLayout singleListingHeader;
-    MarketPlaceData m;
+
 
     private boolean isSelfItem = false;
     private String[] itemTagsToEdit=null;
@@ -72,27 +71,11 @@ public class SingleListingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_listing_view);
         View includeView = (View)findViewById(R.id.single_listing_main_layout);
-        GCMService.b=true;
+       // GCMService.b=true;
 
         //single listing header
         singleListingHeader= (RelativeLayout)findViewById(R.id.single_listing_header);
-        singleListingHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
-                ArrayList<String> itemProfileClicked = new ArrayList<>();
-                itemProfileClicked.add(0, String.valueOf(m.item.item.getUserid()));
-                itemProfileClicked.add(1, m.proUsername);
-                i.putStringArrayListExtra("itemProfileClicked", itemProfileClicked);
 
-                //
-                i.putExtra("caller","SingleListingActivity");
-                Bitmap b = ((BitmapDrawable)proPic.getDrawable()).getBitmap();
-                i.putExtra("profilePic", b);
-
-                startActivity(i);
-            }
-        });
 
         //item information
         proPic = (CircleImageView)singleListingHeader.findViewById(R.id.single_listing_header_userImg);
@@ -104,12 +87,7 @@ public class SingleListingActivity extends AppCompatActivity {
         itemUsername = (CustomTextView)singleListingHeader.findViewById(R.id.single_listing_header_username);
         itemDistance = (CustomTextView)singleListingHeader.findViewById(R.id.single_listing_header_distance);
 
-        favouriteItemStatus = (ImageView) includeView.findViewById(R.id.single_listing_fav_btn);
-        favouriteItemStatus.setOnClickListener(addedTofavourite);
-        //floating action button
-        //offerFab = (FloatingActionButton)findViewById(R.id.offer_fab2);
-        offerFab = (FloatingActionButton)includeView.findViewById(R.id.fab);
-        offerFab.setOnClickListener(offerFabOnClickListener);
+
 
 
         Intent i = getIntent();
@@ -162,61 +140,6 @@ public class SingleListingActivity extends AppCompatActivity {
             isSelfItem=true;
 
 
-
-        }else {
-            ArrayList<String> itemDetails = i.getStringArrayListExtra("itemClicked");
-            m = MarketPlaceStaggeredAdapter.mData.get(Integer.parseInt(itemDetails.get(0)));
-            Bitmap proPicReceived = i.getParcelableExtra("profilePic");
-            //item userPic
-            proPic.setImageBitmap(proPicReceived);
-            //item title
-            itemTitle.setText(m.item.item.getItemname());
-            itemId=m.item.item.getItemid().toString();
-            //item description
-            itemDescription.setText(m.item.item.getDescription());
-            //item condition
-            itemCondition.setText(setCondition(m.item.item.getCon()));
-            //item dateAdded
-            itemDateAdded.setText(MarketPlaceStaggeredAdapter.daysBetween(m.item.item.getDateadded()));
-            //item username
-            itemUsername.setText(m.item.username);
-            //item distance
-            itemDistance.setText(String.valueOf(roundedDistance(distance(m.item.item.getLatitude().doubleValue(), m.item.item.getLongtitude().doubleValue(), userdata.mylocation.latitude, userdata.mylocation.Longitude, 'K'))));
-
-            // favourite status
-            if(m.isFav) {
-                favouriteItemStatus.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_favorite_selected));
-            }else{
-                favouriteItemStatus.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_favorite_not_selected));
-            }
-            //item tags
-            for (String tempTag : m.item.tags) {
-                tagsLayout.addView(addTagsSingleListing(tempTag));
-
-            }
-
-            if(m.item.item.getUserid()== Constants.userid){
-
-
-                //item distance
-                offerFab.setVisibility(View.GONE);
-                isSelfItem=true;
-
-                //For EditActivity
-                itemTagsToEdit = new String[m.item.tags.length];
-                itemTagsToEdit=m.item.tags;
-                itemCatToEdit = m.item.item.getCategory();
-            }else{
-
-                //item distance
-                offerFab.setVisibility(View.VISIBLE);
-                isSelfItem=false;
-            }
-
-            imageResources = new String[m.image.length];
-            mCustomPagerAdapter = new CustomPagerAdapter(this,m.image);
-            mViewPager = (ViewPager) findViewById(R.id.pager);
-            mViewPager.setAdapter(mCustomPagerAdapter);
 
         }
 
@@ -285,32 +208,30 @@ public class SingleListingActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        GCMService.b=true;
+        //GCMService.b=true;
     }
 
     @Override
     protected void onResume() {
 
         super.onResume();
-        GCMService.b=true;
-    }
+  }
 
     @Override
     protected void onRestart() {
-        super.onRestart();
-        GCMService.b=true;
+        super.onRestart();//GCMService.b=true;
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        GCMService.b=false;
+       // GCMService.b=false;
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        GCMService.b=false;
+     //   GCMService.b=false;
     }
 
     @Override
@@ -390,69 +311,6 @@ public class SingleListingActivity extends AppCompatActivity {
         }
     }
 
-    public View.OnClickListener offerFabOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Intent intent = new Intent(getApplicationContext(), OfferProcessActivity.class);
-            Intent i = getIntent();
-            ArrayList<String> itemDetails = i.getStringArrayListExtra("itemClicked");
-            ArrayList<String> items = new ArrayList<String>();
-            items.add(0,String.valueOf(m.item.item.getItemid()));
-            items.add(1,String.valueOf(m.item.item.getItemname()));
-            items.add(2,String.valueOf(m.item.item.getUserid()));
-            intent.putStringArrayListExtra("itemToOfferProcess", items);
-            startActivity(intent);
-
-        }
-    };
-
-    public View.OnClickListener addedTofavourite = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if(m.isFav) {
-                //   view.setEnabled(false);
-                new AsyncTask<Void,Void,Void>()
-                {
-                    @Override
-                    protected void onPostExecute(Void aVoid) {
-
-                        super.onPostExecute(aVoid);
-                        m.isFav=false;
-                        favouriteItemStatus.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_favorite_not_selected));
-
-                    }
-
-                    @Override
-                    protected Void doInBackground(Void... params) {
-                        Cursor c= Constants.db.rawQuery("select * from fav where itemid="+m.item.item.getItemid(),null);
-                        c.moveToFirst();
-                        FavouriteWebService.removefavouInts(c.getInt(c.getColumnIndex("id")));
-                        c.close();
-                        return null;
-                    }
-                }.execute(null,null);
-            }
-            else {
-                //     view.setEnabled(false);
-
-                new AsyncTask<Void,Void,Void>()
-                {
-                    @Override
-                    protected void onPostExecute(Void aVoid) {
-                        super.onPostExecute(aVoid);
-                        m.isFav=true;
-                        favouriteItemStatus.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_favorite_selected));
-                    }
-                    @Override
-                    protected Void doInBackground(Void... params) {
-                        FavouriteWebService.add(m.item.item.getItemid());
-                        return null;
-                    }
-                }.execute(null, null);
-            }
-
-        }
-    };
 
 
     public String setCondition(int condition){
