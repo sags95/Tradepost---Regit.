@@ -1,10 +1,13 @@
 package com.sinapp.sharathsind.tradepost;
 
+import android.*;
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -12,6 +15,9 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.provider.Telephony;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
@@ -63,33 +69,36 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 startActivity(new Intent(getApplicationContext(), ListingProcessActivity.class));
             }
         });
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-        Criteria criteria = new Criteria();
-        String provider = locationManager.getBestProvider(criteria, false);
-        Location location = locationManager.getLastKnownLocation(provider);
 
-        if(location!=null) {
-            userdata.mylocation=new UserLocation();
-
-            userdata.mylocation.Longitude =(float) location.getLongitude();
-            userdata.mylocation.latitude = (float)location.getLatitude();
-          //  userdata.mylocation.city=cityName+","+stateName;
-            SharedPreferences.Editor editor = getSharedPreferences("loctradepost", MODE_PRIVATE).edit();
-            //editor.putInt("rad", radius);
-            editor.putFloat("lat", userdata.mylocation.latitude);
-            editor.putFloat("long",userdata. mylocation.Longitude);
-            editor.commit();
-
-
-
-        }
 
         TextView findCommunity = (TextView)findViewById(R.id.community_setBtn);
         findCommunity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //permission
+                LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+                if(!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    //Ask the user to enable GPS
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Location Manager");
+                    builder.setMessage("Please Enable the gps ");
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //Launch settings, allowing user to make a change
+                            Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(i);
+                            dialog.cancel();
+                        }
+                    });
+
+                    builder.create().show();
+                }
+                else
+                {
+                    locationService();
+                }
+
+
             }
         });
 
@@ -102,7 +111,73 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         });
 
     }
+    Snackbar s;
+public void locationService()
+{
+    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    Permission per=new Permission(MainActivity.this,locationManager);
+    if(per.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED||per.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED)
+    {
+        per.askPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
 
+    }
+    else           if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 0 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 0) {
+
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        Criteria criteria = new Criteria();
+        String provider = locationManager.getBestProvider(criteria, false);
+        Location location = locationManager.getLastKnownLocation(provider);
+
+        if (location != null) {
+            userdata.mylocation = new UserLocation();
+
+            userdata.mylocation.Longitude = (float) location.getLongitude();
+            userdata.mylocation.latitude = (float) location.getLatitude();
+            Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+            List<Address> addresses = null;
+            try {
+                addresses = geocoder.getFromLocation(userdata.mylocation.latitude, userdata.mylocation.Longitude, 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String cityName = addresses.get(0).getLocality();
+            String stateName = addresses.get(0).getAdminArea();
+            userdata.mylocation.city = cityName + "," + stateName;
+
+            SharedPreferences.Editor editor = MainActivity.this.getSharedPreferences("loctradepost", MainActivity.this.MODE_PRIVATE).edit();
+            //editor.putInt("rad", radius);
+            editor.putFloat("lat", userdata.mylocation.latitude);
+            editor.putFloat("long", userdata.mylocation.Longitude);
+            editor.commit();
+            SoapObject soapObject = new SoapObject("http://webser/", "setLogin");
+            soapObject.addProperty("userid", Constants.userid);
+            soapObject.addProperty("lat", String.format("%.2f", userdata.mylocation.latitude));
+
+
+            //object.addProperty("tags",tag);
+            soapObject.addProperty("longi", String.format("%.2f", userdata.mylocation.Longitude));
+            soapObject.addProperty("city", userdata.mylocation.city);
+            SoapPrimitive msg = MainWebService.getMsg(soapObject, "http://73.37.238.238:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
+
+
+        }
+    }
+    else {
+        s=   Snackbar.make(findViewById(android.R.id.content), "App needs Permission to access your external storage", Snackbar.LENGTH_LONG)
+                .setAction("Settings", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        
+s.dismiss();
+                    }
+                })
+                .setActionTextColor(Color.RED);
+              s.show();
+
+    }
+
+}
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 

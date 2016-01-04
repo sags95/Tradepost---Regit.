@@ -4,7 +4,9 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
@@ -12,6 +14,10 @@ import android.support.v4.content.ContextCompat;
 
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import webservices.MainWebService;
 
@@ -78,6 +84,17 @@ public class Permission implements  ActivityCompat.OnRequestPermissionsResultCal
 
                         userdata.mylocation.Longitude =(float) location.getLongitude();
                         userdata.mylocation.latitude = (float)location.getLatitude();
+                        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+                        List<Address> addresses = null;
+                        try {
+                            addresses = geocoder.getFromLocation(userdata.mylocation.latitude, userdata.mylocation.Longitude, 1);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        String cityName = addresses.get(0).getLocality();
+                        String stateName = addresses.get(0).getAdminArea();
+                        userdata.mylocation.city=cityName+","+stateName;
+
                         SharedPreferences.Editor editor = context.getSharedPreferences("loctradepost", context.MODE_PRIVATE).edit();
                         //editor.putInt("rad", radius);
                         editor.putFloat("lat", userdata.mylocation.latitude);
@@ -94,15 +111,33 @@ public class Permission implements  ActivityCompat.OnRequestPermissionsResultCal
                         SoapPrimitive msg= MainWebService.getMsg(soapObject, "http://73.37.238.238:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
 
 
-
+                        break;
                     }
 
                 }
                 else{
 
+break;
+                }
+            case 1:
+                if(grantResults.length>0&&grantResults[0]== PackageManager.PERMISSION_GRANTED&& checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)==PackageManager.PERMISSION_GRANTED)
+                {
+                    if(context instanceof ListingProcessActivity)
+                    ( (ListingProcessActivity)context).camera();
+                    else
+                        ((EditListingActivity)context).camera();
 
                 }
+                break;
+            case 2:
+                if(grantResults.length>0&&grantResults[0]== PackageManager.PERMISSION_GRANTED&& checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)==PackageManager.PERMISSION_GRANTED)
+                {
+                    if(context instanceof ListingProcessActivity)
+                    ( (ListingProcessActivity)context).gallery();
+                    else
+                        ((EditListingActivity)context).gallery();
 
+                }
 
 
 

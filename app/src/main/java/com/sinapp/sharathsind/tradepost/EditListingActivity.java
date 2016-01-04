@@ -1,15 +1,19 @@
 package com.sinapp.sharathsind.tradepost;
 
+import android.*;
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -18,6 +22,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -96,6 +101,12 @@ ArrayList<Integer>userid;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listing_process);
         tagFlowLayout = (FlowLayout) findViewById(R.id.section5_tags);
+        Permission permission = new Permission(this, null);
+        if (permission.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || permission.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        {
+            permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},4);
+        }
+
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -619,26 +630,74 @@ delete(itemid);
     public View.OnClickListener camBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            File photo=null;
-            try {
-                // place where to store camera taken picture
-                photo = createTemporaryFile("temp", ".jpg");
-                photo.delete();
-            } catch (Exception e) {
-                Log.v("camera", "Can't create file to take picture!");
-                Toast.makeText(getApplicationContext(), "Please check SD card! Image shot is impossible!", Toast.LENGTH_SHORT);
-            }
-            mImageUri = Uri.fromFile(photo);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-            //start camera intent
 
-            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(takePictureIntent, requestCodeCam);
-            }
+            Permission per = new Permission(EditListingActivity.this, null);
+            if (per.isPermissionDenied(android.Manifest.permission.READ_EXTERNAL_STORAGE) == 0 && per.isPermissionDenied(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == 0) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                File photo = null;
+                try {
+                    // place where to store camera taken picture
+                    photo = createTemporaryFile("temp", ".jpg");
+                    photo.delete();
+                } catch (Exception e) {
+                    Log.v("camera", "Can't create file to take picture!");
+                    Toast.makeText(getApplicationContext(), "Please check SD card! Image shot is impossible!", Toast.LENGTH_SHORT);
+                }
+                mImageUri = Uri.fromFile(photo);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+                //start camera intent
 
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, requestCodeCam);
+                }
+            } else if (per.isPermissionDenied(android.Manifest.permission.READ_EXTERNAL_STORAGE) == 1 && per.isPermissionDenied(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == 1) {
+                per.askPermission(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+
+            }
+            else{
+                Snackbar.make(findViewById(android.R.id.content), "App needs Permission to access your external storage", Snackbar.LENGTH_LONG)
+                        .setAction("Settings", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+
+                            }
+                        })
+                        .setActionTextColor(Color.RED)
+                        .show();
+
+            }
         }
+
+
     };
+    public void camera()
+    {  Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File photo = null;
+        try {
+            // place where to store camera taken picture
+            photo = createTemporaryFile("temp", ".jpg");
+            photo.delete();
+        } catch (Exception e) {
+            Log.v("camera", "Can't create file to take picture!");
+            Toast.makeText(getApplicationContext(), "Please check SD card! Image shot is impossible!", Toast.LENGTH_SHORT);
+        }
+        mImageUri = Uri.fromFile(photo);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+        //start camera intent
+
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, requestCodeCam);
+        }
+
+    }
+    public void gallery()
+    {
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select File"), requestCodeGal);
+
+    }
 
     private File createTemporaryFile(String part, String ext) throws Exception
     {
@@ -680,14 +739,33 @@ delete(itemid);
         public void onClick(View v) {
             /*
 
-            Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+  gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg                                                                            Intent pickPhoto = new Intent(Intent.ACTION_PICK,
                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(pickPhoto , 0);
             */
+            Permission per = new Permission(EditListingActivity.this, null);
+            if (per.isPermissionDenied(android.Manifest.permission.READ_EXTERNAL_STORAGE) == 0 && per.isPermissionDenied(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == 0) {
+                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent, "Select File"), requestCodeGal);
+            }
+            else if (per.isPermissionDenied(android.Manifest.permission.READ_EXTERNAL_STORAGE) == 1 && per.isPermissionDenied(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == 1) {
+                per.askPermission(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE},2);
 
-            Intent intent = new Intent( Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            intent.setType("image/*");
-            startActivityForResult( Intent.createChooser(intent, "Select File"), requestCodeGal);
+            }
+            else{
+                Snackbar.make(findViewById(android.R.id.content), "App needs Permission to access your external storage", Snackbar.LENGTH_LONG)
+                        .setAction("Settings", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+
+                            }
+                        })
+                        .setActionTextColor(Color.RED)
+                        .show();
+
+            }
         }
     };
 

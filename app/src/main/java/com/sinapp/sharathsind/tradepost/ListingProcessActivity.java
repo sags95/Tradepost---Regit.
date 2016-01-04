@@ -16,6 +16,7 @@ import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -124,7 +125,7 @@ public class ListingProcessActivity extends AppCompatActivity {
         Permission permission = new Permission(this, null);
         if (permission.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || permission.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
         {
-
+permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},4);
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -619,14 +620,49 @@ per.askPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifes
 
             }
             else{
+                Snackbar.make(findViewById(android.R.id.content), "App needs Permission to access your external storage", Snackbar.LENGTH_LONG)
+                        .setAction("Settings", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
 
+
+                            }
+                        })
+                        .setActionTextColor(Color.RED)
+                        .show();
 
             }
         }
 
 
     };
+public void camera()
+{  Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    File photo = null;
+    try {
+        // place where to store camera taken picture
+        photo = createTemporaryFile("temp", ".jpg");
+        photo.delete();
+    } catch (Exception e) {
+        Log.v("camera", "Can't create file to take picture!");
+        Toast.makeText(getApplicationContext(), "Please check SD card! Image shot is impossible!", Toast.LENGTH_SHORT);
+    }
+    mImageUri = Uri.fromFile(photo);
+    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+    //start camera intent
 
+    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+        startActivityForResult(takePictureIntent, requestCodeCam);
+    }
+
+}
+    public void gallery()
+    {
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select File"), requestCodeGal);
+
+    }
     private File createTemporaryFile(String part, String ext) throws Exception
     {
         File tempDir= Environment.getExternalStorageDirectory();
@@ -694,10 +730,29 @@ per.askPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifes
                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(pickPhoto , 0);
             */
+            Permission per = new Permission(ListingProcessActivity.this, null);
+            if (per.isPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE) == 0 && per.isPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE) == 0) {
+                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                intent.setType("image/*");
+                startActivityForResult(Intent.createChooser(intent, "Select File"), requestCodeGal);
+            }
+            else if (per.isPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE) == 1 && per.isPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE) == 1) {
+                per.askPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},2);
 
-            Intent intent = new Intent( Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            intent.setType("image/*");
-            startActivityForResult( Intent.createChooser(intent, "Select File"), requestCodeGal);
+            }
+            else{
+                Snackbar.make(findViewById(android.R.id.content), "App needs Permission to access your external storage", Snackbar.LENGTH_LONG)
+                        .setAction("Settings", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+
+                            }
+                        })
+                        .setActionTextColor(Color.RED)
+                        .show();
+
+            }
         }
     };
 
