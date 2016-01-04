@@ -582,15 +582,6 @@ permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
         return tagNames;
 
     }
-    public View.OnClickListener testingBtnListener2 = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Log.d("Clicked", "You CLicked");
-
-        }
-
-
-    };
 
     public View.OnClickListener camBtnListener = new View.OnClickListener() {
         @Override
@@ -726,7 +717,6 @@ public void camera()
         public void onClick(View v) {
             /*
 
-  gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg                                                                            Intent pickPhoto = new Intent(Intent.ACTION_PICK,
                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(pickPhoto , 0);
             */
@@ -832,7 +822,7 @@ public void camera()
                 cursor.close();
                 bm = BitmapFactory.decodeFile(selectedImagePath, options);
                 //setImage(bm);
-                tempBitmap.add(grabImage());
+                tempBitmap.add(bm);
 
             }
         }
