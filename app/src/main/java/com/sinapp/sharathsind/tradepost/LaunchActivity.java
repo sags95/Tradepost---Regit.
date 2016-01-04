@@ -49,7 +49,7 @@ public class LaunchActivity extends AppCompatActivity {
             public void run() {
                 try {
                     super.run();
-                    sleep(5000); //Delay of 10 seconds
+                    sleep(2000); //Delay of 10 seconds
                     //If internet connection (Verify Model number)
 
                 } catch (InterruptedException e) {

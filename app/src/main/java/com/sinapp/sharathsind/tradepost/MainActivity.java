@@ -17,8 +17,10 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
@@ -32,6 +34,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import CustomWidget.CustomTextView;
+import Model.Variables;
 import webservices.MainWebService;
 
 /**
@@ -44,8 +48,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Welcome Back Sample User!");
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        View customToolBarTitle = getLayoutInflater().inflate(R.layout.layout_toolbar_custom_title, null);
+        getSupportActionBar().setCustomView(customToolBarTitle);
+        CustomTextView name = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title2);
+        name.setText(Variables.username.split("\\s+")[0]);
 
         TextView addItem = (TextView) findViewById(R.id.add_item_addBtn);
         addItem.setOnClickListener(new View.OnClickListener() {
@@ -55,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         });
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         Criteria criteria = new Criteria();
         String provider = locationManager.getBestProvider(criteria, false);
@@ -85,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         });
 
-        TextView viewItem = (TextView)findViewById(R.id.add_item_viewBtn);
+        CustomTextView viewItem = (CustomTextView)findViewById(R.id.add_item_viewBtn);
         viewItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,12 +106,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        MenuItem item;
+//        MenuItem shareOption;
+//
+//        shareOption = menu.add("Share");
+//
+//        shareOption.setIcon(R.mipmap.ic_share_white_24dp);
+//        MenuItemCompat.setShowAsAction(shareOption, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
+//
+//        SubMenu submenu = menu.addSubMenu(0, Menu.NONE, 1, "More").setIcon(R.mipmap.ic_more_vert_white_24dp);
+//        submenu.add("Settings").setIcon(R.mipmap.ic_share_white_24dp);
+//        submenu.add("Log Out").setIcon(R.mipmap.ic_share_white_24dp);
 
-        item = menu.add("Share");
+        getMenuInflater().inflate(R.menu.menu_item, menu);
 
-        item.setIcon(R.mipmap.ic_send);
-        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
+
+
 
         return super.onCreateOptionsMenu(menu);
     }
