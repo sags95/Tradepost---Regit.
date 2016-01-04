@@ -94,36 +94,27 @@ public class MyItemsFragment extends Fragment {
             }
         });
 
-        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                int topRowVerticalPosition =
-                        (mRecyclerView == null || mRecyclerView.getChildCount() == 0) ?
-                                0 : mRecyclerView.getChildAt(0).getTop();
-                mSwipeRefreshLayout.setEnabled(mLayoutManager.findFirstVisibleItemPosition() == 0 && topRowVerticalPosition >= 0);
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
+//        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//            }
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                int topRowVerticalPosition =
+//                        (mRecyclerView == null || mRecyclerView.getChildCount() == 0) ?
+//                                0 : mRecyclerView.getChildAt(0).getTop();
+//                mSwipeRefreshLayout.setEnabled(mLayoutManager.findFirstVisibleItemPosition() == 0 && topRowVerticalPosition >= 0);
+//                super.onScrolled(recyclerView, dx, dy);
+//            }
+//        });
 
 
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL_LIST));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setSwipeRefreshLayout(mSwipeRefreshLayout);
         mRecyclerView.setEmptyView(emptyView);
-        mRecyclerView.addOnItemTouchListener(
-                new RecyclerViewOnClickListener(getActivity(), new RecyclerViewOnClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-
-                    }
-                })
-        );
-
 
         applyLinearLayoutManager();
 

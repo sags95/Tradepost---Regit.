@@ -155,25 +155,6 @@ public class LaunchActivity extends AppCompatActivity {
         } else {
             // isDatabaseExist=false;
 
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    final ImageView launchImg = (ImageView) findViewById(R.id.launch_img);
-                    final Button testBtn = (Button) findViewById(R.id.launch_testBtn);
-                    testBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            startActivity(new Intent(getApplicationContext(), FirstTime.class));
-                            finish();
-                        }
-                    });
-                    testBtn.setVisibility(View.VISIBLE);
-                    launchImg.setVisibility(View.GONE);
-
-                }
-            });
-
-
             try {
                 Constants.db = openOrCreateDatabase("tradepostdb.db", MODE_PRIVATE, null);
                 try {
@@ -227,7 +208,12 @@ public class LaunchActivity extends AppCompatActivity {
             }
 
 
+            startActivity(new Intent(getApplicationContext(), FirstTime.class));
+            finish();
+
         }
+
+
 
     }
 

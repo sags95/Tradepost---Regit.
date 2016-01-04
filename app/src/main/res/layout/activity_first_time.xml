@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@drawable/welcome_background"
+    android:background="@color/colorPrimary"
     >
 
     <CustomWidget.CustomTextView
@@ -54,30 +54,5 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:layout_below="@id/fb_sign_in_btn" />
-
-    <CustomWidget.CustomTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:textStyle="bold"
-        android:id="@+id/or"
-        android:layout_below="@id/google_sign_in_btn"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"
-        android:text="OR"
-        style="@style/OpenSansRegular"
-        />
-
-    <CustomWidget.CustomButton
-        style="@style/OpenSansLight"
-        android:id="@+id/sign_in_button1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="Sign in with email"
-        android:textColor="@android:color/white"
-        android:background="@drawable/b"
-        android:layout_below="@id/or" />
 
 </RelativeLayout>

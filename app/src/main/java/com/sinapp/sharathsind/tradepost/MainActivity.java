@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -11,6 +12,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -45,14 +47,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         toolbar.setTitle("Welcome Back Sample User!");
         setSupportActionBar(toolbar);
 
-        TextView addItem = (TextView)findViewById(R.id.add_item_addBtn);
+        TextView addItem = (TextView) findViewById(R.id.add_item_addBtn);
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), ListingProcessActivity.class));
             }
         });
-      LocationManager  locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         Criteria criteria = new Criteria();
