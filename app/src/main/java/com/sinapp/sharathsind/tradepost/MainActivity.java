@@ -2,6 +2,7 @@ package com.sinapp.sharathsind.tradepost;
 
 import android.*;
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.provider.Telephony;
@@ -194,15 +196,10 @@ public GoogleApiClient mGoogleApiClient;
 
 
     }
-public void locationService()
-{
-    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-    Permission per=new Permission(MainActivity.this,locationManager);
+    public boolean getLocation()
+    {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-            if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 0 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 0) {
-
-
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         Criteria criteria = new Criteria();
         String provider = locationManager.getBestProvider(criteria, false);
         Location location = locationManager.getLastKnownLocation(provider);
@@ -227,26 +224,72 @@ public void locationService()
             //editor.putInt("rad", radius);
             editor.putFloat("lat", userdata.mylocation.latitude);
             editor.putFloat("long", userdata.mylocation.Longitude);
-            editor.putBoolean("done",true);
-            editor.commit();
+            editor.putString("city",userdata.mylocation.city);
+            editor.putBoolean("done", true);
+            boolean b=   editor.commit();
             SoapObject soapObject = new SoapObject("http://webser/", "setLogin");
             soapObject.addProperty("userid", Constants.userid);
             soapObject.addProperty("lat", String.format("%.2f", userdata.mylocation.latitude));
 
-restoredText=true;
+            restoredText=true;
             //object.addProperty("tags",tag);
             soapObject.addProperty("longi", String.format("%.2f", userdata.mylocation.Longitude));
             soapObject.addProperty("city", userdata.mylocation.city);
+
             SoapPrimitive msg = MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
 
-
+if(msg!=null)
+            {
+             return  true;
+            }
+            else
+{
+    return false;
+}
         }
-                else {
-            Toast.makeText(this,"please check your internet connection ",Toast.LENGTH_LONG).show();
+        else {
+            Toast.makeText(this,"please turn on your gps ",Toast.LENGTH_LONG).show();
+        return  false;
         }
     }
-else    if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 1 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 1) {
-                per.askPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
+public void locationService()
+{
+    int count;
+    Cursor c=Constants.db.rawQuery("select * from LocationPermission",null);
+    c.moveToFirst();
+    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    Permission per=new Permission(MainActivity.this,locationManager);
+
+            if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 0 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 0) {
+new AsyncTask<Boolean,Boolean,Boolean>()
+{
+    ProgressDialog pd;
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        pd=ProgressDialog.show(MainActivity.this,"processing","please wait");
+    }
+
+    @Override
+    protected void onPostExecute(Boolean aBoolean) {
+        super.onPostExecute(aBoolean);
+        pd.hide();
+        if(aBoolean)
+        {
+            Toast.makeText(MainActivity.this,"Community has setup successfully",Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    @Override
+    protected Boolean doInBackground(Boolean... booleans) {
+        return getLocation();
+    }
+}.execute();
+
+    }
+else    if (c.getCount()==0||(per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 1 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 1)) {
+                per.askPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},0);
 
 
             }
