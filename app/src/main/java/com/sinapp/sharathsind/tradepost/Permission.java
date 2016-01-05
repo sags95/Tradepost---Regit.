@@ -75,7 +75,7 @@ public class Permission implements  ActivityCompat.OnRequestPermissionsResultCal
                 {
                    // locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, Welcome.service);
                    // locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, Welcome.service);
-                    Criteria criteria = new Criteria();
+                    /*Criteria criteria = new Criteria();
                     String provider = locationManager.getBestProvider(criteria, false);
                     Location location = locationManager.getLastKnownLocation(provider);
 
@@ -110,16 +110,14 @@ public class Permission implements  ActivityCompat.OnRequestPermissionsResultCal
                         soapObject.addProperty("longi", String.format("%.2f", userdata.mylocation.Longitude));
                         soapObject.addProperty("city", userdata.mylocation.city);
                         SoapPrimitive msg= MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
-
+*/
+                    ( (MainActivity)context).locationService();
 
                         break;
                     }
+else break;
 
-                }
-                else{
 
-break;
-                }
             case 1:
                 if(grantResults.length>0&&grantResults[0]== PackageManager.PERMISSION_GRANTED&& checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)==PackageManager.PERMISSION_GRANTED)
                 {

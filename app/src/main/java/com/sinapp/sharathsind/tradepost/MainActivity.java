@@ -2,6 +2,7 @@ package com.sinapp.sharathsind.tradepost;
 
 import android.*;
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.provider.Telephony;
@@ -126,7 +128,7 @@ public GoogleApiClient mGoogleApiClient;
                             //Launch settings, allowing user to make a change
                             Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                             startActivity(i);
-                            dialog.cancel();
+                            dialog.dismiss();
                         }
                     });
 
@@ -156,7 +158,7 @@ public GoogleApiClient mGoogleApiClient;
          @Override
          public void onClick(DialogInterface dialog, int which) {
 
-
+dialog.dismiss();
          }
      });
  }
@@ -196,14 +198,9 @@ public GoogleApiClient mGoogleApiClient;
 
 
     }
-public void locationService()
-{
-    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-    Permission per=new Permission(MainActivity.this,locationManager);
-
-            if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 0 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 0) {
-
-
+    public boolean getlocation()
+    {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         Criteria criteria = new Criteria();
         String provider = locationManager.getBestProvider(criteria, false);
@@ -225,27 +222,74 @@ public void locationService()
             String stateName = addresses.get(0).getAdminArea();
             userdata.mylocation.city = cityName + "," + stateName;
 
-            SharedPreferences.Editor editor = MainActivity.this.getSharedPreferences("loctradepost", MainActivity.this.MODE_PRIVATE).edit();
-            //editor.putInt("rad", radius);
-            editor.putFloat("lat", userdata.mylocation.latitude);
-            editor.putFloat("long", userdata.mylocation.Longitude);
-            editor.putBoolean("done",true);
-            editor.commit();
+
             SoapObject soapObject = new SoapObject("http://webser/", "setLogin");
             soapObject.addProperty("userid", Constants.userid);
             soapObject.addProperty("lat", String.format("%.2f", userdata.mylocation.latitude));
 
-restoredText=true;
+
             //object.addProperty("tags",tag);
             soapObject.addProperty("longi", String.format("%.2f", userdata.mylocation.Longitude));
             soapObject.addProperty("city", userdata.mylocation.city);
             SoapPrimitive msg = MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
 
+if(msg!=null) {
+    SharedPreferences.Editor editor = MainActivity.this.getSharedPreferences("loctradepost", MainActivity.this.MODE_PRIVATE).edit();
+    //editor.putInt("rad", radius);
+    editor.putFloat("lat", userdata.mylocation.latitude);
+    editor.putFloat("long", userdata.mylocation.Longitude);
+    editor.putBoolean("done", true);
+    editor.commit();
+    restoredText=true;
+    return true;
+
+}
+else
+    return false;
+        }
+        else {
+            Toast.makeText(this,"please check your internet connection ",Toast.LENGTH_LONG).show();
+       return false;
+        }
+    }
+public void locationService()
+{
+    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    Permission per=new Permission(MainActivity.this,locationManager);
+
+            if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 0 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 0) {
+
+new AsyncTask<Boolean,Boolean,Boolean>()
+{
+    ProgressDialog pd;
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        pd=ProgressDialog.show(MainActivity.this,"Processing","Please Wait",true,false);
+
+    }
+
+    @Override
+    protected void onPostExecute(Boolean aBoolean) {
+        super.onPostExecute(aBoolean);
+        pd.dismiss();
+        if(aBoolean)
+        {
+Toast.makeText(MainActivity.this,"Comunity has been setup",Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            Toast.makeText(MainActivity.this,"Please check your internet connection or gps",Toast.LENGTH_LONG).show();
 
         }
-                else {
-            Toast.makeText(this,"please check your internet connection ",Toast.LENGTH_LONG).show();
-        }
+    }
+
+    @Override
+    protected Boolean doInBackground(Boolean... params) {
+        return getlocation();
+    }
+}.execute();
+
     }
 else    if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 1 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 1) {
                 per.askPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
