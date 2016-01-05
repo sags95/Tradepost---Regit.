@@ -100,8 +100,6 @@ public class SingleListingActivity extends AppCompatActivity {
         itemUsername = (CustomTextView)singleListingHeader.findViewById(R.id.single_listing_header_username);
         itemDistance = (CustomTextView)singleListingHeader.findViewById(R.id.single_listing_header_distance);
 
-        favouriteItemStatus = (ImageView) includeView.findViewById(R.id.single_listing_fav_btn);
-        favouriteItemStatus.setVisibility(View.GONE);
         //favouriteItemStatus.setOnClickListener(addedTofavourite);
         //floating action button
         //offerFab = (FloatingActionButton)findViewById(R.id.offer_fab2);
@@ -112,113 +110,57 @@ public class SingleListingActivity extends AppCompatActivity {
 
         Intent i = getIntent();
 
-//        if(getIntent().getStringExtra("caller").equals("MyItem")){
-//            ArrayList<String> itemInfo = getIntent().getStringArrayListExtra("myItemClicked");
-//            Bitmap proPicReceived = i.getParcelableExtra("profilePic");
-//
-//            //item id
-//            itemId=itemInfo.get(0);
-//            //item userPic
-//            Picasso.with(this).load(Uri.parse("http://services.tradepost.me:8084/TDserverWeb/images/" + userdata.userid + "/profile.png")).into(proPic);
-//            //proPic.setImageBitmap(proPicReceived);
-//            //item title
-//            itemTitle.setText(itemInfo.get(1));
-//            //item description
-//            itemDescription.setText(itemInfo.get(3));
-//            //item condition
-//            itemCondition.setText(setCondition(Integer.parseInt(itemInfo.get(5))));
-//            //item dateAdded
-//            itemDateAdded.setText(itemInfo.get(4));
-//            //item username
-//            itemUsername.setText(itemInfo.get(2));
-//            //item distance
-//            itemDistance.setText(String.valueOf(roundedDistance(distance(userdata.mylocation.latitude,userdata.mylocation.Longitude, userdata.mylocation.latitude, userdata.mylocation.Longitude, 'K'))));
-//
-//            String[] itemImages = getIntent().getStringArrayExtra("itemImages");
-//            String[] images = new String[itemImages.length];
-//
-//            for(int j=0;j<itemImages.length;j++){
-//                images[j]="http://services.tradepost.me:8084/TDserverWeb/images/items/" + itemInfo.get(0) +"/"+ itemImages[j];
-//
-//            }
-//            String[] itemTags = getIntent().getStringArrayExtra("itemTags");
-//
-//            //For EditActivity
-//            itemTagsToEdit = new String[itemTags.length];
-//            itemTagsToEdit=itemTags;
-//            itemCatToEdit = itemInfo.get(6);
-//
-//            imageResources = new String[itemImages.length];
-//            mCustomPagerAdapter = new CustomPagerAdapter(this,images);
-//            mViewPager = (ViewPager) findViewById(R.id.pager);
-//            mViewPager.setAdapter(mCustomPagerAdapter);
-//
-//            for (String tempTag : itemTags) {
-//                tagsLayout.addView(addTagsSingleListing(tempTag));
-//            }
-//            offerFab.setVisibility(View.GONE);
-//            isSelfItem=true;
-//
-//
-//
-//        }else {
-//            ArrayList<String> itemDetails = i.getStringArrayListExtra("itemClicked");
-//            m = MarketPlaceStaggeredAdapter.mData.get(Integer.parseInt(itemDetails.get(0)));
-//            Bitmap proPicReceived = i.getParcelableExtra("profilePic");
-//            //item userPic
-//            proPic.setImageBitmap(proPicReceived);
-//            //item title
-//            itemTitle.setText(m.item.item.getItemname());
-//            itemId=m.item.item.getItemid().toString();
-//            //item description
-//            itemDescription.setText(m.item.item.getDescription());
-//            //item condition
-//            itemCondition.setText(setCondition(m.item.item.getCon()));
-//            //item dateAdded
-//            itemDateAdded.setText(MarketPlaceStaggeredAdapter.daysBetween(m.item.item.getDateadded()));
-//            //item username
-//            itemUsername.setText(m.item.username);
-//            //item distance
-//            itemDistance.setText(String.valueOf(roundedDistance(distance(m.item.item.getLatitude().doubleValue(), m.item.item.getLongtitude().doubleValue(), userdata.mylocation.latitude, userdata.mylocation.Longitude, 'K'))));
-//
-//            // favourite status
-//            if(m.isFav) {
-//                favouriteItemStatus.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.mipmap.ic_favorite_selected));
-//            }else{
-//                favouriteItemStatus.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.mipmap.ic_favorite_not_selected));
-//            }
-//            //item tags
-//            for (String tempTag : m.item.tags) {
-//                tagsLayout.addView(addTagsSingleListing(tempTag));
-//
-//            }
-//
-//            if(m.item.item.getUserid()== Constants.userid){
-//
-//
-//                //item distance
-//                offerFab.setVisibility(View.GONE);
-//                isSelfItem=true;
-//
-//                //For EditActivity
-//                itemTagsToEdit = new String[m.item.tags.length];
-//                itemTagsToEdit=m.item.tags;
-//                itemCatToEdit = m.item.item.getCategory();
-//            }else{
-//
-//                //item distance
-//                offerFab.setVisibility(View.VISIBLE);
-//                isSelfItem=false;
-//            }
-//
-//            imageResources = new String[m.image.length];
-//            mCustomPagerAdapter = new CustomPagerAdapter(this,m.image);
-//            mViewPager = (ViewPager) findViewById(R.id.pager);
-//            mViewPager.setAdapter(mCustomPagerAdapter);
-//
-//        }
+        if(getIntent().getStringExtra("caller").equals("MyItem")){
+            ArrayList<String> itemInfo = getIntent().getStringArrayListExtra("myItemClicked");
+            Bitmap proPicReceived = i.getParcelableExtra("profilePic");
+
+            //item id
+            itemId=itemInfo.get(0);
+            //item userPic
+            Picasso.with(this).load(Uri.parse("http://services.tradepost.me:8084/TDserverWeb/images/" + userdata.userid + "/profile.png")).into(proPic);
+            //proPic.setImageBitmap(proPicReceived);
+            //item title
+            itemTitle.setText(itemInfo.get(1));
+            //item description
+            itemDescription.setText(itemInfo.get(3));
+            //item condition
+            itemCondition.setText(setCondition(Integer.parseInt(itemInfo.get(5))));
+            //item dateAdded
+            itemDateAdded.setText(itemInfo.get(4));
+            //item username
+            itemUsername.setText(userdata.name);
+            //item distance
+            itemDistance.setText(String.valueOf(roundedDistance(distance(userdata.mylocation.latitude,userdata.mylocation.Longitude, userdata.mylocation.latitude, userdata.mylocation.Longitude, 'K'))));
+
+            String[] itemImages = getIntent().getStringArrayExtra("itemImages");
+            String[] images = new String[itemImages.length];
+
+            for(int j=0;j<itemImages.length;j++){
+                images[j]="http://services.tradepost.me:8084/TDserverWeb/images/items/" + itemInfo.get(0) +"/"+ itemImages[j];
+
+            }
+            String[] itemTags = getIntent().getStringArrayExtra("itemTags");
+
+            //For EditActivity
+            itemTagsToEdit = new String[itemTags.length];
+            itemTagsToEdit=itemTags;
+            itemCatToEdit = itemInfo.get(6);
+
+            imageResources = new String[itemImages.length];
+            mCustomPagerAdapter = new CustomPagerAdapter(this,images);
+            mViewPager = (ViewPager) findViewById(R.id.pager);
+            mViewPager.setAdapter(mCustomPagerAdapter);
+
+            for (String tempTag : itemTags) {
+                tagsLayout.addView(addTagsSingleListing(tempTag));
+            }
+
+            offerFab.setVisibility(View.GONE);
+            isSelfItem=true;
 
 
+
+        }
 
         /*
         imageResources =new Bitmap[m.image.length];
@@ -253,7 +195,7 @@ public class SingleListingActivity extends AppCompatActivity {
             }
         });
 
-         addDots();
+        addDots();
 
     }
 
@@ -272,36 +214,6 @@ public class SingleListingActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        GCMService.b=true;
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//
-//        super.onResume();
-//        GCMService.b=true;
-//    }
-//
-//    @Override
-//    protected void onRestart() {
-//        super.onRestart();
-//        GCMService.b=true;
-//    }
-//
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        GCMService.b=false;
-//    }
-//
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        GCMService.b=false;
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -336,47 +248,53 @@ public class SingleListingActivity extends AppCompatActivity {
         dots = new ArrayList<>();
         LinearLayout dotsLayout = (LinearLayout)findViewById(R.id.dots);
 
-        for(int i = 0; i < imageResources.length; i++) {
-            ImageView dot = new ImageView(this);
-            if(i==0){
-                dot.setImageDrawable(getResources().getDrawable(R.mipmap.pager_dot_selected));
-            }else {
-                dot.setImageDrawable(getResources().getDrawable(R.mipmap.pager_dot_not_selected));
-            }
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
+        if(imageResources != null) {
+            for (int i = 0; i < imageResources.length; i++) {
+                ImageView dot = new ImageView(this);
+                if (i == 0) {
+                    dot.setImageDrawable(getResources().getDrawable(R.mipmap.pager_dot_selected));
+                } else {
+                    dot.setImageDrawable(getResources().getDrawable(R.mipmap.pager_dot_not_selected));
+                }
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
                 );
-            params.setMargins(3,0,3,0);
+                params.setMargins(3, 0, 3, 0);
 
-            dotsLayout.addView(dot,params);
+                dotsLayout.addView(dot, params);
 
-           // dotsLayout.addView(dot);
-            dots.add(dot);
+                // dotsLayout.addView(dot);
+                dots.add(dot);
+            }
+
+
+            mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    selectDot(position);
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+                }
+            });
         }
-
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                selectDot(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
     }
 
     public void selectDot(int idx) {
         Resources res = getResources();
-        for(int i = 0; i < imageResources.length; i++) {
-            int drawableId = (i==idx)?(R.mipmap.pager_dot_selected):(R.mipmap.pager_dot_not_selected);
-            Drawable drawable = res.getDrawable(drawableId);
-            dots.get(i).setImageDrawable(drawable);
+
+        if(imageResources != null) {
+            for (int i = 0; i < imageResources.length; i++) {
+                int drawableId = (i == idx) ? (R.mipmap.pager_dot_selected) : (R.mipmap.pager_dot_not_selected);
+                Drawable drawable = res.getDrawable(drawableId);
+                dots.get(i).setImageDrawable(drawable);
+            }
         }
     }
 

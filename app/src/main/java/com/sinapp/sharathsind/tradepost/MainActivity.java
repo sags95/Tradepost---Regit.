@@ -420,7 +420,7 @@ s.dismiss();
         }
         String cityName = addresses.get(0).getLocality();
         String stateName = addresses.get(0).getAdminArea();
-userdata.mylocation.city=cityName+","+stateName;
+        userdata.mylocation.city=cityName+","+stateName;
      //   customTextView.setText(cityName + "," + stateName);
        // AsyncTaskRunner runner = new AsyncTaskRunner();
         //runner.execute();

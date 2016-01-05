@@ -137,24 +137,9 @@
             android:layout_marginTop="8dp"
             android:layout_marginRight="8dp"
             android:layout_alignParentTop="true"
-            style="@style/OpenSansRegular"
-            android:layout_toLeftOf="@+id/single_listing_fav_btn"
-            />
-
-        <ImageView
-            android:id="@+id/single_listing_fav_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/circle_background"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="8dp"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-
+            style="@style/OpenSansRegular"
             />
-
-
-
 
 
     </RelativeLayout>
