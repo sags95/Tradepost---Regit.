@@ -72,12 +72,8 @@ public GoogleApiClient mGoogleApiClient;
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Permission per=new Permission(MainActivity.this,locationManager);
-        if(per.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED||per.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED)
-        {
-            per.askPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},7);
 
-        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
