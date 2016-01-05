@@ -18,7 +18,7 @@ public class ItemWebService {
         // ItemResult ir=new ItemResult();
         SoapObject obje = new SoapObject("http://webser/", "getItembyId");
         obje.addProperty("itemid", i);
-        KvmSerializable result1 = MainWebService.getMsg2(obje, "http://73.37.238.238:8084/TDserverWeb/GetItems?wsdl"
+        KvmSerializable result1 = MainWebService.getMsg2(obje, "http://services.tradepost.me:8084/TDserverWeb/GetItems?wsdl"
                 , "http://webser/GetItems/getItembyIdRequest");
 
         ItemResult ir =null;
@@ -39,7 +39,7 @@ public class ItemWebService {
             }
             obje = new SoapObject("http://webser/", "searchbyint");
             obje.addProperty("name", i);
-            Vector result2 = MainWebService.getMsg1(obje, "http://73.37.238.238:8084/TDserverWeb/NewWebService?wsdl"
+            Vector result2 = MainWebService.getMsg1(obje, "http://services.tradepost.me:8084/TDserverWeb/NewWebService?wsdl"
                     , "http://webser/NewWebService/searchbyintRequest");
             if (result2 != null) {
 
@@ -61,7 +61,7 @@ public class ItemWebService {
         SoapObject object = new SoapObject("http://webser/", "getuseritems");
         //SoapObject object = new SoapObject("http://webser/", "getuseritems");
         object.addProperty("userid",  userid);
-        Vector object1 = MainWebService.getMsg1(object, "http://73.37.238.238:8084/TDserverWeb/Search?wsdl", "http://webser/Search/getuseritemsRequest");
+        Vector object1 = MainWebService.getMsg1(object, "http://services.tradepost.me:8084/TDserverWeb/Search?wsdl", "http://webser/Search/getuseritemsRequest");
         ArrayList items=new ArrayList<Integer>();
 
 
@@ -77,7 +77,7 @@ public class ItemWebService {
     {
         SoapObject obje = new SoapObject("http://webser/", "getItembyId");
         obje.addProperty("itemid", i);
-        KvmSerializable result1 = MainWebService.getMsg2(obje, "http://73.37.238.238:8084/TDserverWeb/GetItems?wsdl"
+        KvmSerializable result1 = MainWebService.getMsg2(obje, "http://services.tradepost.me:8084/TDserverWeb/GetItems?wsdl"
                 , "http://webser/GetItems/getItembyIdRequest");
 
     }

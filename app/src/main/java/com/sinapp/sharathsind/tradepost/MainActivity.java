@@ -158,7 +158,7 @@ public void locationService()
             //object.addProperty("tags",tag);
             soapObject.addProperty("longi", String.format("%.2f", userdata.mylocation.Longitude));
             soapObject.addProperty("city", userdata.mylocation.city);
-            SoapPrimitive msg = MainWebService.getMsg(soapObject, "http://73.37.238.238:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
+            SoapPrimitive msg = MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
 
 
         }
@@ -168,7 +168,7 @@ public void locationService()
                 .setAction("Settings", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        
+
 s.dismiss();
                     }
                 })
@@ -240,7 +240,7 @@ s.dismiss();
 //                //object.addProperty("tags",tag);
 //                soapObject.addProperty("longi", String.format("%.2f", userdata.mylocation.Longitude));
 //                soapObject.addProperty("city", userdata.mylocation.city);
-//                SoapPrimitive msg = MainWebService.getMsg(soapObject, "http://73.37.238.238:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
+//                SoapPrimitive msg = MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
 //            }
 //        });
 //

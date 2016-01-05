@@ -138,12 +138,12 @@ public class LaunchActivity extends AppCompatActivity {
                         }
                     }.execute(null, null, null);
 
-                    //URL url = new URL("http://73.37.238.238:8084/TDserverWeb/images/"+Constants.userid+"/profile.png");
+                    //URL url = new URL("http://services.tradepost.me:8084/TDserverWeb/images/"+Constants.userid+"/profile.png");
                 } else {
 
                 startActivity(new Intent(LaunchActivity.this,FirstTime.class));
                 }
-                //Variables.profilepic = Picasso.with(this).load(Uri.parse("http://73.37.238.238:8084/TDserverWeb/images/"+Constants.userid+"/profile.png")).get();
+                //Variables.profilepic = Picasso.with(this).load(Uri.parse("http://services.tradepost.me:8084/TDserverWeb/images/"+Constants.userid+"/profile.png")).get();
                 //Constants.username=c.getString(c.getColumnIndex("username"));
 
 

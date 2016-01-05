@@ -20,7 +20,7 @@ public class Constants {
         // Add data to the intent, the receiving app will decide
         // what to do with it.
         share.putExtra(Intent.EXTRA_SUBJECT, "Check out Tradepost! It lets you trade anything locally.");
-        share.putExtra(Intent.EXTRA_TEXT, "http://73.37.238.238:8084/TDserverWeb");
+        share.putExtra(Intent.EXTRA_TEXT, "http://services.tradepost.me:8084/TDserverWeb");
 
        a. startActivity(Intent.createChooser(share, "Share link!"));
     }
