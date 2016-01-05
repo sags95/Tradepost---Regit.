@@ -463,10 +463,41 @@ permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
     {
         SoapObject object = new SoapObject("http://webser/", "addimage");
         object.addProperty("itemid", id);
-        object.addProperty("pic",pic);
+        object.addProperty("pic", pic);
         object.addProperty("image",im);
         return     MainWebService.getMsg(object, "http://services.tradepost.me:8084/TDserverWeb/AddItems?wsdl", "http://webser/AddItems/addimageRequest");
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode)
+        {
+
+            case 1:
+                if(grantResults.length>0&&grantResults[0]== PackageManager.PERMISSION_GRANTED)
+                {
+                    camera();
+
+
+                }
+                break;
+            case 2:
+                if(grantResults.length>0&&grantResults[0]== PackageManager.PERMISSION_GRANTED)
+                {
+
+                    gallery();
+
+                }
+
+
+
+
+
+
+        }
+
+    }
+
     public SoapPrimitive sendtag(int id,String im)
     {
         SoapObject object = new SoapObject("http://webser/", "addtag");
