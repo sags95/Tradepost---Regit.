@@ -1,10 +1,14 @@
 <resources>
+
+
     <string name="app_name">TradePost</string>
     <string name="myItems_empty">You Do Not Have Any Item</string>
     <string name="myItems_empty_btn">Post New Item</string>
-
     <string name="app_id">766732026780315</string>
 
+
+    <!-- welcome -->
+    <string name="welcome_text">We\'re currently perfecting the trading experience, but in the meantime get setup. We\'re rolling out frequent updates bringing you closer to the things you truly want.</string>
 
     <!-- listing process -->
     <string name="section1_text">Name Your Item</string>
