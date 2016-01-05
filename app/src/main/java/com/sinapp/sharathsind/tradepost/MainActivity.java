@@ -104,6 +104,7 @@ public GoogleApiClient mGoogleApiClient;
 
                         }
                     });
+                    builder.create().show();
                 }
 
             }
@@ -159,6 +160,7 @@ public GoogleApiClient mGoogleApiClient;
 
          }
      });
+     builder.create().show();
  }
             }
         });
@@ -346,60 +348,7 @@ s.dismiss();
     }
 
 
-//    private void showLocationDialog(){
-//        int dialogLayout = R.layout.layout_location_dialog;
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
-//
-//        final View dialogView = getLayoutInflater().inflate(dialogLayout, null, false);
-//        final RadioButton rBtnLocScr = (RadioButton) dialogView.findViewById(R.id.radioButton_locService);
-//        final RadioButton rBtnPosCode = (RadioButton) dialogView.findViewById(R.id.radioButton_postalCode);
-//
-//        builder.setPositiveButton("Agree", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//
-//                SoapObject soapObject = new SoapObject("http://webser/", "setLogin");
-//                soapObject.addProperty("userid", Constants.userid);
-//                soapObject.addProperty("lat", String.format("%.2f", userdata.mylocation.latitude));
-//
-//                SharedPreferences.Editor editor = MainActivity.this.getSharedPreferences("loctradepost", MainActivity.this.MODE_PRIVATE).edit();
-//                //editor.putInt("rad", radius);
-//                editor.putFloat("lat", userdata.mylocation.latitude);
-//                editor.putFloat("long", userdata.mylocation.Longitude);
-//                editor.putString("city",userdata.mylocation.city);
-//                editor.commit();
-//                //object.addProperty("tags",tag);
-//                soapObject.addProperty("longi", String.format("%.2f", userdata.mylocation.Longitude));
-//                soapObject.addProperty("city", userdata.mylocation.city);
-//                SoapPrimitive msg = MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
-//            }
-//        });
-//
-////        builder.setNegativeButton("Cancel", null);
-//        builder.setView(getLayoutInflater().inflate(dialogLayout, null, false));
-//
-//        AlertDialog dialog = builder.create();
-//        dialog.setCancelable(false);
-//        dialog.show();
-////      dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-//
-//        rBtnLocScr.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                rBtnPosCode.setChecked(!isChecked);
-//            }
-//        });
-//
-//        rBtnPosCode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                rBtnLocScr.setChecked(!isChecked);
-//            }
-//        });
-//
-//
-//
-//    }
+
 
 
     @Override
