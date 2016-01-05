@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         View customToolBarTitle = getLayoutInflater().inflate(R.layout.layout_toolbar_custom_title, null);
         getSupportActionBar().setCustomView(customToolBarTitle);
         CustomTextView name = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title2);
-        name.setText(Variables.username.split("\\s+")[0]);
 
         TextView addItem = (TextView) findViewById(R.id.add_item_addBtn);
         addItem.setOnClickListener(new View.OnClickListener() {
