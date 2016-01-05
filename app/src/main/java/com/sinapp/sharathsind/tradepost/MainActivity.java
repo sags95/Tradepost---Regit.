@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
@@ -33,6 +34,13 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.iid.InstanceID;
+import com.google.android.gms.plus.Plus;
+
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
 
@@ -47,12 +55,27 @@ import webservices.MainWebService;
 /**
  * Created by HenryChiang on 2015-12-28.
  */
-public class MainActivity extends AppCompatActivity implements LocationListener {
+public class MainActivity extends AppCompatActivity implements LocationListener ,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public GoogleApiClient mGoogleApiClient;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Plus.API)
+                .addScope(Plus.SCOPE_PLUS_LOGIN)
+                .build();
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Permission per=new Permission(MainActivity.this,locationManager);
+        if(per.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED||per.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED)
+        {
+            per.askPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},7);
+
+        }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -111,16 +134,43 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     }
     Snackbar s;
+    public void signOut()
+    {
+        Constants.db=openOrCreateDatabase("tradepostdb.db", MODE_PRIVATE, null);
+        Cursor c=Constants.db.rawQuery("select * from login",null);
+        c.moveToFirst();
+        if(c.getString(c.getColumnIndex("itype")).equals("fb")) {
+
+            LoginManager l = LoginManager.getInstance();
+            l.logOut();
+
+
+        }
+        else if(c.getString(c.getColumnIndex("itype")).equals("g+")){
+            mGoogleApiClient.disconnect();
+
+        }
+        try {
+            InstanceID.getInstance(this).deleteInstanceID();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        c.close();
+        Constants.db.close();
+        deleteDatabase("tradepostdb.db");
+        startActivity(new Intent(this, LaunchActivity.class));
+
+
+      //  getActivity().finish();
+
+
+    }
 public void locationService()
 {
     LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     Permission per=new Permission(MainActivity.this,locationManager);
-    if(per.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED||per.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED)
-    {
-        per.askPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
 
-    }
-    else           if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 0 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 0) {
+            if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 0 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 0) {
 
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
@@ -162,11 +212,17 @@ public void locationService()
 
         }
     }
-    else {
+else    if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 1 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 1) {
+                per.askPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
+
+
+            }
+        else {
         s=   Snackbar.make(findViewById(android.R.id.content), "App needs Permission to access your external storage", Snackbar.LENGTH_LONG)
                 .setAction("Settings", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
 
 s.dismiss();
                     }
@@ -303,6 +359,21 @@ userdata.mylocation.city=cityName+","+stateName;
 
     @Override
     public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
 }
