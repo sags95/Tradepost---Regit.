@@ -57,12 +57,14 @@ import webservices.MainWebService;
  */
 public class MainActivity extends AppCompatActivity implements LocationListener ,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 public GoogleApiClient mGoogleApiClient;
-
+    boolean restoredText;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FacebookSdk.sdkInitialize(getApplicationContext());
+        SharedPreferences prefs =this.getSharedPreferences("loctradepost", LaunchActivity.MODE_PRIVATE);
+         restoredText = prefs.getBoolean("done", false);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
                 .addOnConnectionFailedListener(this)
@@ -88,7 +90,22 @@ public GoogleApiClient mGoogleApiClient;
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(restoredText)
                 startActivity(new Intent(getApplicationContext(), ListingProcessActivity.class));
+                else
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Alert");
+                    builder.setMessage("Please Setup yoour comunity first ");
+                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                        }
+                    });
+                }
+
             }
         });
 
@@ -128,7 +145,21 @@ public GoogleApiClient mGoogleApiClient;
         viewItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+ if(restoredText)
                 startActivity(new Intent(getApplicationContext(),MyItemActivity.class));
+ else
+ {
+     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+     builder.setTitle("Alert");
+     builder.setMessage("Please Setup yoour comunity first ");
+     builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+         @Override
+         public void onClick(DialogInterface dialog, int which) {
+
+
+         }
+     });
+ }
             }
         });
 
@@ -198,18 +229,22 @@ public void locationService()
             //editor.putInt("rad", radius);
             editor.putFloat("lat", userdata.mylocation.latitude);
             editor.putFloat("long", userdata.mylocation.Longitude);
+            editor.putBoolean("done",true);
             editor.commit();
             SoapObject soapObject = new SoapObject("http://webser/", "setLogin");
             soapObject.addProperty("userid", Constants.userid);
             soapObject.addProperty("lat", String.format("%.2f", userdata.mylocation.latitude));
 
-
+restoredText=true;
             //object.addProperty("tags",tag);
             soapObject.addProperty("longi", String.format("%.2f", userdata.mylocation.Longitude));
             soapObject.addProperty("city", userdata.mylocation.city);
             SoapPrimitive msg = MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
 
 
+        }
+                else {
+            Toast.makeText(this,"please check your internet connection ",Toast.LENGTH_LONG).show();
         }
     }
 else    if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 1 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 1) {

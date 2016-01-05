@@ -99,6 +99,7 @@ public class Permission implements  ActivityCompat.OnRequestPermissionsResultCal
                         //editor.putInt("rad", radius);
                         editor.putFloat("lat", userdata.mylocation.latitude);
                         editor.putFloat("long",userdata. mylocation.Longitude);
+                        editor.putBoolean("done",true);
                         editor.commit();
                         SoapObject soapObject =new SoapObject("http://webser/","setLogin");
                         soapObject.addProperty("userid",Constants.userid);
