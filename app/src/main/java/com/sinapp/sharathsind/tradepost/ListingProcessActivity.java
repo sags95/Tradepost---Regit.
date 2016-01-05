@@ -108,10 +108,7 @@ public class ListingProcessActivity extends AppCompatActivity {
     private ColorStateList oldColors;
 
 
-
-
     public ArrayList<String> tags;
-    public ArrayList<Bitmap>bits;
     private CustomEditText tagInput;
     Spinner spinner;
 
@@ -141,7 +138,6 @@ permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
         getSupportActionBar().setHomeButtonEnabled(true);
 
         tags=new ArrayList<String>();
-        bits=new ArrayList<Bitmap>();
 
         //section 1
         LimitedEditText itemName = (LimitedEditText) findViewById(R.id.section1_edit);
@@ -383,7 +379,7 @@ permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
                         Intent i = new Intent(getApplicationContext(),ListingProcessDoneActivity.class);
                         if(s.equals("success")){
                             i.putExtra("isSuccess", true);
-                            i.putExtra("im",bits.get(0));
+                            i.putExtra("im",tempBitmap.get(0));
                             startActivity(i);
                             finish();
 
@@ -408,17 +404,17 @@ permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
                             }
 
                             //     int i=s.get;
-                            SoapPrimitive r= RegisterWebService.sendDataToServer(title,description,tagarray,bits.toArray(),i, userdata.userid,cat);
+                            SoapPrimitive r= RegisterWebService.sendDataToServer(title,description,tagarray,tempBitmap.toArray(),i, userdata.userid,cat);
                             result=r.getValue().toString();
                             int i=0;
-                            if(bits.size()==0)
+                            if(tempBitmap.size()==0)
                             {
                                 Drawable myDrawable = ContextCompat.getDrawable(ListingProcessActivity.this, R.mipmap.ic_image_thumbnail);
                                 Bitmap myLogo = ((BitmapDrawable) myDrawable).getBitmap();
-                                bits.add(myLogo);
+                                tempBitmap.add(myLogo);
                             }
 
-                            for(Bitmap b:bits)
+                            for(Bitmap b:tempBitmap)
                             {
                                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
                                 b.compress(Bitmap.CompressFormat.PNG, 100, stream);
