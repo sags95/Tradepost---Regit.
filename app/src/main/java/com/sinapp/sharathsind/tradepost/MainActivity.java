@@ -85,6 +85,8 @@ public GoogleApiClient mGoogleApiClient;
         View customToolBarTitle = getLayoutInflater().inflate(R.layout.layout_toolbar_custom_title, null);
         getSupportActionBar().setCustomView(customToolBarTitle);
         CustomTextView name = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title2);
+        String[] username = Variables.username.split("\\s+");
+        name.setText(username[0]);
 
         TextView addItem = (TextView) findViewById(R.id.add_item_addBtn);
         addItem.setOnClickListener(new View.OnClickListener() {
