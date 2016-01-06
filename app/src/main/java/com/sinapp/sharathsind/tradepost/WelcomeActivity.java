@@ -38,8 +38,8 @@ public class WelcomeActivity extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         });
 

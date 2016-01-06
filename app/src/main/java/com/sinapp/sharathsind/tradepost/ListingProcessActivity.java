@@ -118,6 +118,9 @@ public class ListingProcessActivity extends AppCompatActivity {
         setContentView(R.layout.activity_listing_process);
         tagFlowLayout = (FlowLayout) findViewById(R.id.section5_tags);
 
+        // Retrieve and cache the system's default "short" animation time.
+        mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
         // GCMService.b = true;
         Permission permission = new Permission(this, null);
         if (permission.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || permission.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
@@ -126,7 +129,6 @@ permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Add Your Item");
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +138,15 @@ permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        View customToolBarTitle = getLayoutInflater().inflate(R.layout.layout_toolbar_custom_title, null);
+        getSupportActionBar().setCustomView(customToolBarTitle);
+        CustomTextView title1 = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title1);
+        CustomTextView title2 = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title2);
+        title1.setText("Add Your Item");
+        title2.setVisibility(View.GONE);
+
 
         tags=new ArrayList<String>();
 

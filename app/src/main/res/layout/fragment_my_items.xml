@@ -48,10 +48,13 @@
             />
 
         <CustomWidget.CustomButton
+            android:id="@+id/myItems_emptyView_postBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/myItems_empty_btn"
-            style="@style/OpenSansLight"
+            android:background="@drawable/listing_process_success"
+            android:textColor="@android:color/white"
+            style="@style/OpenSansRegular"
             />
         </LinearLayout>
 

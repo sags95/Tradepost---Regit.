@@ -67,6 +67,7 @@ public GoogleApiClient mGoogleApiClient;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FacebookSdk.sdkInitialize(getApplicationContext());
+
         SharedPreferences prefs =this.getSharedPreferences("loctradepost", LaunchActivity.MODE_PRIVATE);
         restoredText = prefs.getBoolean("done", false);
 
@@ -356,6 +357,11 @@ s.dismiss();
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
