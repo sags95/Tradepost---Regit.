@@ -274,10 +274,14 @@ public void locationService()
     LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     Permission per=new Permission(MainActivity.this,locationManager);
 
-            if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 0 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 0) {
-new AsyncTask<Boolean,Boolean,Boolean>()
-{
-    ProgressDialog pd;
+
+    if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 0 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 0) {
+
+        new AsyncTask<Boolean,Boolean,Boolean>()
+
+        {
+
+            ProgressDialog pd;
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
@@ -323,6 +327,8 @@ s.dismiss();
               s.show();
 
     }
+
+    c.close();
 
 }
     @Override
