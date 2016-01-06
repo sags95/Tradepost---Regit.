@@ -26,6 +26,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -67,7 +68,13 @@ public GoogleApiClient mGoogleApiClient;
         setContentView(R.layout.activity_main);
         FacebookSdk.sdkInitialize(getApplicationContext());
         SharedPreferences prefs =this.getSharedPreferences("loctradepost", LaunchActivity.MODE_PRIVATE);
-         restoredText = prefs.getBoolean("done", false);
+        restoredText = prefs.getBoolean("done", false);
+
+        if(!restoredText){
+            CardView addItemCard = (CardView) findViewById(R.id.add_item_card_view);
+            addItemCard.setVisibility(View.GONE);
+        }
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
                 .addOnConnectionFailedListener(this)
@@ -83,9 +90,11 @@ public GoogleApiClient mGoogleApiClient;
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         View customToolBarTitle = getLayoutInflater().inflate(R.layout.layout_toolbar_custom_title, null);
         getSupportActionBar().setCustomView(customToolBarTitle);
-        CustomTextView name = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title2);
-        String[] username = Variables.username.split("\\s+");
-        name.setText(username[0]);
+        CustomTextView title1 = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title1);
+        CustomTextView title2 = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title2);
+        title1.setText("Get Setup");
+        title2.setVisibility(View.GONE);
+
 
         TextView addItem = (TextView) findViewById(R.id.add_item_addBtn);
         addItem.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +106,7 @@ public GoogleApiClient mGoogleApiClient;
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setTitle("Alert");
-                    builder.setMessage("Please Setup yoour comunity first ");
+                    builder.setMessage("Please Setup Your Community First ");
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -143,26 +152,28 @@ public GoogleApiClient mGoogleApiClient;
             }
         });
 
+
+
         CustomTextView viewItem = (CustomTextView)findViewById(R.id.add_item_viewBtn);
         viewItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
- if(restoredText)
-                startActivity(new Intent(getApplicationContext(),MyItemActivity.class));
- else
- {
-     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-     builder.setTitle("Alert");
-     builder.setMessage("Please Setup yoour comunity first ");
-     builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-         @Override
-         public void onClick(DialogInterface dialog, int which) {
 
+                if(restoredText)
+                    startActivity(new Intent(getApplicationContext(),MyItemActivity.class));
 
-         }
-     });
-     builder.create().show();
- }
+                else {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Alert");
+                    builder.setMessage("Please Setup Your Community First ");
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+                    builder.create().show();
+                }
             }
         });
 
@@ -270,7 +281,7 @@ new AsyncTask<Boolean,Boolean,Boolean>()
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        pd=ProgressDialog.show(MainActivity.this,"processing","please wait");
+        pd=ProgressDialog.show(MainActivity.this,"Finding","Looking for the closest community...");
     }
 
     @Override
@@ -280,6 +291,8 @@ new AsyncTask<Boolean,Boolean,Boolean>()
         if(aBoolean)
         {
             Toast.makeText(MainActivity.this,"Community has setup successfully",Toast.LENGTH_LONG).show();
+            CardView addItemCard = (CardView) findViewById(R.id.add_item_card_view);
+            addItemCard.setVisibility(View.VISIBLE);
         }
 
     }
@@ -315,21 +328,7 @@ s.dismiss();
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-//        MenuItem shareOption;
-//
-//        shareOption = menu.add("Share");
-//
-//        shareOption.setIcon(R.mipmap.ic_share_white_24dp);
-//        MenuItemCompat.setShowAsAction(shareOption, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
-//
-//        SubMenu submenu = menu.addSubMenu(0, Menu.NONE, 1, "More").setIcon(R.mipmap.ic_more_vert_white_24dp);
-//        submenu.add("Settings").setIcon(R.mipmap.ic_share_white_24dp);
-//        submenu.add("Log Out").setIcon(R.mipmap.ic_share_white_24dp);
-
         getMenuInflater().inflate(R.menu.menu_item, menu);
-
-
-
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -373,7 +372,7 @@ s.dismiss();
                 c.close();
                 ContentValues cv=new ContentValues();
                 cv.put("permssion",count);
-                Constants.db.insert("LocationPermission",null,cv);
+                Constants.db.insert("LocationPermission", null, cv);
 
                 if(grantResults.length>0&&grantResults[0]== PackageManager.PERMISSION_GRANTED&& grantResults.length>0&&grantResults[1]==PackageManager.PERMISSION_GRANTED)
                 {

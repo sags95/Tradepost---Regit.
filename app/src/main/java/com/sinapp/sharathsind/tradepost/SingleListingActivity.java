@@ -36,6 +36,7 @@ import java.util.List;
 import CustomWidget.CustomPagerAdapter;
 import CustomWidget.CustomTextView;
 import Model.MarketPlaceData;
+import Model.Variables;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -128,7 +129,8 @@ public class SingleListingActivity extends AppCompatActivity {
             //item dateAdded
             itemDateAdded.setText(itemInfo.get(4));
             //item username
-            itemUsername.setText(userdata.name);
+            itemUsername.setText(Variables.username);
+//            itemUsername.setText(itemInfo.get(2));
             //item distance
             itemDistance.setText(String.valueOf(roundedDistance(distance(userdata.mylocation.latitude,userdata.mylocation.Longitude, userdata.mylocation.latitude, userdata.mylocation.Longitude, 'K'))));
 
