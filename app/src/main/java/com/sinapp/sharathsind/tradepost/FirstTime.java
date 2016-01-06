@@ -1,19 +1,25 @@
 package com.sinapp.sharathsind.tradepost;
 
+import android.*;
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
@@ -30,6 +36,21 @@ import Model.Variables;
 public class FirstTime extends FragmentActivity implements OnClickListener,
         ConnectionCallbacks, OnConnectionFailedListener {
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode)
+        {case 0:
+            if(grantResults.length>0&&grantResults[0]== PackageManager.PERMISSION_GRANTED) {
+                if (!mGoogleApiClient.isConnecting()) {
+                    mSignInClicked = true;
+                    mGoogleApiClient.connect();
+                }
+
+
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +58,19 @@ public class FirstTime extends FragmentActivity implements OnClickListener,
 
 
 //        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-  //      locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new MyLocationService(this));
-
+  //      locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new MyLocationService(this));Pe
+        Permission per=new Permission(this,null);
+        if(per.checkPermission(Manifest.permission.GET_ACCOUNTS)!= PackageManager.PERMISSION_GRANTED)
+        {
+            per.askPermission(new String[]{Manifest.permission.GET_ACCOUNTS},3);
+        }
         FbFragment mainFragment;
         FbFragment.f = this;
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks((ConnectionCallbacks) this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API)
-                .addScope(Plus.SCOPE_PLUS_LOGIN)
+                .addScope(Plus.SCOPE_PLUS_LOGIN)    .addScope(Plus.SCOPE_PLUS_PROFILE)
                 .build();
         if (savedInstanceState == null) {
             // Add the fragment on initial activity setup
@@ -103,13 +128,34 @@ public class FirstTime extends FragmentActivity implements OnClickListener,
     private boolean mSignInClicked;
 
     private ConnectionResult mConnectionResult;
-
+Snackbar s;
     @Override
     public void onClick(View v) {
         // TODO Auto-generated method stub
-        if (!mGoogleApiClient.isConnecting()) {
-            mSignInClicked = true;
-            mGoogleApiClient.connect();
+        Permission per= new Permission(this,null);
+        if (per.isPermissionDenied(Manifest.permission.GET_ACCOUNTS) == 0 ) {
+            if (!mGoogleApiClient.isConnecting()) {
+                mSignInClicked = true;
+                mGoogleApiClient.connect();
+            }
+
+        }
+        else    if ((per.isPermissionDenied(Manifest.permission.GET_ACCOUNTS) == 1 )) {
+            per.askPermission(new  String[]{Manifest.permission.GET_ACCOUNTS},0);
+        }
+        else
+        {
+            s=   Snackbar.make(findViewById(android.R.id.content), "App needs Permission to access your Account", Snackbar.LENGTH_LONG)
+                    .setAction("Settings", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+
+                            s.dismiss();
+                        }
+                    })
+                    .setActionTextColor(Color.RED);
+            s.show();
         }
     }
 
