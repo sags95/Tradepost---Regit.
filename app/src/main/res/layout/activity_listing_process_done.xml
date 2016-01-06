@@ -78,35 +78,35 @@
             />
 
     </RelativeLayout>
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
-    android:orientation="vertical">
+<!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignParentBottom="true"-->
+    <!--android:orientation="vertical">-->
 
 
-    <CustomWidget.CustomButton
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="View My Post"
-        style="@style/OpenSansLight"
-        android:textColor="@android:color/white"
-        android:background="@drawable/listing_process_success"
+    <!--<CustomWidget.CustomButton-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="View My Post"-->
+        <!--style="@style/OpenSansLight"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--android:background="@drawable/listing_process_success"-->
 
-    />
+    <!--/>-->
 
-    <CustomWidget.CustomButton
-        android:id="@+id/b"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Share on facebook"
-        android:layout_marginTop="5dp"
-        style="@style/OpenSansLight"
-        android:textColor="@android:color/white"
-        android:background="@drawable/listing_process_success"
+    <!--<CustomWidget.CustomButton-->
+        <!--android:id="@+id/b"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Share on facebook"-->
+        <!--android:layout_marginTop="5dp"-->
+        <!--style="@style/OpenSansLight"-->
+        <!--android:textColor="@android:color/white"-->
+        <!--android:background="@drawable/listing_process_success"-->
 
-        />
-</LinearLayout>
+        <!--/>-->
+<!--</LinearLayout>-->
     </RelativeLayout>
 
     <RelativeLayout
@@ -181,6 +181,7 @@
         </RelativeLayout>
 
         <CustomWidget.CustomButton
+            android:id="@+id/listing_process_done_failed_backBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Go Back"

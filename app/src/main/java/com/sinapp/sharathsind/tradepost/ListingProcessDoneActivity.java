@@ -25,7 +25,7 @@ import CustomWidget.CustomButton;
 public class ListingProcessDoneActivity extends AppCompatActivity {
 
     private RelativeLayout successLayout,failedLayout;
-ShareDialog shareDialog;
+    ShareDialog shareDialog;
     CallbackManager callbackManager;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,27 +52,36 @@ ShareDialog shareDialog;
             }
         });
 
-        successLayout = (RelativeLayout)findViewById(R.id.listing_process_success_layout);
-        failedLayout = (RelativeLayout)findViewById(R.id.listing_process_failed_layout);
-        CustomButton b=(CustomButton)findViewById(R.id.b);
-        b.setOnClickListener(new View.OnClickListener() {
+
+        CustomButton failGoBack = (CustomButton)findViewById(R.id.listing_process_done_failed_backBtn);
+        failGoBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bitmap image=getIntent().getParcelableExtra("im") ;
-                SharePhoto photo = new SharePhoto.Builder()
-                        .setBitmap(image)
-                        .build();
-                SharePhotoContent content = new SharePhotoContent.Builder()
-                        .addPhoto(photo)
-                        .build();
-                if (ShareDialog.canShow(ShareLinkContent.class)) {
-
-
-                    shareDialog.show(ListingProcessDoneActivity.this,content);
-                }
-
+                onBackPressed();
             }
         });
+
+        successLayout = (RelativeLayout)findViewById(R.id.listing_process_success_layout);
+        failedLayout = (RelativeLayout)findViewById(R.id.listing_process_failed_layout);
+//        CustomButton b=(CustomButton)findViewById(R.id.b);
+//        b.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Bitmap image=getIntent().getParcelableExtra("im") ;
+//                SharePhoto photo = new SharePhoto.Builder()
+//                        .setBitmap(image)
+//                        .build();
+//                SharePhotoContent content = new SharePhotoContent.Builder()
+//                        .addPhoto(photo)
+//                        .build();
+//                if (ShareDialog.canShow(ShareLinkContent.class)) {
+//
+//
+//                    shareDialog.show(ListingProcessDoneActivity.this,content);
+//                }
+//
+//            }
+//        });
         final boolean isSuccess = getIntent().getBooleanExtra("isSuccess",false);
         successLayout.setVisibility(isSuccess ? View.VISIBLE : View.GONE);
         failedLayout.setVisibility(isSuccess ? View.GONE : View.VISIBLE);
