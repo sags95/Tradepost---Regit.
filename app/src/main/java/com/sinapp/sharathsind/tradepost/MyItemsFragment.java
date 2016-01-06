@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import CustomWidget.CustomButton;
 import CustomWidget.CustomLinearLayoutManager;
 import Model.DividerItemDecoration;
 import Model.EmptyRecyclerView;
@@ -54,7 +55,6 @@ public class MyItemsFragment extends Fragment {
         emptyView = rootView.findViewById(R.id.myItems_emptyView);
         mRecyclerView = (EmptyRecyclerView)rootView.findViewById(R.id.myItems_recyclerview);
 
-
         new AsyncTask<String,String,String>(){
 
             @Override
@@ -78,7 +78,7 @@ public class MyItemsFragment extends Fragment {
 
             @Override
             protected void onPostExecute(String s) {
-                myItemsAdapter = new MyItemsAdapter(getActivity().getApplicationContext(),myItems,myItemClickListener);
+                myItemsAdapter = new MyItemsAdapter(getContext(),myItems,myItemClickListener);
                 mRecyclerView.setAdapter(myItemsAdapter);
             }
         }.execute();

@@ -167,8 +167,8 @@ public class LaunchActivity extends AppCompatActivity {
                                 "  profilepicture varchar ," +
                                 "  emailconfirm varchar ," +
                                 "  userid int(10))");
-
-
+                        Constants.db.execSQL("Create table IF NOT EXISTS LocationPermission (permssion int(10))");
+                        Constants.db.execSQL("Create table IF NOT EXISTS Location (latitude DECIMAL(10,5),longutude DECIMAL(10,5) ,city varchar(50))");
                         Constants.db.execSQL("Create table IF NOT EXISTS GCM (gcmkey varchar)");
 
 

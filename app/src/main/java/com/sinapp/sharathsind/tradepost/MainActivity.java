@@ -3,6 +3,7 @@ package com.sinapp.sharathsind.tradepost;
 import android.*;
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -65,8 +67,15 @@ public GoogleApiClient mGoogleApiClient;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FacebookSdk.sdkInitialize(getApplicationContext());
+
         SharedPreferences prefs =this.getSharedPreferences("loctradepost", LaunchActivity.MODE_PRIVATE);
-         restoredText = prefs.getBoolean("done", false);
+        restoredText = prefs.getBoolean("done", false);
+
+        if(!restoredText){
+            CardView addItemCard = (CardView) findViewById(R.id.add_item_card_view);
+            addItemCard.setVisibility(View.GONE);
+        }
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
                 .addOnConnectionFailedListener(this)
@@ -74,19 +83,19 @@ public GoogleApiClient mGoogleApiClient;
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Permission per=new Permission(MainActivity.this,locationManager);
-        if(per.checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED||per.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED)
-        {
-            per.askPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},7);
 
-        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         View customToolBarTitle = getLayoutInflater().inflate(R.layout.layout_toolbar_custom_title, null);
         getSupportActionBar().setCustomView(customToolBarTitle);
-        CustomTextView name = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title2);
+        CustomTextView title1 = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title1);
+        CustomTextView title2 = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title2);
+        title1.setText("Get Setup");
+        title2.setVisibility(View.GONE);
+
 
         TextView addItem = (TextView) findViewById(R.id.add_item_addBtn);
         addItem.setOnClickListener(new View.OnClickListener() {
@@ -98,14 +107,15 @@ public GoogleApiClient mGoogleApiClient;
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setTitle("Alert");
-                    builder.setMessage("Please Setup yoour comunity first ");
+                    builder.setMessage("Please Setup Your Community First ");
                     builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+                            dialog.dismiss();
 
                         }
                     });
+                    builder.create().show();
                 }
 
             }
@@ -128,7 +138,7 @@ public GoogleApiClient mGoogleApiClient;
                             //Launch settings, allowing user to make a change
                             Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                             startActivity(i);
-                            dialog.dismiss();
+                            dialog.cancel();
                         }
                     });
 
@@ -143,25 +153,28 @@ public GoogleApiClient mGoogleApiClient;
             }
         });
 
+
+
         CustomTextView viewItem = (CustomTextView)findViewById(R.id.add_item_viewBtn);
         viewItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
- if(restoredText)
-                startActivity(new Intent(getApplicationContext(),MyItemActivity.class));
- else
- {
-     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-     builder.setTitle("Alert");
-     builder.setMessage("Please Setup yoour comunity first ");
-     builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-         @Override
-         public void onClick(DialogInterface dialog, int which) {
 
-dialog.dismiss();
-         }
-     });
- }
+                if(restoredText)
+                    startActivity(new Intent(getApplicationContext(),MyItemActivity.class));
+
+                else {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("Alert");
+                    builder.setMessage("Please Setup Your Community First ");
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+                    builder.create().show();
+                }
             }
         });
 
@@ -198,10 +211,10 @@ dialog.dismiss();
 
 
     }
-    public boolean getlocation()
+    public boolean getLocation()
     {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
         Criteria criteria = new Criteria();
         String provider = locationManager.getBestProvider(criteria, false);
         Location location = locationManager.getLastKnownLocation(provider);
@@ -222,77 +235,82 @@ dialog.dismiss();
             String stateName = addresses.get(0).getAdminArea();
             userdata.mylocation.city = cityName + "," + stateName;
 
-
+            SharedPreferences.Editor editor = MainActivity.this.getSharedPreferences("loctradepost", MainActivity.this.MODE_PRIVATE).edit();
+            //editor.putInt("rad", radius);
+            editor.putFloat("lat", userdata.mylocation.latitude);
+            editor.putFloat("long", userdata.mylocation.Longitude);
+            editor.putString("city",userdata.mylocation.city);
+            editor.putBoolean("done", true);
+            boolean b=   editor.commit();
             SoapObject soapObject = new SoapObject("http://webser/", "setLogin");
             soapObject.addProperty("userid", Constants.userid);
             soapObject.addProperty("lat", String.format("%.2f", userdata.mylocation.latitude));
 
-
+            restoredText=true;
             //object.addProperty("tags",tag);
             soapObject.addProperty("longi", String.format("%.2f", userdata.mylocation.Longitude));
             soapObject.addProperty("city", userdata.mylocation.city);
+
             SoapPrimitive msg = MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
 
-if(msg!=null) {
-    SharedPreferences.Editor editor = MainActivity.this.getSharedPreferences("loctradepost", MainActivity.this.MODE_PRIVATE).edit();
-    //editor.putInt("rad", radius);
-    editor.putFloat("lat", userdata.mylocation.latitude);
-    editor.putFloat("long", userdata.mylocation.Longitude);
-    editor.putBoolean("done", true);
-    editor.commit();
-    restoredText=true;
-    return true;
-
-}
-else
+if(msg!=null)
+            {
+             return  true;
+            }
+            else
+{
     return false;
+}
         }
         else {
-            Toast.makeText(this,"please check your internet connection ",Toast.LENGTH_LONG).show();
-       return false;
+            Toast.makeText(this,"please turn on your gps ",Toast.LENGTH_LONG).show();
+        return  false;
         }
     }
 public void locationService()
 {
+    int count;
+    Cursor c=Constants.db.rawQuery("select * from LocationPermission",null);
+    c.moveToFirst();
     LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     Permission per=new Permission(MainActivity.this,locationManager);
 
-            if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 0 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 0) {
 
-new AsyncTask<Boolean,Boolean,Boolean>()
-{
-    ProgressDialog pd;
+    if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 0 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 0) {
+
+        new AsyncTask<Boolean,Boolean,Boolean>()
+
+        {
+
+            ProgressDialog pd;
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        pd=ProgressDialog.show(MainActivity.this,"Processing","Please Wait",true,false);
-
+        pd=ProgressDialog.show(MainActivity.this,"Finding","Looking for the closest community...");
     }
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
-        pd.dismiss();
+        pd.hide();
         if(aBoolean)
         {
-Toast.makeText(MainActivity.this,"Comunity has been setup",Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this,"Community has setup successfully",Toast.LENGTH_LONG).show();
+            CardView addItemCard = (CardView) findViewById(R.id.add_item_card_view);
+            addItemCard.setVisibility(View.VISIBLE);
         }
-        else
-        {
-            Toast.makeText(MainActivity.this,"Please check your internet connection or gps",Toast.LENGTH_LONG).show();
 
-        }
     }
 
     @Override
-    protected Boolean doInBackground(Boolean... params) {
-        return getlocation();
+    protected Boolean doInBackground(Boolean... booleans) {
+        return getLocation();
     }
 }.execute();
 
     }
-else    if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 1 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 1) {
-                per.askPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},1);
+else    if (c.getCount()==0||(per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 1 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 1)) {
+                per.askPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},0);
 
 
             }
@@ -311,25 +329,13 @@ s.dismiss();
 
     }
 
+    c.close();
+
 }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-//        MenuItem shareOption;
-//
-//        shareOption = menu.add("Share");
-//
-//        shareOption.setIcon(R.mipmap.ic_share_white_24dp);
-//        MenuItemCompat.setShowAsAction(shareOption, MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
-//
-//        SubMenu submenu = menu.addSubMenu(0, Menu.NONE, 1, "More").setIcon(R.mipmap.ic_more_vert_white_24dp);
-//        submenu.add("Settings").setIcon(R.mipmap.ic_share_white_24dp);
-//        submenu.add("Log Out").setIcon(R.mipmap.ic_share_white_24dp);
-
         getMenuInflater().inflate(R.menu.menu_item, menu);
-
-
-
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -343,66 +349,104 @@ s.dismiss();
                 Constants c = new Constants();
                 c.shareTextUrl(this);
                 break;
+            case "Log Out":
+                signOut();
+                break;
         }
 
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode)
+        {
+            case 0:
+                int count;
+                Cursor c=Constants.db.rawQuery("select * from LocationPermission",null);
+                c.moveToFirst();
+                if(c.getCount()>0)
+                {
+                    count  =c.getInt(c.getColumnIndex("permssion"));
+                    count++;
 
-//    private void showLocationDialog(){
-//        int dialogLayout = R.layout.layout_location_dialog;
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
-//
-//        final View dialogView = getLayoutInflater().inflate(dialogLayout, null, false);
-//        final RadioButton rBtnLocScr = (RadioButton) dialogView.findViewById(R.id.radioButton_locService);
-//        final RadioButton rBtnPosCode = (RadioButton) dialogView.findViewById(R.id.radioButton_postalCode);
-//
-//        builder.setPositiveButton("Agree", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//
-//                SoapObject soapObject = new SoapObject("http://webser/", "setLogin");
-//                soapObject.addProperty("userid", Constants.userid);
-//                soapObject.addProperty("lat", String.format("%.2f", userdata.mylocation.latitude));
-//
-//                SharedPreferences.Editor editor = MainActivity.this.getSharedPreferences("loctradepost", MainActivity.this.MODE_PRIVATE).edit();
-//                //editor.putInt("rad", radius);
-//                editor.putFloat("lat", userdata.mylocation.latitude);
-//                editor.putFloat("long", userdata.mylocation.Longitude);
-//                editor.putString("city",userdata.mylocation.city);
-//                editor.commit();
-//                //object.addProperty("tags",tag);
-//                soapObject.addProperty("longi", String.format("%.2f", userdata.mylocation.Longitude));
-//                soapObject.addProperty("city", userdata.mylocation.city);
-//                SoapPrimitive msg = MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
-//            }
-//        });
-//
-////        builder.setNegativeButton("Cancel", null);
-//        builder.setView(getLayoutInflater().inflate(dialogLayout, null, false));
-//
-//        AlertDialog dialog = builder.create();
-//        dialog.setCancelable(false);
-//        dialog.show();
-////      dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-//
-//        rBtnLocScr.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                rBtnPosCode.setChecked(!isChecked);
-//            }
-//        });
-//
-//        rBtnPosCode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                rBtnLocScr.setChecked(!isChecked);
-//            }
-//        });
-//
-//
-//
-//    }
+                }
+                else
+                {
+                    count=1;
+                }
+                c.close();
+                ContentValues cv=new ContentValues();
+                cv.put("permssion",count);
+                Constants.db.insert("LocationPermission", null, cv);
+
+                if(grantResults.length>0&&grantResults[0]== PackageManager.PERMISSION_GRANTED&& grantResults.length>0&&grantResults[1]==PackageManager.PERMISSION_GRANTED)
+                {
+              /*     // locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, Welcome.service);
+                   // locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, Welcome.service);
+                    Criteria criteria = new Criteria();
+                    String provider = locationManager.getBestProvider(criteria, false);
+                    Location location = locationManager.getLastKnownLocation(provider);
+
+                    if(location!=null) {
+                        userdata.mylocation=new UserLocation();
+
+                        userdata.mylocation.Longitude =(float) location.getLongitude();
+                        userdata.mylocation.latitude = (float)location.getLatitude();
+                        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+                        List<Address> addresses = null;
+                        try {
+                            addresses = geocoder.getFromLocation(userdata.mylocation.latitude, userdata.mylocation.Longitude, 1);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        String cityName = addresses.get(0).getLocality();
+                        String stateName = addresses.get(0).getAdminArea();
+                        userdata.mylocation.city=cityName+","+stateName;
+
+                        SharedPreferences.Editor editor = context.getSharedPreferences("loctradepost", context.MODE_PRIVATE).edit();
+                        //editor.putInt("rad", radius);
+                        editor.putFloat("lat", userdata.mylocation.latitude);
+                        editor.putFloat("long",userdata. mylocation.Longitude);
+                        editor.putBoolean("done",true);
+                    boolean b=    editor.commit();
+                        SoapObject soapObject =new SoapObject("http://webser/","setLogin");
+                        soapObject.addProperty("userid",Constants.userid);
+                        soapObject.addProperty("lat", String.format("%.2f", userdata.mylocation.latitude));
+
+
+                        //object.addProperty("tags",tag);
+                        soapObject.addProperty("longi", String.format("%.2f", userdata.mylocation.Longitude));
+                        soapObject.addProperty("city", userdata.mylocation.city);
+                        SoapPrimitive msg= MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
+
+
+                        break;
+                    }*/
+                 locationService();
+                    break;
+
+                }
+                else{
+
+                    break;
+                }
+
+
+
+
+
+
+
+        }
+
+    }
 
 
     @Override
