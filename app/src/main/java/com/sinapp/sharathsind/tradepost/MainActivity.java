@@ -343,6 +343,9 @@ s.dismiss();
                 Constants c = new Constants();
                 c.shareTextUrl(this);
                 break;
+            case "Log Out":
+                signOut();
+                break;
         }
 
         return true;
