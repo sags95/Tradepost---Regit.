@@ -240,7 +240,7 @@ cursor.close();
                     }
                 }
                 CustomTextView temp2 =(CustomTextView)seekBarLi.getChildAt(progress);
-                temp2.setTextColor(getResources().getColor(R.color.fab_primaryColor));
+                temp2.setTextColor(getResources().getColor(R.color.colorAccent));
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
