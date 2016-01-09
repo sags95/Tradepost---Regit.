@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import CustomWidget.CustomClickableTextView;
 import CustomWidget.CustomTextView;
 import Model.Variables;
 import webservices.MainWebService;
@@ -98,7 +99,7 @@ public GoogleApiClient mGoogleApiClient;
         title2.setVisibility(View.GONE);
 
 
-        TextView addItem = (TextView) findViewById(R.id.add_item_addBtn);
+        CustomClickableTextView addItem = (CustomClickableTextView) findViewById(R.id.add_item_addBtn);
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,12 +124,12 @@ public GoogleApiClient mGoogleApiClient;
         });
 
 
-        TextView findCommunity = (TextView)findViewById(R.id.community_setBtn);
+        CustomClickableTextView findCommunity = (CustomClickableTextView)findViewById(R.id.community_setBtn);
         findCommunity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-                if(!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     //Ask the user to enable GPS
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setTitle("Location Manager");
@@ -144,9 +145,7 @@ public GoogleApiClient mGoogleApiClient;
                     });
 
                     builder.create().show();
-                }
-                else
-                {
+                } else {
                     locationService();
                 }
 
@@ -156,7 +155,7 @@ public GoogleApiClient mGoogleApiClient;
 
 
 
-        CustomTextView viewItem = (CustomTextView)findViewById(R.id.add_item_viewBtn);
+        CustomClickableTextView viewItem = (CustomClickableTextView)findViewById(R.id.add_item_viewBtn);
         viewItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
