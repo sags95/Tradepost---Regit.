@@ -151,9 +151,10 @@
        android:layout_margin="16dp"
        android:clickable="true"
        android:scaleType="center"
-       app:backgroundTint="@color/fab_primaryColor"
+       app:backgroundTint="@color/colorAccent"
        app:layout_anchor="@id/single_listing_img_layout"
-       app:layout_anchorGravity="bottom|right|end"/>
+       app:layout_anchorGravity="bottom|right|end"
+       />
 
 
 

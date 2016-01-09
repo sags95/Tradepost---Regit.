@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorBackgroundGray"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -14,21 +13,23 @@
         android:background="?attr/colorPrimary"
         android:theme="@style/ActionBarTheme"
         app:popupTheme="@style/ToolbarPopupTheme"
+        android:layout_alignParentTop="true"
         />
 
     <ScrollView
+        android:id="@+id/main_scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
 
         >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:paddingBottom="8dp"
             >
 
             <android.support.v7.widget.CardView
@@ -158,7 +159,6 @@
                 card_view:cardCornerRadius="4dp"
                 card_view:cardUseCompatPadding="true"
                 card_view:cardElevation="2dp"
-
                 >
 
                 <LinearLayout
@@ -268,10 +268,63 @@
 
             </android.support.v7.widget.CardView>
 
+            <View
+                android:layout_width="48dp"
+                android:layout_height="2dp"
+                android:background="@color/colorPrimary"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center"
+                />
+
+            <CustomWidget.CustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="More Coming Soon!"
+                android:layout_marginTop="8dp"
+                style="@style/OpenSansRegular"
+                />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorBackgroundGray"
+
+                >
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/main_shareFab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:clickable="true"
+                    android:scaleType="center"
+                    android:src="@mipmap/ic_share_white_24dp"
+                    android:layout_centerHorizontal="true"
+                    app:backgroundTint="@color/colorPrimary"
+                    />
+
+                <CustomWidget.CustomTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/main_shareFab"
+                    android:textColor="@color/textColor"
+                    android:text="Share to friends for quicker access!"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    style="@style/OpenSansRegular"
+                    android:layout_marginBottom="8dp"
+                    />
+
+            </RelativeLayout>
+
+
         </LinearLayout>
 
     </ScrollView>
 
 
 
-</LinearLayout>
+
+
+</RelativeLayout>

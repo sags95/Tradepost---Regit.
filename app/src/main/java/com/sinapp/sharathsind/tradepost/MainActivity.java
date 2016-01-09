@@ -33,6 +33,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -253,85 +254,80 @@ public GoogleApiClient mGoogleApiClient;
 
             SoapPrimitive msg = MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
 
-if(msg!=null)
-            {
-             return  true;
+            if(msg!=null) {
+                return  true;
+            } else {
+                return false;
             }
-            else
-{
-    return false;
-}
-        }
-        else {
+        } else {
             Toast.makeText(this,"please turn on your gps ",Toast.LENGTH_LONG).show();
-        return  false;
+            return false;
         }
     }
-public void locationService()
-{
-    int count;
-    Cursor c=Constants.db.rawQuery("select * from LocationPermission",null);
-    c.moveToFirst();
-    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-    Permission per=new Permission(MainActivity.this,locationManager);
+
+    public void locationService() {
+        int count;
+        Cursor c=Constants.db.rawQuery("select * from LocationPermission",null);
+        c.moveToFirst();
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Permission per=new Permission(MainActivity.this,locationManager);
 
 
-    if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 0 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 0) {
+        if (per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 0 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 0) {
 
-        new AsyncTask<Boolean,Boolean,Boolean>()
+            new AsyncTask<Boolean,Boolean,Boolean>() {
 
-        {
+                ProgressDialog pd;
 
-            ProgressDialog pd;
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        pd=ProgressDialog.show(MainActivity.this,"Finding","Looking for the closest community...");
-    }
+                @Override
 
-    @Override
-    protected void onPostExecute(Boolean aBoolean) {
-        super.onPostExecute(aBoolean);
-        pd.hide();
-        if(aBoolean)
-        {
-            Toast.makeText(MainActivity.this,"Community has setup successfully",Toast.LENGTH_LONG).show();
-            CardView addItemCard = (CardView) findViewById(R.id.add_item_card_view);
-            addItemCard.setVisibility(View.VISIBLE);
-        }
+                protected void onPreExecute() {
+                    super.onPreExecute();
+                    pd=ProgressDialog.show(MainActivity.this,"Finding","Looking for the closest community...");
+                }
 
-    }
-
-    @Override
-    protected Boolean doInBackground(Boolean... booleans) {
-        return getLocation();
-    }
-}.execute();
-
-    }
-else    if (c.getCount()==0||(per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 1 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 1)) {
-                per.askPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},0);
-
-
-            }
-        else {
-        s=   Snackbar.make(findViewById(android.R.id.content), "App needs Permission to access your external storage", Snackbar.LENGTH_LONG)
-                .setAction("Settings", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-
-s.dismiss();
+                @Override
+                protected void onPostExecute(Boolean aBoolean) {
+                    super.onPostExecute(aBoolean);
+                    pd.hide();
+                    if(aBoolean) {
+                        Toast.makeText(MainActivity.this,"Community has setup successfully",Toast.LENGTH_LONG).show();
+                        CardView addItemCard = (CardView) findViewById(R.id.add_item_card_view);
+                        addItemCard.setVisibility(View.VISIBLE);
                     }
-                })
-                .setActionTextColor(Color.RED);
-              s.show();
+                }
+
+
+                @Override
+                protected Boolean doInBackground(Boolean... booleans) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            getLocation();
+                        }
+                    });
+
+                    return true;
+                }
+            }.execute();
+
+        } else if (c.getCount()==0||(per.isPermissionDenied(Manifest.permission.ACCESS_FINE_LOCATION) == 1 && per.isPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION) == 1)) {
+                    per.askPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},0);
+
+        } else {
+            s = Snackbar.make(findViewById(android.R.id.content), "App needs Permission to access your external storage", Snackbar.LENGTH_LONG).setAction("Settings", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            s.dismiss();
+                        }
+                    }).setActionTextColor(Color.RED);
+            s.show();
+
+        }
+
+        c.close();
 
     }
-
-    c.close();
-
-}
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 

@@ -48,7 +48,11 @@
 
     <style name="ToolbarPopupTheme" parent="style/ThemeOverlay.AppCompat.Light">
         <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="android:colorBackground">@color/colorPrimary</item>
+        <item name="android:colorBackground">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="AppTheme.FloatingAccentButtonOverlay" >
+        <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
 
