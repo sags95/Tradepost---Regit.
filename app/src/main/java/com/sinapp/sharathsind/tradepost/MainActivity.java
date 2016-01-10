@@ -17,6 +17,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -401,9 +402,13 @@ userdata.city=cityName;
                     per.askPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},0);
 
         } else {
-            s = Snackbar.make(findViewById(android.R.id.content), "App needs Permission to access your external storage", Snackbar.LENGTH_LONG).setAction("Settings", new View.OnClickListener() {
+            s = Snackbar.make(findViewById(android.R.id.content), "App needs Permission to access your location", Snackbar.LENGTH_LONG).setAction("Settings", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                    Uri.fromParts("package", getPackageName(), null));
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
                             s.dismiss();
                         }
                     }).setActionTextColor(Color.RED);
