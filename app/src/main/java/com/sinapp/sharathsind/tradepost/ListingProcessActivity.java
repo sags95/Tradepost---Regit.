@@ -476,7 +476,7 @@ permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
         object.addProperty("itemid", id);
         object.addProperty("pic", pic);
         object.addProperty("image",im);
-        return     MainWebService.getMsg(object, "http://services.tradepost.me:8084/TDserverWeb/AddItems?wsdl", "http://webser/AddItems/addimageRequest");
+        return     MainWebService.getMsg(object, "http://205.204.80.221:8084/TDserverWeb/AddItems?wsdl", "http://webser/AddItems/addimageRequest");
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -515,7 +515,7 @@ permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
         object.addProperty("itemid", id);
 
         object.addProperty("tag",im);
-        return     MainWebService.getMsg(object, "http://services.tradepost.me:8084/TDserverWeb/AddItems?wsdl", "http://webser/AddItems/addtagRequest");
+        return     MainWebService.getMsg(object, "http://205.204.80.221:8084/TDserverWeb/AddItems?wsdl", "http://webser/AddItems/addtagRequest");
     }
     public View.OnKeyListener tagOnKeyListener = new View.OnKeyListener() {
         @Override
@@ -787,7 +787,7 @@ public void camera()
     private static final String SOAP_ACTION = "http://webser/AddItems/additemRequest";
     private static final String METHOD_NAME = "additem";
     private static final String NAMESPACE = "http://webser/";
-    private static final String URL ="http://services.tradepost.me:8084/TDserverWeb/AddItems?wsdl";
+    private static final String URL ="http://205.204.80.221:8084/TDserverWeb/AddItems?wsdl";
     public SoapPrimitive sendDataToServer(String itemTitle, String descrpition, String[] tags, Object[] images, int condition, int userid, String category) {
 
         SoapObject object = new SoapObject(NAMESPACE, METHOD_NAME);
@@ -815,7 +815,7 @@ public void camera()
         }
 
 
-        return MainWebService.getMsg(object, "http://services.tradepost.me:8084/TDserverWeb/AddItems?wsdl", "http://webser/AddItems/additemRequest");
+        return MainWebService.getMsg(object, "http://205.204.80.221:8084/TDserverWeb/AddItems?wsdl", "http://webser/AddItems/additemRequest");
 
     }
 

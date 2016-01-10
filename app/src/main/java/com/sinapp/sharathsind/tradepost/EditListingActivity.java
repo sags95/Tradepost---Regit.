@@ -158,7 +158,7 @@ ArrayList<Integer>userid;
                 }
                 SoapObject soapObject=new SoapObject("http://webser/","getOfferDelete");
                 soapObject.addProperty("i",itemid);
-                Vector res= MainWebService.getMsg1(soapObject, "http://services.tradepost.me:8084/TDserverWeb/EditdeleteItem?wsdl", "http://webser/EditdeleteItem/getOfferDeleteRequest");
+                Vector res= MainWebService.getMsg1(soapObject, "http://205.204.80.221:8084/TDserverWeb/EditdeleteItem?wsdl", "http://webser/EditdeleteItem/getOfferDeleteRequest");
                if(res!=null) {
                    for (Object i : res) {
                        cursor = Constants.db.rawQuery("select * from offers where offerid=" + i, null);
@@ -455,7 +455,7 @@ cursor.close();
                                 obje.addProperty("userid",userid.get(k));
                                 k++;
                                 obje.addProperty("username", Variables.username);
-                                SoapPrimitive soapPrimitive1= MainWebService.getretryMsg(obje, "http://services.tradepost.me:8084/TDserverWeb/OfferWebService?wsdl", "http://webser/OfferWebService/sendOfferDeclineRequest", 0);
+                                SoapPrimitive soapPrimitive1= MainWebService.getretryMsg(obje, "http://205.204.80.221:8084/TDserverWeb/OfferWebService?wsdl", "http://webser/OfferWebService/sendOfferDeclineRequest", 0);
                                 db.execSQL("update offers set status =2 where offerid =" + i);
                                 c.close();
                                 db.close();
@@ -499,7 +499,7 @@ delete(itemid);
         object.addProperty("itemid", id);
         object.addProperty("pic",pic);
         object.addProperty("image",im);
-        return     MainWebService.getMsg(object, "http://services.tradepost.me:8084/TDserverWeb/AddItems?wsdl", "http://webser/AddItems/addimageRequest");
+        return     MainWebService.getMsg(object, "http://205.204.80.221:8084/TDserverWeb/AddItems?wsdl", "http://webser/AddItems/addimageRequest");
     }
     public SoapPrimitive sendtag(int id,String im)
     {
@@ -507,13 +507,13 @@ delete(itemid);
         object.addProperty("itemid", id);
 
         object.addProperty("tag",im);
-        return     MainWebService.getMsg(object, "http://services.tradepost.me:8084/TDserverWeb/AddItems?wsdl", "http://webser/AddItems/addtagRequest");
+        return     MainWebService.getMsg(object, "http://205.204.80.221:8084/TDserverWeb/AddItems?wsdl", "http://webser/AddItems/addtagRequest");
     }
     public void delete(int itemid)
     {
         SoapObject soapObject=new SoapObject("http://webser/","delete");
         soapObject.addProperty("id",itemid);
-        SoapPrimitive res= MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/EditdeleteItem?wsdl", "http://webser/EditdeleteItem/deleteRequest");
+        SoapPrimitive res= MainWebService.getMsg(soapObject, "http://205.204.80.221:8084/TDserverWeb/EditdeleteItem?wsdl", "http://webser/EditdeleteItem/deleteRequest");
 
 
     }
@@ -521,7 +521,7 @@ delete(itemid);
     {
         SoapObject soapObject=new SoapObject("http://webser/","deletetags");
         soapObject.addProperty("id",itemid);
-        SoapPrimitive res= MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/EditdeleteItem?wsdl", "http://webser/EditdeleteItem/deletetagsRequest");
+        SoapPrimitive res= MainWebService.getMsg(soapObject, "http://205.204.80.221:8084/TDserverWeb/EditdeleteItem?wsdl", "http://webser/EditdeleteItem/deletetagsRequest");
 
 
     }

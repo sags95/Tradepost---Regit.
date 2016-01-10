@@ -28,6 +28,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -63,6 +64,8 @@ import webservices.MainWebService;
 public class MainActivity extends AppCompatActivity implements LocationListener ,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 public GoogleApiClient mGoogleApiClient;
     boolean restoredText;
+    private boolean canGetLocation;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -212,13 +215,87 @@ public GoogleApiClient mGoogleApiClient;
 
 
     }
+    LocationManager locationManager;
+    Location    location;
+    public Location getLocation1() {
+        try {
+            locationManager = (LocationManager) this
+                    .getSystemService(LOCATION_SERVICE);
+
+            // getting GPS status
+            boolean isGPSEnabled = locationManager
+                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            // getting network status
+           boolean isNetworkEnabled = locationManager
+                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            if (!isGPSEnabled && !isNetworkEnabled) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Location Manager");
+                builder.setMessage("Please Enable the gps ");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Launch settings, allowing user to make a change
+                        Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(i);
+                        dialog.cancel();
+                    }
+                });
+
+                builder.create().show();
+                // no network provider is enabled
+            } else {
+                this.canGetLocation = true;
+                if (isNetworkEnabled) {
+                    locationManager.requestLocationUpdates(
+                            LocationManager.NETWORK_PROVIDER,
+                            0,
+                            0, this);
+                 //   Log.d("Network", "Network Enabled");if (locationManager != null) {
+                        location = locationManager
+                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        if (location != null) {
+                         //   latitude = location.getLatitude();
+                          //  longitude = location.getLongitude();
+                        }
+                    }
+                }
+                // if GPS Enabled get lat/long using GPS Services
+                if (isGPSEnabled) {
+                    if (location == null) {
+                        locationManager.requestLocationUpdates(
+                                LocationManager.GPS_PROVIDER,
+                            0,
+                                0, this);
+                        Log.d("GPS", "GPS Enabled");
+                        if (locationManager != null) {
+                            location = locationManager
+                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            if (location != null) {
+
+                              //  latitude = location.getLatitude();
+                               // longitude = location.getLongitude();
+                            }
+                        }
+                    }
+                }
+            }
+
+         catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return location;
+    }
     public boolean getLocation()
     {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         Criteria criteria = new Criteria();
         String provider = locationManager.getBestProvider(criteria, false);
-        Location location = locationManager.getLastKnownLocation(provider);
+        Location location =getLocation1();
 
         if (location != null) {
             userdata.mylocation = new UserLocation();
@@ -235,7 +312,7 @@ public GoogleApiClient mGoogleApiClient;
             String cityName = addresses.get(0).getLocality();
             String stateName = addresses.get(0).getAdminArea();
             userdata.mylocation.city = cityName + "," + stateName;
-
+userdata.city=cityName;
             SharedPreferences.Editor editor = MainActivity.this.getSharedPreferences("loctradepost", MainActivity.this.MODE_PRIVATE).edit();
             //editor.putInt("rad", radius);
             editor.putFloat("lat", userdata.mylocation.latitude);
@@ -252,7 +329,7 @@ public GoogleApiClient mGoogleApiClient;
             soapObject.addProperty("longi", String.format("%.2f", userdata.mylocation.Longitude));
             soapObject.addProperty("city", userdata.mylocation.city);
 
-            SoapPrimitive msg = MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
+            SoapPrimitive msg = MainWebService.getMsg(soapObject, "http://205.204.80.221:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
 
             if(msg!=null) {
                 return  true;
@@ -260,7 +337,7 @@ public GoogleApiClient mGoogleApiClient;
                 return false;
             }
         } else {
-            Toast.makeText(this,"please turn on your gps ",Toast.LENGTH_LONG).show();
+
             return false;
         }
     }
@@ -291,7 +368,17 @@ public GoogleApiClient mGoogleApiClient;
                     super.onPostExecute(aBoolean);
                     pd.hide();
                     if(aBoolean) {
-                        Toast.makeText(MainActivity.this,"Community has setup successfully",Toast.LENGTH_LONG).show();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setTitle("Message");
+                        builder.setMessage("You have been added to  " + userdata.city+"community");
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Launch settings, allowing user to make a change
+
+                                dialog.cancel();
+                            }
+                        }).show();
                         CardView addItemCard = (CardView) findViewById(R.id.add_item_card_view);
                         addItemCard.setVisibility(View.VISIBLE);
                     }
@@ -420,7 +507,7 @@ public GoogleApiClient mGoogleApiClient;
                         //object.addProperty("tags",tag);
                         soapObject.addProperty("longi", String.format("%.2f", userdata.mylocation.Longitude));
                         soapObject.addProperty("city", userdata.mylocation.city);
-                        SoapPrimitive msg= MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
+                        SoapPrimitive msg= MainWebService.getMsg(soapObject, "http://205.204.80.221:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
 
 
                         break;
@@ -460,6 +547,7 @@ public GoogleApiClient mGoogleApiClient;
         }
         String cityName = addresses.get(0).getLocality();
         String stateName = addresses.get(0).getAdminArea();
+        userdata.city=cityName;
         userdata.mylocation.city=cityName+","+stateName;
      //   customTextView.setText(cityName + "," + stateName);
        // AsyncTaskRunner runner = new AsyncTaskRunner();

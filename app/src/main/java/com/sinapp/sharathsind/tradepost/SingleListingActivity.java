@@ -118,7 +118,7 @@ public class SingleListingActivity extends AppCompatActivity {
             //item id
             itemId=itemInfo.get(0);
             //item userPic
-            Picasso.with(this).load(Uri.parse("http://services.tradepost.me:8084/TDserverWeb/images/" + userdata.userid + "/profile.png")).into(proPic);
+            Picasso.with(this).load(Uri.parse("http://205.204.80.221:8084/TDserverWeb/images/" + userdata.userid + "/profile.png")).into(proPic);
             //proPic.setImageBitmap(proPicReceived);
             //item title
             itemTitle.setText(itemInfo.get(1));
@@ -138,7 +138,7 @@ public class SingleListingActivity extends AppCompatActivity {
             String[] images = new String[itemImages.length];
 
             for(int j=0;j<itemImages.length;j++){
-                images[j]="http://services.tradepost.me:8084/TDserverWeb/images/items/" + itemInfo.get(0) +"/"+ itemImages[j];
+                images[j]="http://205.204.80.221:8084/TDserverWeb/images/items/" + itemInfo.get(0) +"/"+ itemImages[j];
 
             }
             String[] itemTags = getIntent().getStringArrayExtra("itemTags");
