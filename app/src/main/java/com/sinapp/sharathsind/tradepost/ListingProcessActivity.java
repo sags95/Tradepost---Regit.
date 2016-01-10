@@ -654,7 +654,10 @@ per.askPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifes
                         .setAction("Settings", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        Uri.fromParts("package", getPackageName(), null));
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
 
                             }
                         })
