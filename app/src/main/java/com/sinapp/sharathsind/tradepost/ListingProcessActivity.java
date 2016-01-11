@@ -101,7 +101,6 @@ public class ListingProcessActivity extends AppCompatActivity {
     private ImageView camera, folder, itemImg1, itemImg2, itemImg3, itemImg4;
     private int requestCodeCam = 0;
     private int requestCodeGal = 1;
-    private int currentImgPos = 0;
     private ArrayList<Bitmap> tempBitmap = new ArrayList<>();
     private ArrayList<ImageView> imageViewArrayList = new ArrayList<>();
     private Uri mImageUri;
@@ -126,7 +125,7 @@ public class ListingProcessActivity extends AppCompatActivity {
         Permission permission = new Permission(this, null);
         if (permission.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || permission.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
         {
-permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},4);
+            permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},4);
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -354,7 +353,6 @@ permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
                                             // continue with delete
                                         }
                                     })
-
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .show();
                             cancel=true;
@@ -370,7 +368,6 @@ permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
                                             // continue with delete
                                         }
                                     })
-
                                     .setIcon(android.R.drawable.ic_dialog_alert)
                                     .show();
                             cancel=true;
@@ -918,7 +915,7 @@ public void camera()
      * @param thumbView  The thumbnail view to zoom in.
      * @param image The high-resolution version of the image represented by the thumbnail.
      */
-    private void zoomImageFromThumb(final View thumbView, Bitmap image) {
+    public void zoomImageFromThumb(final View thumbView, Bitmap image) {
         // If there's an animation in progress, cancel it immediately and proceed with this one.
         if (mCurrentAnimator != null) {
             mCurrentAnimator.cancel();

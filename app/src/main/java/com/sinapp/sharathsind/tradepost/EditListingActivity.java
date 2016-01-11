@@ -2,9 +2,14 @@ package com.sinapp.sharathsind.tradepost;
 
 import android.*;
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +20,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -25,6 +32,7 @@ import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -33,12 +41,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import org.apmem.tools.layouts.FlowLayout;
 import org.ksoap2.serialization.SoapObject;
@@ -46,11 +58,14 @@ import org.ksoap2.serialization.SoapPrimitive;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
 
 import CustomWidget.CustomEditText;
+import CustomWidget.CustomPagerAdapter;
 import CustomWidget.CustomSpinnerAdapter;
 import CustomWidget.CustomTextView;
 import CustomWidget.LimitedEditText;
@@ -63,6 +78,18 @@ import webservices.MainWebService;
  */
 public class EditListingActivity extends AppCompatActivity {
 
+    /**
+     * Hold a reference to the current animator, so that it can be canceled mid-way.
+     */
+    private Animator mCurrentAnimator;
+
+    /**
+     * The system "short" animation time duration, in milliseconds. This duration is ideal for
+     * subtle animations or animations that occur very frequently.
+     */
+    private int mShortAnimationDuration;
+
+
     final int MAX_NUM_TAGS = 5;
     int TAGS_COUNT = 0;
     private FlowLayout tagFlowLayout;
@@ -71,8 +98,8 @@ public class EditListingActivity extends AppCompatActivity {
     private ImageView camera, folder, itemImg1, itemImg2, itemImg3, itemImg4;
     private int requestCodeCam = 0;
     private int requestCodeGal = 1;
-    private int currentImgPos = 0;
-    private Toolbar toolbar;
+    private ArrayList<Bitmap> tempBitmap = new ArrayList<>();
+    private ArrayList<ImageView> imageViewArrayList = new ArrayList<>();
     private Uri mImageUri;
     private CustomTextView tagsCount;
     private ColorStateList oldColors;
@@ -123,67 +150,77 @@ ArrayList<Integer>userid;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listing_process);
         tagFlowLayout = (FlowLayout) findViewById(R.id.section5_tags);
+
+        // Retrieve and cache the system's default "short" animation time.
+        mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+
         Permission permission = new Permission(this, null);
         if (permission.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || permission.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
         {
             permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},4);
         }
 
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                offers=new ArrayList<Integer>();
-                userid=new ArrayList<Integer>();
-                ArrayList<String> itemInfoForEdit = getIntent().getStringArrayListExtra("itemToEdit");
-                 itemid=Integer.parseInt(itemInfoForEdit.get(0));
-               Cursor cursor= Constants.db.rawQuery("select * from offers where itemid="+itemid,null);
-
-                cursor.moveToFirst();
-                while (!cursor.isAfterLast())
-                {
-                    int status=cursor.getInt(cursor.getColumnIndex("status"));
-                    if (status==0||status==1) {
-                        offers.add(cursor.getInt(cursor.getColumnIndex("Offerid")));
-                        userid.add(cursor.getInt(cursor.getColumnIndex("userid")));
-                    }
-                    cursor.moveToNext();
-                }
-                SoapObject soapObject=new SoapObject("http://webser/","getOfferDelete");
-                soapObject.addProperty("i",itemid);
-                Vector res= MainWebService.getMsg1(soapObject, "http://205.204.80.221:8084/TDserverWeb/EditdeleteItem?wsdl", "http://webser/EditdeleteItem/getOfferDeleteRequest");
-               if(res!=null) {
-                   for (Object i : res) {
-                       cursor = Constants.db.rawQuery("select * from offers where offerid=" + i, null);
-                       cursor.moveToFirst();
-                       int status = cursor.getInt(cursor.getColumnIndex("status"));
-                       if (status == 0 || status == 1) {
-                           offers.add(cursor.getInt(cursor.getColumnIndex("Offerid")));
-                           userid.add(cursor.getInt(cursor.getColumnIndex("userid")));
-                       }
-                   }
-
-               }
-
-cursor.close();
-              //  int h = res.size();
-
-                return null;
-            }
-        }.execute(null,null,null);
+//        new AsyncTask<Void, Void, Void>() {
+//            @Override
+//            protected Void doInBackground(Void... params) {
+//                offers=new ArrayList<Integer>();
+//                userid=new ArrayList<Integer>();
+//                ArrayList<String> itemInfoForEdit = getIntent().getStringArrayListExtra("itemToEdit");
+//                 itemid=Integer.parseInt(itemInfoForEdit.get(0));
+//               Cursor cursor= Constants.db.rawQuery("select * from offers where itemid="+itemid,null);
+//
+//                cursor.moveToFirst();
+//                while (!cursor.isAfterLast())
+//                {
+//                    int status=cursor.getInt(cursor.getColumnIndex("status"));
+//                    if (status==0||status==1) {
+//                        offers.add(cursor.getInt(cursor.getColumnIndex("Offerid")));
+//                        userid.add(cursor.getInt(cursor.getColumnIndex("userid")));
+//                    }
+//                    cursor.moveToNext();
+//                }
+//                SoapObject soapObject=new SoapObject("http://webser/","getOfferDelete");
+//                soapObject.addProperty("i",itemid);
+//                Vector res= MainWebService.getMsg1(soapObject, "http://205.204.80.221:8084/TDserverWeb/EditdeleteItem?wsdl", "http://webser/EditdeleteItem/getOfferDeleteRequest");
+//               if(res!=null) {
+//                   for (Object i : res) {
+//                       cursor = Constants.db.rawQuery("select * from offers where offerid=" + i, null);
+//                       cursor.moveToFirst();
+//                       int status = cursor.getInt(cursor.getColumnIndex("status"));
+//                       if (status == 0 || status == 1) {
+//                           offers.add(cursor.getInt(cursor.getColumnIndex("Offerid")));
+//                           userid.add(cursor.getInt(cursor.getColumnIndex("userid")));
+//                       }
+//                   }
+//
+//               }
+//
+//                cursor.close();
+//              //  int h = res.size();
+//
+//                return null;
+//            }
+//        }.execute(null,null,null);
         //toolbar
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Edit Your Item");
-        toolbar.setTitleTextColor(getResources().getColor(R.color.colorPrimary));
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        View customToolBarTitle = getLayoutInflater().inflate(R.layout.layout_toolbar_custom_title, null);
+        getSupportActionBar().setCustomView(customToolBarTitle);
+        CustomTextView title1 = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title1);
+        CustomTextView title2 = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title2);
+        title1.setText("Add Your Item");
+        title2.setVisibility(View.GONE);
 
         tags=new ArrayList<String>();
         bits=new ArrayList<Bitmap>();
@@ -212,6 +249,17 @@ cursor.close();
         itemImg2 = (ImageView) findViewById(R.id.section2_item_img2);
         itemImg3 = (ImageView) findViewById(R.id.section2_item_img3);
         itemImg4 = (ImageView) findViewById(R.id.section2_item_img4);
+
+        itemImg1.setTag(0);
+        itemImg2.setTag(1);
+        itemImg3.setTag(2);
+        itemImg4.setTag(3);
+
+        imageViewArrayList.add(0,itemImg1);
+        imageViewArrayList.add(1,itemImg2);
+        imageViewArrayList.add(2,itemImg3);
+        imageViewArrayList.add(3,itemImg4);
+
         ///spinner=(Spinner)findViewById(R.id.sp)
         camera = (ImageView) findViewById(R.id.section2_img_camera);
         folder = (ImageView) findViewById(R.id.section2_img_folder);
@@ -517,12 +565,39 @@ delete(itemid);
 
 
     }
-    private void setItemInfoForEdit(){
+    private void setItemInfoForEdit() {
         ArrayList<String> itemInfoForEdit = getIntent().getStringArrayListExtra("itemToEdit");
 
         //section1
         itemName.setText(itemInfoForEdit.get(1));
         //section2
+        final Thread setImageThread = new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    String[] imagesToEdit = getIntent().getStringArrayExtra("imageUrls");
+                    for (String imageUrl : imagesToEdit) {
+                        tempBitmap.add(Picasso.with(getApplicationContext()).load(Uri.parse(imageUrl)).get());
+                    }
+                } catch (IOException e) {
+                    Log.d("thread", "is interrupted!" + e.toString());
+                } finally {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (int i = 0; i < tempBitmap.size(); i++) {
+                                imageViewArrayList.get(i).setImageBitmap(getResizedBitmap(tempBitmap.get(i), imageViewArrayList.get(i).getWidth(), imageViewArrayList.get(i).getHeight()));
+                                imageViewArrayList.get(i).setOnClickListener(expandImgOnClick);
+                                imageViewArrayList.get(i).setOnLongClickListener(deleteImgOnClick);
+                            }
+                        }
+                    });
+                }
+            }
+        };
+
+        setImageThread.start();
 
         //section3
         seekBar.setProgress(convertCon(itemInfoForEdit.get(3)));
@@ -630,13 +705,10 @@ delete(itemid);
 
         //Tag Name
         CustomTextView tagName = (CustomTextView) singleTag.findViewById(R.id.tag_name);
-        //tagName.setId(TAGS_COUNT);
         tagName.setText(tag.trim());
-        //tags.add(tagInput.getText().toString().trim());
         tagName.setTag(tag);
         tagFlowLayout.addView(singleTag);
         tagsCount.setText(String.valueOf(tagFlowLayout.getChildCount()));
-
 
     }
 
@@ -780,8 +852,6 @@ delete(itemid);
                         .setAction("Settings", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-
-
                             }
                         })
                         .setActionTextColor(Color.RED)
@@ -802,7 +872,8 @@ delete(itemid);
                 setImage(imageBitmap);
                 bits.add(imageBitmap);
                 */
-                setImage(grabImage());
+                //setImage(grabImage());
+                tempBitmap.add(grabImage());
                 //       bits.add(grabImage());
                 //... some code to inflate/create/find appropriate ImageView to place grabbed image
 
@@ -828,10 +899,52 @@ delete(itemid);
                 options.inSampleSize = scale;
                 options.inJustDecodeBounds = false;
                 bm = BitmapFactory.decodeFile(selectedImagePath, options);
-                setImage(bm);
+                //setImage(bm);
+                tempBitmap.add(bm);
+
             }
         }
+
+        for (int i = 0 ; i < tempBitmap.size() ; i++){
+            imageViewArrayList.get(i).setImageBitmap(getResizedBitmap(tempBitmap.get(i),imageViewArrayList.get(i).getWidth(),imageViewArrayList.get(i).getHeight()));
+            imageViewArrayList.get(i).setOnClickListener(expandImgOnClick);
+            imageViewArrayList.get(i).setOnLongClickListener(deleteImgOnClick);
+        }
+
     }
+
+    private View.OnClickListener expandImgOnClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            zoomImageFromThumb(v, ((BitmapDrawable) ((ImageView) v).getDrawable()).getBitmap());
+
+        }
+    };
+
+    private View.OnLongClickListener deleteImgOnClick = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+
+            Toast.makeText(getApplicationContext(),"DELETED",Toast.LENGTH_SHORT).show();
+            tempBitmap.remove(Integer.parseInt(v.getTag().toString()));
+
+            for (int i = 0 ; i < imageViewArrayList.size(); i++){
+                imageViewArrayList.get(i).setImageResource(R.mipmap.ic_image_thumbnail);
+                imageViewArrayList.get(i).setOnClickListener(null);
+                imageViewArrayList.get(i).setOnLongClickListener(null);
+            }
+
+            for (int i = 0; i < tempBitmap.size(); i++) {
+                imageViewArrayList.get(i).setImageBitmap(getResizedBitmap(tempBitmap.get(i),imageViewArrayList.get(i).getWidth(),imageViewArrayList.get(i).getHeight()));
+                imageViewArrayList.get(i).setOnClickListener(expandImgOnClick);
+                imageViewArrayList.get(i).setOnLongClickListener(deleteImgOnClick);
+            }
+
+
+
+            return true;
+        }
+    };
     public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
         int width = bm.getWidth();
         int height = bm.getHeight();
@@ -847,26 +960,159 @@ delete(itemid);
                 bm, 0, 0, width, height, matrix, false);
         return resizedBitmap;
     }
-    public void setImage(Bitmap imageBitmap){
-        if(currentImgPos<5) {
-            switch (currentImgPos) {
-                case 0:
-                    itemImg1.setImageBitmap(getResizedBitmap(imageBitmap,itemImg1.getWidth(),itemImg1.getHeight()));
-                    break;
-                case 1:
-                    itemImg2.setImageBitmap(getResizedBitmap(imageBitmap,itemImg1.getWidth(),itemImg1.getHeight()));
-                    break;
-                case 2:
-                    itemImg3.setImageBitmap(getResizedBitmap(imageBitmap,itemImg1.getWidth(),itemImg1.getHeight()));
-                    break;
-                case 3:
-                    itemImg4.setImageBitmap(getResizedBitmap(imageBitmap,itemImg1.getWidth(),itemImg1.getHeight()));
-                    break;
-            }
-            bits.add(imageBitmap);
-            currentImgPos++;
 
+    /**
+     * "Zooms" in a thumbnail view by assigning the high resolution image to a hidden "zoomed-in"
+     * image view and animating its bounds to fit the entire activity content area. More
+     * specifically:
+     *
+     * <ol>
+     *   <li>Assign the high-res image to the hidden "zoomed-in" (expanded) image view.</li>
+     *   <li>Calculate the starting and ending bounds for the expanded view.</li>
+     *   <li>Animate each of four positioning/sizing properties (X, Y, SCALE_X, SCALE_Y)
+     *       simultaneously, from the starting bounds to the ending bounds.</li>
+     *   <li>Zoom back out by running the reverse animation on click.</li>
+     * </ol>
+     *
+     * @param thumbView  The thumbnail view to zoom in.
+     * @param image The high-resolution version of the image represented by the thumbnail.
+     */
+    public void zoomImageFromThumb(final View thumbView, Bitmap image) {
+        // If there's an animation in progress, cancel it immediately and proceed with this one.
+        if (mCurrentAnimator != null) {
+            mCurrentAnimator.cancel();
         }
+
+        // Load the high-resolution "zoomed-in" image.
+        final ImageView expandedImageView = (ImageView) findViewById(R.id.expanded_image);
+        expandedImageView.setImageBitmap(image);
+
+        final ScrollView scrollView = (ScrollView) findViewById(R.id.scrollView);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+
+        // Calculate the starting and ending bounds for the zoomed-in image. This step
+        // involves lots of math. Yay, math.
+        final Rect startBounds = new Rect();
+        final Rect finalBounds = new Rect();
+        final Point globalOffset = new Point();
+
+        // The start bounds are the global visible rectangle of the thumbnail, and the
+        // final bounds are the global visible rectangle of the container view. Also
+        // set the container view's offset as the origin for the bounds, since that's
+        // the origin for the positioning animation properties (X, Y).
+        thumbView.getGlobalVisibleRect(startBounds);
+        findViewById(R.id.listing_proecss_layout).getGlobalVisibleRect(finalBounds, globalOffset);
+        startBounds.offset(-globalOffset.x, -globalOffset.y);
+        finalBounds.offset(-globalOffset.x, -globalOffset.y);
+
+        // Adjust the start bounds to be the same aspect ratio as the final bounds using the
+        // "center crop" technique. This prevents undesirable stretching during the animation.
+        // Also calculate the start scaling factor (the end scaling factor is always 1.0).
+        float startScale;
+        if ((float) finalBounds.width() / finalBounds.height()
+                > (float) startBounds.width() / startBounds.height()) {
+            // Extend start bounds horizontally
+            startScale = (float) startBounds.height() / finalBounds.height();
+            float startWidth = startScale * finalBounds.width();
+            float deltaWidth = (startWidth - startBounds.width()) / 2;
+            startBounds.left -= deltaWidth;
+            startBounds.right += deltaWidth;
+        } else {
+            // Extend start bounds vertically
+            startScale = (float) startBounds.width() / finalBounds.width();
+            float startHeight = startScale * finalBounds.height();
+            float deltaHeight = (startHeight - startBounds.height()) / 2;
+            startBounds.top -= deltaHeight;
+            startBounds.bottom += deltaHeight;
+        }
+
+        // Hide the thumbnail and show the zoomed-in view. When the animation begins,
+        // it will position the zoomed-in view in the place of the thumbnail.
+        thumbView.setAlpha(0f);
+        scrollView.setVisibility(View.GONE);
+        toolbar.setVisibility(View.GONE);
+        expandedImageView.setVisibility(View.VISIBLE);
+
+        // Set the pivot point for SCALE_X and SCALE_Y transformations to the top-left corner of
+        // the zoomed-in view (the default is the center of the view).
+        expandedImageView.setPivotX(0f);
+        expandedImageView.setPivotY(0f);
+
+        // Construct and run the parallel animation of the four translation and scale properties
+        // (X, Y, SCALE_X, and SCALE_Y).
+        AnimatorSet set = new AnimatorSet();
+        set
+                .play(ObjectAnimator.ofFloat(expandedImageView, View.X, startBounds.left,
+                        finalBounds.left))
+                .with(ObjectAnimator.ofFloat(expandedImageView, View.Y, startBounds.top,
+                        finalBounds.top))
+                .with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_X, startScale, 1f))
+                .with(ObjectAnimator.ofFloat(expandedImageView, View.SCALE_Y, startScale, 1f));
+        set.setDuration(mShortAnimationDuration);
+        set.setInterpolator(new DecelerateInterpolator());
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mCurrentAnimator = null;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                mCurrentAnimator = null;
+            }
+        });
+        set.start();
+        mCurrentAnimator = set;
+
+        // Upon clicking the zoomed-in image, it should zoom back down to the original bounds
+        // and show the thumbnail instead of the expanded image.
+        final float startScaleFinal = startScale;
+        expandedImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mCurrentAnimator != null) {
+                    mCurrentAnimator.cancel();
+                }
+
+                // Animate the four positioning/sizing properties in parallel, back to their
+                // original values.
+                AnimatorSet set = new AnimatorSet();
+                set
+                        .play(ObjectAnimator.ofFloat(expandedImageView, View.X, startBounds.left))
+                        .with(ObjectAnimator.ofFloat(expandedImageView, View.Y, startBounds.top))
+                        .with(ObjectAnimator
+                                .ofFloat(expandedImageView, View.SCALE_X, startScaleFinal))
+                        .with(ObjectAnimator
+                                .ofFloat(expandedImageView, View.SCALE_Y, startScaleFinal));
+                set.setDuration(mShortAnimationDuration);
+                set.setInterpolator(new DecelerateInterpolator());
+                set.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        thumbView.setAlpha(1f);
+                        toolbar.setVisibility(View.VISIBLE);
+                        expandedImageView.setVisibility(View.GONE);
+                        scrollView.setVisibility(View.VISIBLE);
+
+
+                        mCurrentAnimator = null;
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        thumbView.setAlpha(1f);
+                        toolbar.setVisibility(View.VISIBLE);
+                        expandedImageView.setVisibility(View.GONE);
+                        scrollView.setVisibility(View.VISIBLE);
+
+                        mCurrentAnimator = null;
+                    }
+                });
+                set.start();
+                mCurrentAnimator = set;
+            }
+        });
     }
 
 }

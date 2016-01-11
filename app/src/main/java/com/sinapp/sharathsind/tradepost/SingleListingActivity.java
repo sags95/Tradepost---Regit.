@@ -56,13 +56,13 @@ public class SingleListingActivity extends AppCompatActivity {
 
 
     private RelativeLayout singleListingHeader;
-    MarketPlaceData m;
 
     private boolean isSelfItem = false;
     private String[] itemTagsToEdit=null;
     private String itemCatToEdit = "";
     private String[] imageResources;
     private String itemId="";
+    private String[] images;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -135,7 +135,7 @@ public class SingleListingActivity extends AppCompatActivity {
             itemDistance.setText(String.valueOf(roundedDistance(distance(userdata.mylocation.latitude,userdata.mylocation.Longitude, userdata.mylocation.latitude, userdata.mylocation.Longitude, 'K'))));
 
             String[] itemImages = getIntent().getStringArrayExtra("itemImages");
-            String[] images = new String[itemImages.length];
+            images = new String[itemImages.length];
 
             for(int j=0;j<itemImages.length;j++){
                 images[j]="http://205.204.80.221:8084/TDserverWeb/images/items/" + itemInfo.get(0) +"/"+ itemImages[j];
@@ -230,12 +230,16 @@ public class SingleListingActivity extends AppCompatActivity {
             editListing.add(1,itemTitle.getText().toString());
             editListing.add(2,itemDescription.getText().toString());
             editListing.add(3,itemCondition.getText().toString());
-            editListing.add(4,itemCatToEdit);
+            editListing.add(4, itemCatToEdit);
 
             i.putStringArrayListExtra("itemToEdit", editListing);
 
             //Tags
             i.putExtra("tagsToEdit", itemTagsToEdit);
+
+            //Images
+            i.putExtra("imageUrls", images);
+
             startActivity(i);
             finish();
 
@@ -263,13 +267,9 @@ public class SingleListingActivity extends AppCompatActivity {
                         LinearLayout.LayoutParams.WRAP_CONTENT
                 );
                 params.setMargins(3, 0, 3, 0);
-
                 dotsLayout.addView(dot, params);
-
-                // dotsLayout.addView(dot);
                 dots.add(dot);
             }
-
 
             mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override

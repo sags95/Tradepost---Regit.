@@ -377,8 +377,8 @@ public GoogleApiClient mGoogleApiClient;
                     if(aBoolean) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                         builder.setTitle("Message");
-                        builder.setMessage("You have been added to  " + userdata.city+"community");
-                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        builder.setMessage("You have been added to  " + userdata.city + " community");
+                        builder.setPositiveButton("Sounds Good", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //Launch settings, allowing user to make a change
@@ -400,7 +400,6 @@ public GoogleApiClient mGoogleApiClient;
                             getLocation();
                         }
                     });
-
                     return true;
                 }
             }.execute();
