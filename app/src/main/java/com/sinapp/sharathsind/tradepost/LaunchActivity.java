@@ -35,7 +35,7 @@ import webservices.MainWebService;
  */
 public class LaunchActivity extends AppCompatActivity {
 
-    Cursor c;
+    Cursor c,c1;
     private InstanceID instanceID;
 
     @Override
@@ -76,9 +76,9 @@ public class LaunchActivity extends AppCompatActivity {
             //  isDatabaseExist=true;
             try {
                 Constants.db = openOrCreateDatabase("tradepostdb.db", MODE_PRIVATE, null);
-                c = Constants.db.rawQuery("select * from login", null);
-                c.moveToFirst();
-                if(c.getCount()>0) {
+                c1 =Constants.db.rawQuery("select * from login", null);
+                c1.moveToFirst();
+                if(c1.getCount()>0) {
                     Constants.userid = c.getInt(c.getColumnIndex("userid"));
                     Variables.email = c.getString(c.getColumnIndex("email"));
                     Variables.username = c.getString(c.getColumnIndex("username"));
@@ -113,11 +113,18 @@ public class LaunchActivity extends AppCompatActivity {
                         protected void onPostExecute(String s) {
 
                             super.onPostExecute(s);
-                            if (c.getCount() > 0) {
+                            if (c1.getCount() > 0) {
                                 startActivity(new Intent(LaunchActivity.this, MainActivity.class));
                                 c.close();
+                                c1.close();
                                 finish();
                                 //  locationManager.removeUpdates(service);
+                            }
+                            else{
+                                startActivity(new Intent(LaunchActivity.this, FirstTime.class));
+                                c.close();
+                                c1.close();
+                                finish();
                             }
                             pd.dismiss();
 
