@@ -79,7 +79,7 @@
                 android:background="@color/darkWhite"
                 />
 
-            <CustomWidget.CustomTextView
+            <CustomWidget.CustomClickableTextView
                 android:id="@+id/welcome_startBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

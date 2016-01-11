@@ -391,14 +391,14 @@ permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
                         Intent i = new Intent(getApplicationContext(),ListingProcessDoneActivity.class);
                         if(s.equals("success")){
                             i.putExtra("isSuccess", true);
-                            i.putExtra("im",tempBitmap.get(0));
+                            //i.putExtra("im", tempBitmap.get(0));
                             startActivity(i);
-                            finish();
-
                         }else{
                             i.putExtra("isSuccess", false);
                             startActivity(i);
                         }
+                        finish();
+
 
                     }
 
@@ -610,18 +610,6 @@ permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
 
     }
 
-    public String[] getAllTags() {
-        String[] tagNames = new String[tagFlowLayout.getChildCount()];
-
-        for (int i = 0; i < tagFlowLayout.getChildCount(); i++) {
-            View child = tagFlowLayout.getChildAt(i);
-            CustomTextView getTagName = (CustomTextView) (child.findViewById(R.id.tag_name));
-            tagNames[i] = getTagName.getText().toString().trim();
-        }
-        return tagNames;
-
-    }
-
     public View.OnClickListener camBtnListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -646,7 +634,7 @@ permission.askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE
                     startActivityForResult(takePictureIntent, requestCodeCam);
                 }
             } else if (per.isPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE) == 1 && per.isPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE) == 1) {
-per.askPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+                    per.askPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
 
             }
             else{

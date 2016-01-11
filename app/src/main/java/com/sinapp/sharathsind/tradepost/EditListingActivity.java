@@ -89,7 +89,7 @@ public class EditListingActivity extends AppCompatActivity {
 
     //section6
     private CustomSpinnerAdapter spinnerAdapter;
-public int itemid;
+    public int itemid;
     public ArrayList<String> tags;
     public ArrayList<Bitmap>bits;
     private CustomEditText tagInput;
@@ -113,16 +113,8 @@ ArrayList<Integer>userid;
             case 2:
                 if(grantResults.length>0&&grantResults[0]== PackageManager.PERMISSION_GRANTED)
                 {
-
                     gallery();
-
                 }
-
-
-
-
-
-
         }
 
     }

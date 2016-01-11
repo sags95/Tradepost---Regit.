@@ -70,7 +70,7 @@ public class CustomClickableTextView extends TextView {
 
     public void init() {
         mPaint = new Paint();
-        mPaint.setColor(getResources().getColor(R.color.colorPrimaryDark));
+        mPaint.setColor(Color.argb(0, 51, 67, 75));
 
         mRectPaint = new Paint();
         mRectPaint.setColor(Color.argb(0, 84, 110, 122));

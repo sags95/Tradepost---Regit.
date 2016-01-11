@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.squareup.picasso.Picasso;
 
+import CustomWidget.CustomClickableTextView;
 import CustomWidget.CustomTextView;
 import Model.Variables;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -34,12 +35,12 @@ public class WelcomeActivity extends AppCompatActivity {
         CustomTextView title2 = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title2);
         title2.setVisibility(View.GONE);
 
-        final CustomTextView start = (CustomTextView)findViewById(R.id.welcome_startBtn);
+        final CustomClickableTextView start = (CustomClickableTextView)findViewById(R.id.welcome_startBtn);
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
             }
         });
 

@@ -2,6 +2,7 @@ package com.sinapp.sharathsind.tradepost;
 
 import android.*;
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -22,6 +23,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.provider.Telephony;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -147,17 +149,12 @@ public GoogleApiClient mGoogleApiClient;
                             dialog.cancel();
                         }
                     });
-
                     builder.create().show();
                 } else {
                     locationService();
                 }
-
-
             }
         });
-
-
 
         CustomClickableTextView viewItem = (CustomClickableTextView)findViewById(R.id.add_item_viewBtn);
         viewItem.setOnClickListener(new View.OnClickListener() {
@@ -179,6 +176,16 @@ public GoogleApiClient mGoogleApiClient;
                     });
                     builder.create().show();
                 }
+            }
+        });
+
+        final Activity a = this;
+        FloatingActionButton shareFab = (FloatingActionButton)findViewById(R.id.main_shareFab);
+        shareFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Constants c = new Constants();
+                c.shareTextUrl(a);
             }
         });
 
@@ -312,7 +319,7 @@ public GoogleApiClient mGoogleApiClient;
             String cityName = addresses.get(0).getLocality();
             String stateName = addresses.get(0).getAdminArea();
             userdata.mylocation.city = cityName + "," + stateName;
-userdata.city=cityName;
+            userdata.city=cityName;
             SharedPreferences.Editor editor = MainActivity.this.getSharedPreferences("loctradepost", MainActivity.this.MODE_PRIVATE).edit();
             //editor.putInt("rad", radius);
             editor.putFloat("lat", userdata.mylocation.latitude);

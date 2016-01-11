@@ -86,7 +86,8 @@ public class LaunchActivity extends AppCompatActivity {
                     userdata.userid = Constants.userid;
                 }
                 else{
-                    startActivity(new Intent(LaunchActivity.this,FirstTime.class));
+                    startActivity(new Intent(LaunchActivity.this, FirstTime.class));
+                    finish();
                 }
                 c = Constants.db.rawQuery("select * from gcm", null);
 
@@ -140,8 +141,9 @@ public class LaunchActivity extends AppCompatActivity {
 
                     //URL url = new URL("http://205.204.80.221:8084/TDserverWeb/images/"+Constants.userid+"/profile.png");
                 } else {
-
-                startActivity(new Intent(LaunchActivity.this,FirstTime.class));
+                    c.close();
+                    startActivity(new Intent(LaunchActivity.this,FirstTime.class));
+                    finish();
                 }
                 //Variables.profilepic = Picasso.with(this).load(Uri.parse("http://205.204.80.221:8084/TDserverWeb/images/"+Constants.userid+"/profile.png")).get();
                 //Constants.username=c.getString(c.getColumnIndex("username"));
@@ -149,6 +151,7 @@ public class LaunchActivity extends AppCompatActivity {
 
             } catch (Exception e) {
                 String s = e.toString();
+                c.close();
             }
 
 
@@ -206,7 +209,6 @@ public class LaunchActivity extends AppCompatActivity {
             } catch (Exception e) {
                 String s = e.toString();
             }
-
 
             startActivity(new Intent(getApplicationContext(), FirstTime.class));
             finish();
