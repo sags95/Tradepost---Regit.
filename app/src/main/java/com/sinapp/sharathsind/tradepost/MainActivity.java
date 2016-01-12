@@ -193,6 +193,18 @@ public GoogleApiClient mGoogleApiClient;
     Snackbar s;
     public void signOut()
     {
+
+
+new AsyncTask<Void, Void,Void>(){
+    @Override
+    protected void onPostExecute(Void aVoid) {
+
+        super.onPostExecute(aVoid);
+        startActivity(new Intent(MainActivity.this, LaunchActivity.class));
+    }
+
+    @Override
+    protected Void doInBackground(Void... params) {
         Constants.db=openOrCreateDatabase("tradepostdb.db", MODE_PRIVATE, null);
         Cursor c=Constants.db.rawQuery("select * from login",null);
         c.moveToFirst();
@@ -208,15 +220,16 @@ public GoogleApiClient mGoogleApiClient;
 
         }
         try {
-            InstanceID.getInstance(this).deleteInstanceID();
+            InstanceID.getInstance(MainActivity.this).deleteInstanceID();
         } catch (IOException e) {
             e.printStackTrace();
         }
         c.close();
         Constants.db.close();
         deleteDatabase("tradepostdb.db");
-        startActivity(new Intent(this, LaunchActivity.class));
-
+        return null;
+    }
+}.execute();
 
       //  getActivity().finish();
 
