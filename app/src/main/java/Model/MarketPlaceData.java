@@ -115,7 +115,7 @@ public  boolean isFav;
             obje.addProperty("lat", userdata.mylocation.latitude);
             obje.addProperty("longi", userdata.mylocation.Longitude);
             obje.addProperty("rad", userdata.radius);
-            result = MainWebService.getMsg1(obje, "http://205.204.80.221:8084/TDserverWeb/GetItems?wsdl"
+            result = MainWebService.getMsg1(obje, "http://services.tradepost.me:8084/TDserverWeb/GetItems?wsdl"
                     , "http://webser/GetItems/getItemsRequest");
 
             //doAsync();
@@ -126,7 +126,7 @@ public  boolean isFav;
                 for (Object i : result) {
                     obje = new SoapObject("http://webser/", "getItembyId");
                     obje.addProperty("itemid", Integer.parseInt(((SoapPrimitive) i).getValue().toString()));
-                    KvmSerializable result1 = MainWebService.getMsg2(obje, "http://205.204.80.221:8084/TDserverWeb/GetItems?wsdl"
+                    KvmSerializable result1 = MainWebService.getMsg2(obje, "http://services.tradepost.me:8084/TDserverWeb/GetItems?wsdl"
                             , "http://webser/GetItems/getItembyIdRequest");
 
                     ItemResult ir = new ItemResult();
@@ -146,7 +146,7 @@ public  boolean isFav;
                         }
                         obje = new SoapObject("http://webser/", "searchbyint");
                         obje.addProperty("name", i);
-                        Vector result2 = MainWebService.getMsg1(obje, "http://205.204.80.221:8084/TDserverWeb/NewWebService?wsdl"
+                        Vector result2 = MainWebService.getMsg1(obje, "http://services.tradepost.me:8084/TDserverWeb/NewWebService?wsdl"
                                 , "http://webser/NewWebService/searchbyintRequest");
                         if (result2 != null) {
 
@@ -160,10 +160,10 @@ public  boolean isFav;
                         }
                         obje = new SoapObject("http://webser/", "getusername");
                         obje.addProperty("name", ir.item.getUserid());
-                        SoapPrimitive soapPrimitive = MainWebService.getretryMsg(obje, "http://205.204.80.221:8084/TDserverWeb/getUserName?wsdl", "http://webser/getUserName/getusernameRequest", 0);
+                        SoapPrimitive soapPrimitive = MainWebService.getretryMsg(obje, "http://services.tradepost.me:8084/TDserverWeb/getUserName?wsdl", "http://webser/getUserName/getusernameRequest", 0);
                         MarketPlaceData data = new MarketPlaceData();
                         ir.username = soapPrimitive.getValue().toString();
-                        data.itemImage = "http://205.204.80.221:8084/TDserverWeb/images/items/" + ir.item.getItemid() + "/" + ir.images[0];
+                        data.itemImage = "http://services.tradepost.me:8084/TDserverWeb/images/items/" + ir.item.getItemid() + "/" + ir.images[0];
                         data.proUsername = ir.username;
                         data.itemTitle = ir.item.getItemname();
                         data.userid = ir.item.getUserid();
@@ -172,7 +172,7 @@ public  boolean isFav;
 
                         int ij = 0;
                         for (String s : ir.images) {
-                            data.image[ij] = "http://205.204.80.221:8084/TDserverWeb/images/items/" + ir.item.getItemid() + "/" + s;
+                            data.image[ij] = "http://services.tradepost.me:8084/TDserverWeb/images/items/" + ir.item.getItemid() + "/" + s;
 
                             ij++;
                         }

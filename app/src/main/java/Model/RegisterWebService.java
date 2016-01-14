@@ -32,7 +32,7 @@ public class RegisterWebService {
     private static final String SOAP_ACTION = "http://webser/Register/operationRequest";
     private static final String METHOD_NAME = "operation";
     private static final String NAMESPACE = "http://webser/";
-    private static final String URL ="http://205.204.80.221:8084/TDserverWeb/Register?wsdl";
+    private static final String URL ="http://services.tradepost.me:8084/TDserverWeb/Register?wsdl";
 private  static final String mname="gcmwebservice";
     private static final String SOAP_ACTION1 = "http://webser/Register/gcmwebserviceRequest";
     public static ContentValues signUp(String username, String email, String s, String fb, Bitmap profilepic, boolean b,SQLiteDatabase db) {
@@ -96,7 +96,7 @@ signUp(username, email, s, fb, profilepic, b, db);
        SoapObject object = new SoapObject("http://webser/", "getuseritems");
        //SoapObject object = new SoapObject("http://webser/", "getuseritems");
        object.addProperty("userid", userdata.userid);
-       Vector object1 = MainWebService.getMsg1(object, "http://205.204.80.221:8084/TDserverWeb/Search?wsdl", "http://webser/Search/getuseritemsRequest");
+       Vector object1 = MainWebService.getMsg1(object, "http://services.tradepost.me:8084/TDserverWeb/Search?wsdl", "http://webser/Search/getuseritemsRequest");
        userdata.items = new ArrayList<Integer>();
 
 
@@ -111,7 +111,7 @@ signUp(username, email, s, fb, profilepic, b, db);
 
            SoapObject obje = new SoapObject("http://webser/", "getItembyId");
            obje.addProperty("itemid", i);
-           KvmSerializable result1 = MainWebService.getMsg2(obje, "http://205.204.80.221:8084/TDserverWeb/GetItems?wsdl"
+           KvmSerializable result1 = MainWebService.getMsg2(obje, "http://services.tradepost.me:8084/TDserverWeb/GetItems?wsdl"
                    , "http://webser/GetItems/getItembyIdRequest");
 
            ItemResult ir = new ItemResult();
@@ -131,7 +131,7 @@ signUp(username, email, s, fb, profilepic, b, db);
            }
            obje = new SoapObject("http://webser/", "searchbyint");
            obje.addProperty("name", i);
-           Vector result2 = MainWebService.getMsg1(obje, "http://205.204.80.221:8084/TDserverWeb/NewWebService?wsdl"
+           Vector result2 = MainWebService.getMsg1(obje, "http://services.tradepost.me:8084/TDserverWeb/NewWebService?wsdl"
                    , "http://webser/NewWebService/searchbyintRequest");
            if (result2 != null) {
 
@@ -235,7 +235,7 @@ catch (EOFException ex)
         //   m.register(envelope);
         // new MarshalBase64().register(envelope);
         System.setProperty("http.keepAlive", "false");
-        HttpTransportSE ht = new HttpTransportSE( "http://205.204.80.221:8084/TDserverWeb/EditdeleteItem?wsdl",50000000);
+        HttpTransportSE ht = new HttpTransportSE( "http://services.tradepost.me:8084/TDserverWeb/EditdeleteItem?wsdl",50000000);
 
         ht.debug=true;
         try {

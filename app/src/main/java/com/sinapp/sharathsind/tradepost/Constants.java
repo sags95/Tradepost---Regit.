@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
  * Created by sharathsind on 2015-05-26.
  */
 public class Constants {
-    public final static String URl="http:205.204.80.221:8084/";
+    public final static String URl="http:services.tradepost.me:8084/";
     public static String GCM_Key,username;
     public static int userid;
     public static SQLiteDatabase db;
@@ -20,8 +20,8 @@ public class Constants {
         // Add data to the intent, the receiving app will decide
         // what to do with it.
         share.putExtra(Intent.EXTRA_SUBJECT, "Check out Tradepost! It lets you trade anything locally.");
-        share.putExtra(Intent.EXTRA_TEXT, "http://205.204.80.221:8084/TDserverWeb");
+        share.putExtra(Intent.EXTRA_TEXT, "http://goo.gl/1Bdzi1");
 
-       a. startActivity(Intent.createChooser(share, "Share link!"));
+        a.startActivity(Intent.createChooser(share, "Share link!"));
     }
 }

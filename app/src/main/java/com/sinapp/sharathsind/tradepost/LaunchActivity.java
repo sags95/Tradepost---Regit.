@@ -79,9 +79,9 @@ public class LaunchActivity extends AppCompatActivity {
                 c1 =Constants.db.rawQuery("select * from login", null);
                 c1.moveToFirst();
                 if(c1.getCount()>0) {
-                    Constants.userid = c.getInt(c.getColumnIndex("userid"));
-                    Variables.email = c.getString(c.getColumnIndex("email"));
-                    Variables.username = c.getString(c.getColumnIndex("username"));
+                    Constants.userid = c1.getInt(c1.getColumnIndex("userid"));
+                    Variables.email = c1.getString(c1.getColumnIndex("email"));
+                    Variables.username = c1.getString(c1.getColumnIndex("username"));
                     userdata.name = Variables.username;
                     userdata.userid = Constants.userid;
                 }
@@ -146,13 +146,13 @@ public class LaunchActivity extends AppCompatActivity {
                         }
                     }.execute(null, null, null);
 
-                    //URL url = new URL("http://205.204.80.221:8084/TDserverWeb/images/"+Constants.userid+"/profile.png");
+                    //URL url = new URL("http://services.tradepost.me:8084/TDserverWeb/images/"+Constants.userid+"/profile.png");
                 } else {
                     c.close();
                     startActivity(new Intent(LaunchActivity.this,FirstTime.class));
                     finish();
                 }
-                //Variables.profilepic = Picasso.with(this).load(Uri.parse("http://205.204.80.221:8084/TDserverWeb/images/"+Constants.userid+"/profile.png")).get();
+                //Variables.profilepic = Picasso.with(this).load(Uri.parse("http://services.tradepost.me:8084/TDserverWeb/images/"+Constants.userid+"/profile.png")).get();
                 //Constants.username=c.getString(c.getColumnIndex("username"));
 
 

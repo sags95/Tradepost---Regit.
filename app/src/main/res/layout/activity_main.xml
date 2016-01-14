@@ -120,30 +120,35 @@
                             android:paddingTop="4dp"
                             android:paddingBottom="4dp"
                             android:layout_marginLeft="8dp"
-                            android:layout_marginRight="8dp"
+                            android:layout_marginRight="4dp"
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentStart="true"
                             style="@style/OpenSansBold"
                             android:layout_marginBottom="8dp"
                             />
 
-                        <!--
+
                         <CustomWidget.CustomTextView
                             android:id="@+id/community_viewBtn"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="VIEW COMMUNITY"
+                            android:layout_height="match_parent"
+                            android:text="BROWSE COMMUNITY"
                             android:gravity="center_vertical"
                             android:layout_below="@+id/community_divider_line"
                             android:layout_toRightOf="@+id/community_setBtn"
                             android:textColor="@color/colorPrimary"
                             android:textStyle="bold"
                             android:textSize="14sp"
-                            android:paddingRight="16dp"
-                            style="@style/OpenSansSemiBold"
-                            android:layout_marginBottom="16dp"
+                            android:paddingRight="8dp"
+                            android:paddingLeft="8dp"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginLeft="4dp"
+                            style="@style/OpenSansBold"
+                            android:layout_marginBottom="8dp"
                             />
-                            -->
+
 
 
                     </RelativeLayout>

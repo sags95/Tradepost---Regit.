@@ -45,7 +45,7 @@ public class WelcomeActivity extends AppCompatActivity {
         });
 
         CircleImageView profileImg = (CircleImageView)findViewById(R.id.welcome_userImg);
-        Picasso.with(this).load(Uri.parse("http://205.204.80.221:8084/TDserverWeb/images/" + userdata.userid + "/profile.png")).into(profileImg);
+        Picasso.with(this).load(Uri.parse("http://services.tradepost.me:8084/TDserverWeb/images/" + userdata.userid + "/profile.png")).into(profileImg);
 
         CustomTextView welcomeName = (CustomTextView)findViewById(R.id.welcome_username);
         String[] username = Variables.username.split("\\s+");

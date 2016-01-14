@@ -101,7 +101,7 @@ public GoogleApiClient mGoogleApiClient;
         getSupportActionBar().setCustomView(customToolBarTitle);
         CustomTextView title1 = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title1);
         CustomTextView title2 = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title2);
-        title1.setText("Get Setup");
+        title1.setText("Get Set up");
         title2.setVisibility(View.GONE);
 
 
@@ -349,7 +349,7 @@ new AsyncTask<Void, Void,Void>(){
             soapObject.addProperty("longi", String.format("%.2f", userdata.mylocation.Longitude));
             soapObject.addProperty("city", userdata.mylocation.city);
 
-            SoapPrimitive msg = MainWebService.getMsg(soapObject, "http://205.204.80.221:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
+            SoapPrimitive msg = MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
 
             if(msg!=null) {
                 return  true;
@@ -390,7 +390,7 @@ new AsyncTask<Void, Void,Void>(){
                     if(aBoolean) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                         builder.setTitle("Message");
-                        builder.setMessage("You have been added to  " + userdata.city + " community");
+                        builder.setMessage("You have been added to " + userdata.city + " community. Don't worry, you'll be able to see trades from surrounding areas as well.");
                         builder.setPositiveButton("Sounds Good", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -530,7 +530,7 @@ new AsyncTask<Void, Void,Void>(){
                         //object.addProperty("tags",tag);
                         soapObject.addProperty("longi", String.format("%.2f", userdata.mylocation.Longitude));
                         soapObject.addProperty("city", userdata.mylocation.city);
-                        SoapPrimitive msg= MainWebService.getMsg(soapObject, "http://205.204.80.221:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
+                        SoapPrimitive msg= MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/NewWebServi?wsdl", "http://webser/NewWebServi/setLoginRequest");
 
 
                         break;
