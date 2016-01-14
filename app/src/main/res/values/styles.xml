@@ -26,6 +26,20 @@
 
     </style>
 
+    <style name="AppTheme.NoActionBar.FirstTime">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="actionBarWidgetTheme">@style/ActionBarTheme</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+
+
+    </style>
+
     <style name="ActionBarTheme" parent="style/ThemeOverlay.AppCompat.Dark">
         <!-- THIS is where you can color the arrow! -->
         <item name="colorControlNormal">@android:color/white</item>

@@ -6,31 +6,16 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/colorPrimary"
+    android:background="@drawable/welcome_background"
     >
 
-    <CustomWidget.CustomTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:id="@+id/welcome"
-        android:layout_centerHorizontal="true"
-        android:textColor="@android:color/white"
-        android:textSize="40sp"
-        android:text="Welcome"
-        style="@style/OpenSansLight"
-        />
 
-    <CustomWidget.CustomTextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/launch_logo"
         android:layout_centerHorizontal="true"
-        android:id="@+id/title"
-        android:layout_below="@id/welcome"
-        android:textColor="@android:color/white"
-        android:textSize="60sp"
-        android:text="@string/app_name"
-        style="@style/OpenSansRegular"
+        android:layout_marginTop="40dp"
         />
 
     <com.facebook.login.widget.LoginButton
@@ -43,6 +28,7 @@
         android:id="@+id/fb_sign_in_btn"
         android:layout_alignLeft="@+id/google_sign_in_btn"
         android:layout_alignRight="@+id/google_sign_in_btn"
+        android:layout_above="@+id/google_sign_in_btn"
 
         />
 
@@ -53,6 +39,7 @@
         android:layout_centerHorizontal="true"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
-        android:layout_below="@id/fb_sign_in_btn" />
+        android:layout_alignParentBottom="true"
+        />
 
 </RelativeLayout>
