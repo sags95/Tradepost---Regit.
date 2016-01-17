@@ -59,6 +59,9 @@ public class FirstTime extends FragmentActivity implements OnClickListener,
         super.onCreate(savedInstanceState);
 
 
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
 //        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
   //      locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new MyLocationService(this));Pe
         Permission per=new Permission(this,null);
@@ -239,5 +242,14 @@ Snackbar s;
     @Override
     public void onConnectionSuspended(int i) {
 
+    }
+
+    public int getStatusBarHeight() {
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }

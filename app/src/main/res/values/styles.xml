@@ -23,7 +23,6 @@
         <item name="actionBarWidgetTheme">@style/ActionBarTheme</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
 
-
     </style>
 
     <style name="AppTheme.NoActionBar.FirstTime">
@@ -35,6 +34,8 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionBarWidgetTheme">@style/ActionBarTheme</item>
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
 
 
     </style>

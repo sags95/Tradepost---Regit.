@@ -50,14 +50,24 @@
                     android:orientation="vertical"
                     >
 
-                    <ImageView
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/community_logo"
-                        android:scaleType="fitXY"
-                        android:adjustViewBounds="true"
                         android:layout_weight="9"
-                        />
+                        android:background="@color/darkWhite"
+                        >
+
+                        <ImageView
+                            android:id="@+id/test"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@mipmap/find_community"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"
+                            />
+
+
+                    </RelativeLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -128,26 +138,26 @@
                             />
 
 
-                        <CustomWidget.CustomTextView
-                            android:id="@+id/community_viewBtn"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="BROWSE COMMUNITY"
-                            android:gravity="center_vertical"
-                            android:layout_below="@+id/community_divider_line"
-                            android:layout_toRightOf="@+id/community_setBtn"
-                            android:textColor="@color/colorPrimary"
-                            android:textStyle="bold"
-                            android:textSize="14sp"
-                            android:paddingRight="8dp"
-                            android:paddingLeft="8dp"
-                            android:paddingTop="4dp"
-                            android:paddingBottom="4dp"
-                            android:layout_marginRight="8dp"
-                            android:layout_marginLeft="4dp"
-                            style="@style/OpenSansBold"
-                            android:layout_marginBottom="8dp"
-                            />
+                        <!--<CustomWidget.CustomTextView-->
+                            <!--android:id="@+id/community_viewBtn"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="match_parent"-->
+                            <!--android:text="BROWSE COMMUNITY"-->
+                            <!--android:gravity="center_vertical"-->
+                            <!--android:layout_below="@+id/community_divider_line"-->
+                            <!--android:layout_toRightOf="@+id/community_setBtn"-->
+                            <!--android:textColor="@color/colorPrimary"-->
+                            <!--android:textStyle="bold"-->
+                            <!--android:textSize="14sp"-->
+                            <!--android:paddingRight="8dp"-->
+                            <!--android:paddingLeft="8dp"-->
+                            <!--android:paddingTop="4dp"-->
+                            <!--android:paddingBottom="4dp"-->
+                            <!--android:layout_marginRight="8dp"-->
+                            <!--android:layout_marginLeft="4dp"-->
+                            <!--style="@style/OpenSansBold"-->
+                            <!--android:layout_marginBottom="8dp"-->
+                            <!--/>-->
 
 
 
@@ -179,7 +189,7 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:src="@drawable/item_logo"
+                        android:src="@mipmap/add_item"
                         android:scaleType="fitXY"
                         android:adjustViewBounds="true"
                         android:layout_weight="9"
@@ -274,6 +284,146 @@
                             style="@style/OpenSansBold"
                             android:layout_marginBottom="8dp"
                             />
+
+
+                    </RelativeLayout>
+
+
+
+                </LinearLayout>
+
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/view_community_card_view"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardUseCompatPadding="true"
+                card_view:cardElevation="2dp"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="9"
+                        >
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@mipmap/view_community"
+                            android:scaleType="fitXY"
+                            android:adjustViewBounds="true"
+                            />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@mipmap/soon_banner"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="12"
+                        android:background="@color/darkWhite"
+
+                        >
+
+                        <CustomWidget.CustomTextView
+                            android:id="@+id/view_community_title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Marketplace"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:paddingTop="8dp"
+                            android:paddingRight="16dp"
+                            android:paddingLeft="16dp"
+                            android:layout_alignParentTop="true"
+                            style="@style/OpenSansRegular"
+                            />
+
+                        <CustomWidget.CustomTextView
+                            android:id="@+id/view_community_subTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Browse your trading community"
+                            android:textSize="12sp"
+                            android:layout_below="@+id/view_community_title"
+                            android:paddingRight="16dp"
+                            android:paddingLeft="16dp"
+                            style="@style/OpenSansLight"
+
+                            />
+
+                        <View
+                            android:id="@+id/view_community_card_divider_line"
+                            android:layout_below="@+id/view_community_subTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/darkWhite"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginTop="16dp"
+                            />
+
+                        <CustomWidget.CustomTextView
+                            android:id="@+id/view_community_addBtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="COMING SOON"
+                            android:gravity="center_vertical"
+                            android:layout_below="@+id/view_community_card_divider_line"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:paddingRight="8dp"
+                            android:paddingLeft="8dp"
+                            android:paddingTop="4dp"
+                            android:paddingBottom="4dp"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="4dp"
+                            style="@style/OpenSansBold"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginBottom="8dp"
+
+
+                            />
+
+                        <!--<CustomWidget.CustomClickableTextView-->
+                            <!--android:id="@+id/view_community_viewBtn"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="match_parent"-->
+                            <!--android:text="VIEW ITEMS"-->
+                            <!--android:gravity="center_vertical"-->
+                            <!--android:layout_below="@+id/view_community_card_divider_line"-->
+                            <!--android:layout_toRightOf="@+id/view_community_addBtn"-->
+                            <!--android:textColor="@color/colorPrimary"-->
+                            <!--android:textStyle="bold"-->
+                            <!--android:textSize="14sp"-->
+                            <!--android:paddingRight="8dp"-->
+                            <!--android:paddingLeft="8dp"-->
+                            <!--android:paddingTop="4dp"-->
+                            <!--android:paddingBottom="4dp"-->
+                            <!--android:layout_marginLeft="4dp"-->
+                            <!--android:layout_marginRight="8dp"-->
+                            <!--style="@style/OpenSansBold"-->
+                            <!--android:layout_marginBottom="8dp"-->
+                            <!--/>-->
 
 
                     </RelativeLayout>

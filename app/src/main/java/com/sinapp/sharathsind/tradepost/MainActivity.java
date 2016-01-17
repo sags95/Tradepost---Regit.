@@ -82,6 +82,8 @@ public GoogleApiClient mGoogleApiClient;
         if(!restoredText){
             CardView addItemCard = (CardView) findViewById(R.id.add_item_card_view);
             addItemCard.setVisibility(View.GONE);
+            CardView viewCommunityCard = (CardView) findViewById(R.id.view_community_card_view);
+            viewCommunityCard.setVisibility(View.GONE);
         }
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -401,6 +403,8 @@ new AsyncTask<Void, Void,Void>(){
                         }).show();
                         CardView addItemCard = (CardView) findViewById(R.id.add_item_card_view);
                         addItemCard.setVisibility(View.VISIBLE);
+                        CardView viewCommunityCard = (CardView) findViewById(R.id.view_community_card_view);
+                        viewCommunityCard.setVisibility(View.VISIBLE);
                     }
                 }
 
