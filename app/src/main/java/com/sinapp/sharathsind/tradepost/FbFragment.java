@@ -10,10 +10,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -21,6 +23,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.SignInButton;
@@ -111,13 +114,21 @@ public class FbFragment extends Fragment {
         // TODO Auto-generated method stub
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         View view = inflater.inflate(R.layout.activity_first_time, container, false);
-        LoginButton authButton = (LoginButton) view.findViewById(R.id.fb_sign_in_btn);
-        authButton.setBackgroundResource(R.mipmap.btn_gsignin_normal9);
+        Button authButton = (Button) view.findViewById(R.id.fb_sign_in_btn);
+authButton.setOnClickListener(new OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        LoginManager.getInstance().logInWithReadPermissions(getActivity(), Arrays.asList("public_profile", "email"));
+    }
+
+});
+       // authButton.setBackground(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.fb));
+      //  authButton.setBackgroundResource(R.drawable.fb);
 
 
-        authButton.setReadPermissions(Arrays.asList("public_profile", "email"));
+      //  authButton.setReadPermissions(Arrays.asList("public_profile", "email"));
         b = CallbackManager.Factory.create();
-        authButton.registerCallback(b, new FacebookCallback<LoginResult>() {
+        LoginManager.getInstance().registerCallback(b, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
 
@@ -189,7 +200,7 @@ public class FbFragment extends Fragment {
 
 
                 Bundle parameters = new Bundle();
-                parameters.putString("fields","email,name,id");
+                parameters.putString("fields", "email,name,id");
                 request.setParameters(parameters);
                 request.executeAsync();
 

@@ -350,7 +350,7 @@ ArrayList<Integer>userid;
 
         switch (item.getTitle().toString()){
             case "Save":
-                delete1(itemid);
+
                 final EditText tv=(EditText)findViewById(R.id.section1_edit);
                 final    EditText desc=(EditText)findViewById(R.id.section4_edit);
                 final     SeekBar s=(SeekBar)findViewById(R.id.seekBar1);
@@ -427,6 +427,7 @@ ArrayList<Integer>userid;
                     protected String doInBackground(String... voids) {
                         if(cancel)
                             return null;
+                        delete1(itemid) ;
                         try {
                             tags=getAllTagNames(tagFlowLayout);
                             String[] tagarray = new String[tags.size()];
@@ -474,57 +475,39 @@ ArrayList<Integer>userid;
 
                 break;
             case "Delete":
-                if(offers.size()>0)
-                {
-                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
-                    builder.setPositiveButton("yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            int k=0;
-                            for(int i: offers)
-                            {
-                                SQLiteDatabase db=openOrCreateDatabase("tradepostdb.db", MODE_PRIVATE, null);
-                                Cursor       c= Constants.db.rawQuery("select * from login", null);
-                                c.moveToFirst();
+new AsyncTask<String,String,String>(){
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+    }
 
-                                //Variables.email=c.getString(c.getColumnIndex("email"));
-                                Variables.username=c.getString(c.getColumnIndex("username"));
-                                SoapObject obje=new SoapObject("http://webser/", "sendOfferDeclined");
-                                obje.addProperty("msg", Variables.username+" has deleted his item");
-                                obje.addProperty("offerid",i);
-                                obje.addProperty("userid",userid.get(k));
-                                k++;
-                                obje.addProperty("username", Variables.username);
-                                SoapPrimitive soapPrimitive1= MainWebService.getretryMsg(obje, "http://services.tradepost.me:8084/TDserverWeb/OfferWebService?wsdl", "http://webser/OfferWebService/sendOfferDeclineRequest", 0);
-                                db.execSQL("update offers set status =2 where offerid =" + i);
-                                c.close();
-                                db.close();
-                              //  finish();
-                            }
-delete(itemid);
-                            finish();
-                      //      startActivity(new Intent(EditListingActivity.this,NavigationDrawer.class));
+    @Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+        if(s.equals("success")){
+            Intent i=new Intent(EditListingActivity.this,MyItemActivity.class);
+            //i.putExtra("isSuccess", true);
+            startActivity(i);
+            finish();
 
+        }else{
+      //  Snackbar.make(android.)
+        }
+    }
 
+    @Override
+    protected String doInBackground(String... params) {
+      SoapPrimitive res=  delete(itemid);
+        if(res!=null)
+        {
+            return "success";
+        }
+        return "failure";
+    }
+}.execute();
 
 
-                        }
-                    });
-                    builder.setNegativeButton("no", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
 
-                        }
-                    });
-                    builder.setMessage(" Offers exist for this item! Are you sure you want to delete? ");
-                    builder.create().show();
-                }
-                else{
-delete(itemid);
-                    Toast.makeText(this,"item deleted",Toast.LENGTH_LONG).show();
-                    finish();
-               //     startActivity(new Intent(EditListingActivity.this, NavigationDrawer.class));
-                }
 
 
                 break;
@@ -549,13 +532,13 @@ delete(itemid);
         object.addProperty("tag",im);
         return     MainWebService.getMsg(object, "http://services.tradepost.me:8084/TDserverWeb/AddItems?wsdl", "http://webser/AddItems/addtagRequest");
     }
-    public void delete(int itemid)
+    public SoapPrimitive delete(int itemid)
     {
         SoapObject soapObject=new SoapObject("http://webser/","delete");
         soapObject.addProperty("id",itemid);
         SoapPrimitive res= MainWebService.getMsg(soapObject, "http://services.tradepost.me:8084/TDserverWeb/EditdeleteItem?wsdl", "http://webser/EditdeleteItem/deleteRequest");
 
-
+return res;
     }
     public void delete1(int itemid)
     {
@@ -570,6 +553,7 @@ delete(itemid);
 
         //section1
         itemName.setText(itemInfoForEdit.get(1));
+        itemid=Integer.parseInt(itemInfoForEdit.get(0));
         //section2
         final Thread setImageThread = new Thread() {
 
@@ -726,7 +710,7 @@ delete(itemid);
         public void onClick(View v) {
 
             Permission per = new Permission(EditListingActivity.this, null);
-            if (per.isPermissionDenied(android.Manifest.permission.READ_EXTERNAL_STORAGE) == 0 && per.isPermissionDenied(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == 0) {
+            if (per.isPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE) == 0 && per.isPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE) == 0) {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 File photo = null;
                 try {
@@ -744,8 +728,8 @@ delete(itemid);
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     startActivityForResult(takePictureIntent, requestCodeCam);
                 }
-            } else if (per.isPermissionDenied(android.Manifest.permission.READ_EXTERNAL_STORAGE) == 1 && per.isPermissionDenied(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == 1) {
-                per.askPermission(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+            } else if (per.isPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE) == 1 && per.isPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE) == 1) {
+                per.askPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
 
             }
             else{
@@ -787,7 +771,7 @@ delete(itemid);
     }
     public void gallery()
     {
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
         startActivityForResult(Intent.createChooser(intent, "Select File"), requestCodeGal);
 
@@ -838,13 +822,13 @@ delete(itemid);
             startActivityForResult(pickPhoto , 0);
             */
             Permission per = new Permission(EditListingActivity.this, null);
-            if (per.isPermissionDenied(android.Manifest.permission.READ_EXTERNAL_STORAGE) == 0 && per.isPermissionDenied(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == 0) {
-                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            if (per.isPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE) == 0 && per.isPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE) == 0) {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 intent.setType("image/*");
                 startActivityForResult(Intent.createChooser(intent, "Select File"), requestCodeGal);
             }
-            else if (per.isPermissionDenied(android.Manifest.permission.READ_EXTERNAL_STORAGE) == 1 && per.isPermissionDenied(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == 1) {
-                per.askPermission(new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE},2);
+            else if (per.isPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE) == 1 && per.isPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE) == 1) {
+                per.askPermission(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},2);
 
             }
             else{
