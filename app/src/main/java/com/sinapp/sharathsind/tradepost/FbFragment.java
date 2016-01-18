@@ -125,7 +125,7 @@ authButton.setOnClickListener(new OnClickListener() {
        // authButton.setBackground(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.drawable.fb));
       //  authButton.setBackgroundResource(R.drawable.fb);
 
-
+authButton.setBackground(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.mipmap.sign_in_fb));
       //  authButton.setReadPermissions(Arrays.asList("public_profile", "email"));
         b = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(b, new FacebookCallback<LoginResult>() {
@@ -217,9 +217,9 @@ authButton.setOnClickListener(new OnClickListener() {
             }
         });
 
-        SignInButton google = (SignInButton) view.findViewById(R.id.google_sign_in_btn);
+        Button google = (Button) view.findViewById(R.id.google_sign_in_btn);
         google.setOnClickListener(f);
-
+google.setBackground(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.mipmap.sign_in_gplus));
 
         return view;
     }

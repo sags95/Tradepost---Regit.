@@ -20,6 +20,8 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.google.android.gms.analytics.ExceptionReporter;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -41,6 +43,7 @@ public class FirstTime extends FragmentActivity implements OnClickListener,
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         switch (requestCode)
         {case 0:
             if(grantResults.length>0&&grantResults[0]== PackageManager.PERMISSION_GRANTED) {
@@ -57,7 +60,12 @@ public class FirstTime extends FragmentActivity implements OnClickListener,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Tracker t =
+                ((TradePost) getApplication()).getDefaultTracker();
+        Thread.UncaughtExceptionHandler myHandler = new ExceptionReporter(
+                t,                                        // Currently used Tracker.
+                Thread.getDefaultUncaughtExceptionHandler(),      // Current default uncaught exception handler.
+                this);
 
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);

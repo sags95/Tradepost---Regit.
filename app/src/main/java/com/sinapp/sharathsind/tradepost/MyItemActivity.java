@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.google.android.gms.analytics.ExceptionReporter;
+import com.google.android.gms.analytics.Tracker;
+
 import CustomWidget.CustomButton;
 import CustomWidget.CustomTextView;
 
@@ -17,6 +20,12 @@ public class MyItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_item);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Tracker t =
+                ((TradePost) getApplication()).getDefaultTracker();
+        Thread.UncaughtExceptionHandler myHandler = new ExceptionReporter(
+                t,                                        // Currently used Tracker.
+                Thread.getDefaultUncaughtExceptionHandler(),      // Current default uncaught exception handler.
+                this);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

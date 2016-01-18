@@ -50,6 +50,8 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.ExceptionReporter;
+import com.google.android.gms.analytics.Tracker;
 import com.squareup.picasso.Picasso;
 
 import org.apmem.tools.layouts.FlowLayout;
@@ -126,6 +128,12 @@ ArrayList<Integer>userid;
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Tracker t =
+                ((TradePost) getApplication()).getDefaultTracker();
+        Thread.UncaughtExceptionHandler myHandler = new ExceptionReporter(
+                t,                                        // Currently used Tracker.
+                Thread.getDefaultUncaughtExceptionHandler(),      // Current default uncaught exception handler.
+                this);
         switch (requestCode)
         {
 

@@ -33,6 +33,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.analytics.ExceptionReporter;
+import com.google.android.gms.analytics.Tracker;
 import com.squareup.picasso.Picasso;
 
 import org.apmem.tools.layouts.FlowLayout;
@@ -76,10 +78,16 @@ public class SingleListingActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_single_listing_view);
         View includeView = (View)findViewById(R.id.single_listing_main_layout);
         //GCMService.b=true;
-
+        Tracker t =
+                ((TradePost) getApplication()).getDefaultTracker();
+        Thread.UncaughtExceptionHandler myHandler = new ExceptionReporter(
+                t,                                        // Currently used Tracker.
+                Thread.getDefaultUncaughtExceptionHandler(),      // Current default uncaught exception handler.
+                this);
         //single listing header
         singleListingHeader= (RelativeLayout)findViewById(R.id.single_listing_header);
 //        singleListingHeader.setOnClickListener(new View.OnClickListener() {
@@ -141,7 +149,7 @@ public class SingleListingActivity extends AppCompatActivity {
             itemUsername.setText(Variables.username);
 //            itemUsername.setText(itemInfo.get(2));
             //item distance
-            itemDistance.setText(String.valueOf(roundedDistance(distance(userdata.mylocation.latitude,userdata.mylocation.Longitude, userdata.mylocation.latitude, userdata.mylocation.Longitude, 'K'))));
+//            itemDistance.setText(String.valueOf(roundedDistance(distance(userdata.mylocation.latitude,userdata.mylocation.Longitude, userdata.mylocation.latitude, userdata.mylocation.Longitude, 'K'))));
 
             String[] itemImages = getIntent().getStringArrayExtra("itemImages");
             images = new String[itemImages.length];
@@ -158,7 +166,7 @@ public class SingleListingActivity extends AppCompatActivity {
             itemCatToEdit = itemInfo.get(6);
 
             imageResources = new String[itemImages.length];
-            mCustomPagerAdapter = new CustomPagerAdapter(this,images);
+            mCustomPagerAdapter = new CustomPagerAdapter(this,images,expandImgOnClick);
             mViewPager = (ViewPager) findViewById(R.id.pager);
             mViewPager.setAdapter(mCustomPagerAdapter);
 
@@ -475,7 +483,7 @@ public class SingleListingActivity extends AppCompatActivity {
         final ImageView expandedImageView = (ImageView) findViewById(R.id.expanded_image);
         expandedImageView.setImageBitmap(image);
 
-        final ScrollView scrollView = (ScrollView) findViewById(R.id.scrollView);
+        final ScrollView scrollView = (ScrollView) findViewById(R.id.single_listing_scroll);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
 
@@ -490,7 +498,7 @@ public class SingleListingActivity extends AppCompatActivity {
         // set the container view's offset as the origin for the bounds, since that's
         // the origin for the positioning animation properties (X, Y).
         thumbView.getGlobalVisibleRect(startBounds);
-        findViewById(R.id.listing_proecss_layout).getGlobalVisibleRect(finalBounds, globalOffset);
+        findViewById(R.id.single_view).getGlobalVisibleRect(finalBounds, globalOffset);
         startBounds.offset(-globalOffset.x, -globalOffset.y);
         finalBounds.offset(-globalOffset.x, -globalOffset.y);
 

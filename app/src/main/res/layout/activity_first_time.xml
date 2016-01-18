@@ -16,13 +16,14 @@
         android:layout_marginTop="40dp"
         />
 
-    <com.facebook.login.widget.LoginButton
+    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
+
         android:id="@+id/fb_sign_in_btn"
         android:layout_alignLeft="@+id/google_sign_in_btn"
         android:layout_alignRight="@+id/google_sign_in_btn"
@@ -30,13 +31,14 @@
 
         />
 
-    <com.google.android.gms.common.SignInButton
+    <Button
         android:id="@+id/google_sign_in_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
+
         android:layout_alignParentBottom="true"
         />
 

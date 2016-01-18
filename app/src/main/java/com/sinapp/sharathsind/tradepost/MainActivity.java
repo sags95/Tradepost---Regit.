@@ -366,6 +366,10 @@ new AsyncTask<Void, Void,Void>(){
 
     public void locationService() {
         int count;
+        if(Constants.db==null)
+        {
+            Constants.db=openOrCreateDatabase("tradepostdb.db", MODE_PRIVATE, null);
+        }
         Cursor c=Constants.db.rawQuery("select * from LocationPermission",null);
         c.moveToFirst();
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);

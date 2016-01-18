@@ -6,17 +6,7 @@
     <!--Enable automatic activity tracking-->
     <bool name="ga_autoActivityTracking">true</bool>
 
-    <!-- The screen names that will appear in reports -->
-    <screenName name="com.sinapp.sharathsind.tradepost.MainActivity">
-        MainScreen
-    </screenName>
-    <screenName name="com.sinapp.sharathsind.tradepost.ListingProcessActivity">
-        Listing Process
-    </screenName>
 
-    <screenName name="com.sinapp.sharathsind.tradepost.EditListingActivity">
-        Edit Item
-    </screenName>  <!--Enable automatic exception tracking-->
     <bool name="ga_reportUncaughtExceptions">true</bool>
     <integer name="ga_sessionTimeout">300</integer>
 </resources>

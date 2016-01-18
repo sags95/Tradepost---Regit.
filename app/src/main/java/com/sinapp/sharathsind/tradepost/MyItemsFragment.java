@@ -14,6 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.ExceptionReporter;
+import com.google.android.gms.analytics.Tracker;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -54,7 +57,12 @@ public class MyItemsFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_my_items, container, false);
         emptyView = rootView.findViewById(R.id.myItems_emptyView);
         mRecyclerView = (EmptyRecyclerView)rootView.findViewById(R.id.myItems_recyclerview);
-
+        Tracker t =
+                ((TradePost) getActivity().getApplication()).getDefaultTracker();
+        Thread.UncaughtExceptionHandler myHandler = new ExceptionReporter(
+                t,                                        // Currently used Tracker.
+                Thread.getDefaultUncaughtExceptionHandler(),      // Current default uncaught exception handler.
+                this.getActivity());
         new AsyncTask<String,String,String>(){
 
             @Override

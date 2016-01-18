@@ -25,7 +25,7 @@ public class CustomPagerAdapter extends PagerAdapter {
 
    Bitmap[] mResources;
     public String[] imagesArray;
-
+View.OnClickListener c;
 
     public CustomPagerAdapter(Context context, Bitmap[] imageResources) {
         mContext = context;
@@ -33,10 +33,11 @@ public class CustomPagerAdapter extends PagerAdapter {
         mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public CustomPagerAdapter(Context context, String[] imagesArray) {
+    public CustomPagerAdapter(Context context, String[] imagesArray,View.OnClickListener view) {
         mContext = context;
         this.imagesArray=imagesArray;
         mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    c=view;
     }
 
     @Override
@@ -58,6 +59,7 @@ public class CustomPagerAdapter extends PagerAdapter {
         View itemView = mLayoutInflater.inflate(R.layout.pager_item, container, false);
 
         ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
+       imageView.setOnClickListener(c);
         if(imagesArray!=null){
                 Picasso.with(mContext).load(Uri.parse(imagesArray[position])).into(imageView);
                 container.addView(itemView);

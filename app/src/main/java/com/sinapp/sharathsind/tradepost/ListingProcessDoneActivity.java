@@ -27,6 +27,7 @@ public class ListingProcessDoneActivity extends AppCompatActivity {
     private RelativeLayout successLayout,failedLayout;
     ShareDialog shareDialog;
     CallbackManager callbackManager;
+    boolean sucess;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +84,7 @@ public class ListingProcessDoneActivity extends AppCompatActivity {
 //            }
 //        });
         final boolean isSuccess = getIntent().getBooleanExtra("isSuccess",false);
+        sucess=isSuccess;
         successLayout.setVisibility(isSuccess ? View.VISIBLE : View.GONE);
         failedLayout.setVisibility(isSuccess ? View.GONE : View.VISIBLE);
 
@@ -91,5 +93,16 @@ public class ListingProcessDoneActivity extends AppCompatActivity {
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(sucess) {
+            Intent intent = new Intent(ListingProcessDoneActivity.this, MyItemActivity.class);
+ intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            finish();
+            startActivity(intent);
+        }
     }
 }
