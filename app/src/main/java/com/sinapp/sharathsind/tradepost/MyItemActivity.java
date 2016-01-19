@@ -1,6 +1,7 @@
 package com.sinapp.sharathsind.tradepost;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +12,7 @@ import com.google.android.gms.analytics.Tracker;
 
 import CustomWidget.CustomButton;
 import CustomWidget.CustomTextView;
+import Model.Variables;
 
 public class MyItemActivity extends AppCompatActivity {
 
@@ -26,6 +28,23 @@ public class MyItemActivity extends AppCompatActivity {
                 t,                                        // Currently used Tracker.
                 Thread.getDefaultUncaughtExceptionHandler(),      // Current default uncaught exception handler.
                 this);
+        if(Constants.userid==0)
+        {
+            if(Constants.db==null)
+            {
+                Constants.db = openOrCreateDatabase("tradepostdb.db", MODE_PRIVATE, null);
+
+            }
+         Cursor c1 =Constants.db.rawQuery("select * from login", null);
+            c1.moveToFirst();
+            if(c1.getCount()>0) {
+                Constants.userid = c1.getInt(c1.getColumnIndex("userid"));
+                Variables.email = c1.getString(c1.getColumnIndex("email"));
+                Variables.username = c1.getString(c1.getColumnIndex("username"));
+                userdata.name = Variables.username;
+                userdata.userid = Constants.userid;
+            }
+        }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

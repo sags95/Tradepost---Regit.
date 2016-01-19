@@ -77,6 +77,7 @@ import CustomWidget.CustomTextView;
 import CustomWidget.LimitedEditText;
 import Model.RegisterWebService;
 
+import Model.Variables;
 import webservices.MainWebService;
 
 /**
