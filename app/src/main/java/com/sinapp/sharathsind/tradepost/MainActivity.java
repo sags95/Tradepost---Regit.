@@ -255,7 +255,7 @@ new AsyncTask<Void, Void,Void>(){
             if (!isGPSEnabled && !isNetworkEnabled) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("Location Manager");
-                builder.setMessage("Please Enable the gps ");
+                builder.setMessage("Please enable your gps ");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -395,7 +395,7 @@ new AsyncTask<Void, Void,Void>(){
                     pd.hide();
                     if(aBoolean) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("Message");
+                        builder.setTitle("Congratulations");
                         builder.setMessage("You have been added to " + userdata.city + " community. Don't worry, you'll be able to see trades from surrounding areas as well.");
                         builder.setPositiveButton("Sounds Good", new DialogInterface.OnClickListener() {
                             @Override

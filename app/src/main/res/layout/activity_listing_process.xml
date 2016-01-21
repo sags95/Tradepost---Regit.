@@ -692,7 +692,7 @@
                     android:id="@+id/section5_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Name Your TAGS...."
+                    android:hint="Precise keywords only"
                     android:layout_below="@+id/section5_title"
                     android:layout_toLeftOf="@+id/section5_plus"
                     android:singleLine="true"

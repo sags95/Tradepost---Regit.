@@ -15,7 +15,7 @@
     <string name="section2_text">Upload a Photo</string>
     <string name="section3_text">Item\'s Condition</string>
     <string name="section4_text">Give a Description</string>
-    <string name="section5_text">Relevant TAGS</string>
+    <string name="section5_text">Describe what you’re looking for</string>
     <string name="section6_text">Choose a Category</string>
     <string name="section2_text_camera">Take a photo\nwith your phone</string>
     <string name="section2_text_folder">Browse from\nyour folder</string>
