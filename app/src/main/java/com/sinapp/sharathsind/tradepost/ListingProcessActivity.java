@@ -344,9 +344,7 @@ public class ListingProcessActivity extends AppCompatActivity {
                 final String title=tv.getText().toString();
                 final String description=desc.getText().toString();
                 final String cat=spinner.getSelectedItem().toString();
-
-//pg.show();
-                new AsyncTask<String,String,String>()
+final AsyncTask asyncTask= new AsyncTask<String,String,String>()
                 {
                     boolean cancel;
                     @Override
@@ -454,7 +452,30 @@ public class ListingProcessActivity extends AppCompatActivity {
                         }
 
                     }
-                }.execute(null, null);
+                };
+                if(tempBitmap.size()==0)
+                {
+                    new AlertDialog.Builder(ListingProcessActivity.this)
+                            .setTitle("Message")
+                            .setMessage("Please add one image to get better trading experience")
+                            .setPositiveButton("Continue anways", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // continue with delete
+                                    asyncTask.execute();
+                     dialog.dismiss();
+                                }
+                            }).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+
+                }
+                else{
+                    asyncTask.execute();
+                }
                 //        a.execute(" ","","");
                 //         break;
             }

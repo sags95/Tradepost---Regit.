@@ -169,7 +169,8 @@ public class SingleListingActivity extends AppCompatActivity {
             mCustomPagerAdapter = new CustomPagerAdapter(this,images,expandImgOnClick);
             mViewPager = (ViewPager) findViewById(R.id.pager);
             mViewPager.setAdapter(mCustomPagerAdapter);
-
+if(itemTags==null)
+    itemTags=new String[]{"notag"};
             for (String tempTag : itemTags) {
                 tagsLayout.addView(addTagsSingleListing(tempTag));
             }
