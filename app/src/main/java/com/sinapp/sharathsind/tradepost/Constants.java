@@ -19,8 +19,8 @@ public class Constants {
 
         // Add data to the intent, the receiving app will decide
         // what to do with it.
-        share.putExtra(Intent.EXTRA_SUBJECT, "Check out Tradepost! It lets you trade anything locally.");
-        share.putExtra(Intent.EXTRA_TEXT, "http://goo.gl/1Bdzi1");
+//        share.putExtra(Intent.EXTRA_SUBJECT, "Check out Tradepost! It lets you trade anything locally.");
+        share.putExtra(Intent.EXTRA_TEXT, "Check out Tradepost! It lets you trade anything locally.\nhttp://goo.gl/1Bdzi1");
 
         a.startActivity(Intent.createChooser(share, "Share link!"));
     }

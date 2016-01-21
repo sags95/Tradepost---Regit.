@@ -51,6 +51,9 @@ public class LaunchActivity extends AppCompatActivity {
                 Thread.getDefaultUncaughtExceptionHandler(),      // Current default uncaught exception handler.
                 this);                                         // Context of the application.
 
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
 // Make myHandler the new default uncaught exception handler.
         Thread.setDefaultUncaughtExceptionHandler(myHandler);
         final Thread launchThread = new Thread() {
