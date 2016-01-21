@@ -350,6 +350,24 @@ final AsyncTask asyncTask= new AsyncTask<String,String,String>()
                     @Override
                     protected void onPreExecute() {
                         super.onPreExecute();
+                        if(Constants.userid==0)
+                        {
+                            if(Constants.db==null)
+                            {
+                                Constants.db = openOrCreateDatabase("tradepostdb.db", MODE_PRIVATE, null);
+
+                            }
+                            Cursor c1 =Constants.db.rawQuery("select * from login", null);
+                            c1.moveToFirst();
+                            if(c1.getCount()>0) {
+                                Constants.userid = c1.getInt(c1.getColumnIndex("userid"));
+                                Variables.email = c1.getString(c1.getColumnIndex("email"));
+                                Variables.username = c1.getString(c1.getColumnIndex("username"));
+                                userdata.name = Variables.username;
+                                userdata.userid = Constants.userid;
+                            }
+                            c1.close();
+                        }
                         if(title==null||title.trim().length()<=0)
                         {
                             new AlertDialog.Builder(ListingProcessActivity.this)

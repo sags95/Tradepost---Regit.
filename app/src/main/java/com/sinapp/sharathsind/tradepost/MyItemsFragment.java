@@ -1,6 +1,7 @@
 package com.sinapp.sharathsind.tradepost;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -82,6 +83,29 @@ public class MyItemsFragment extends Fragment {
                 }
 
                 return null;
+            }
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                if(Constants.userid==0)
+                {
+                    if(Constants.db==null)
+                    {
+                        Constants.db = getActivity().openOrCreateDatabase("tradepostdb.db",getActivity(). MODE_PRIVATE, null);
+
+                    }
+                    Cursor c1 =Constants.db.rawQuery("select * from login", null);
+                    c1.moveToFirst();
+                    if(c1.getCount()>0) {
+                        Constants.userid = c1.getInt(c1.getColumnIndex("userid"));
+                        Variables.email = c1.getString(c1.getColumnIndex("email"));
+                        Variables.username = c1.getString(c1.getColumnIndex("username"));
+                        userdata.name = Variables.username;
+                        userdata.userid = Constants.userid;
+                    }
+                    c1.close();
+                }
             }
 
             @Override
