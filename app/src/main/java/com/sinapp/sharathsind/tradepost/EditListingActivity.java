@@ -227,7 +227,7 @@ ArrayList<Integer>userid;
         getSupportActionBar().setCustomView(customToolBarTitle);
         CustomTextView title1 = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title1);
         CustomTextView title2 = (CustomTextView)customToolBarTitle.findViewById(R.id.toolbar_title2);
-        title1.setText("Add Your Item");
+        title1.setText("Edit Your Item");
         title2.setVisibility(View.GONE);
 
         tags=new ArrayList<String>();
