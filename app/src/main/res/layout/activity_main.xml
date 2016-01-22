@@ -137,6 +137,19 @@
                             android:layout_marginBottom="8dp"
                             />
 
+                        <CheckBox
+                            android:id="@+id/community_checkBox"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@+id/community_divider_line"
+                            android:gravity="center_vertical"
+                            android:layout_alignBottom="@+id/community_setBtn"
+                            android:layout_marginRight="16dp"
+                            android:clickable="false"
+                            android:longClickable="false"
+                            />
+
 
                         <!--<CustomWidget.CustomTextView-->
                             <!--android:id="@+id/community_viewBtn"-->

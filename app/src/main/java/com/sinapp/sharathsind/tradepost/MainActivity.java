@@ -38,6 +38,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.animation.Animation;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -78,12 +79,17 @@ public GoogleApiClient mGoogleApiClient;
 
         SharedPreferences prefs =this.getSharedPreferences("loctradepost", LaunchActivity.MODE_PRIVATE);
         restoredText = prefs.getBoolean("done", false);
+        CheckBox communityCheckBox = (CheckBox)findViewById(R.id.community_checkBox);
+        communityCheckBox.setChecked(true);
+
 
         if(!restoredText){
             CardView addItemCard = (CardView) findViewById(R.id.add_item_card_view);
             addItemCard.setVisibility(View.GONE);
             CardView viewCommunityCard = (CardView) findViewById(R.id.view_community_card_view);
             viewCommunityCard.setVisibility(View.GONE);
+
+            communityCheckBox.setChecked(false);
         }
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -423,6 +429,8 @@ new AsyncTask<Void, Void,Void>(){
                                 dialog.cancel();
                             }
                         }).show();
+                        CheckBox communityCheckBox = (CheckBox)findViewById(R.id.community_checkBox);
+                        communityCheckBox.setChecked(true);
                         CardView addItemCard = (CardView) findViewById(R.id.add_item_card_view);
                         addItemCard.setVisibility(View.VISIBLE);
                         CardView viewCommunityCard = (CardView) findViewById(R.id.view_community_card_view);
