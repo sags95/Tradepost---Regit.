@@ -337,140 +337,7 @@ public class ListingProcessActivity extends AppCompatActivity {
 
         switch (item.getTitle().toString()) {
             case "POST": {
-                final   EditText tv=(EditText)findViewById(R.id.section1_edit);
-                final    EditText desc=(EditText)findViewById(R.id.section4_edit);
-                final     SeekBar s=(SeekBar)findViewById(R.id.seekBar1);
-                final      int i=s.getProgress();
-                final String title=tv.getText().toString();
-                final String description=desc.getText().toString();
-                final String cat=spinner.getSelectedItem().toString();
-final AsyncTask asyncTask= new AsyncTask<String,String,String>()
-                {
-                    boolean cancel;
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        if(Constants.userid==0)
-                        {
-                            if(Constants.db==null)
-                            {
-                                Constants.db = openOrCreateDatabase("tradepostdb.db", MODE_PRIVATE, null);
 
-                            }
-                            Cursor c1 =Constants.db.rawQuery("select * from login", null);
-                            c1.moveToFirst();
-                            if(c1.getCount()>0) {
-                                Constants.userid = c1.getInt(c1.getColumnIndex("userid"));
-                                Variables.email = c1.getString(c1.getColumnIndex("email"));
-                                Variables.username = c1.getString(c1.getColumnIndex("username"));
-                                userdata.name = Variables.username;
-                                userdata.userid = Constants.userid;
-                            }
-                            c1.close();
-                        }
-                        if(title==null||title.trim().length()<=0)
-                        {
-                            new AlertDialog.Builder(ListingProcessActivity.this)
-                                    .setTitle("Error")
-                                    .setMessage("item title cannot be empty")
-                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            // continue with delete
-                                        }
-                                    })
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .show();
-                            cancel=true;
-                            return;
-                        }
-                        if( getAllTagNames(tagFlowLayout).size()<=0)
-                        {
-                            new AlertDialog.Builder(ListingProcessActivity.this)
-                                    .setTitle("Error")
-                                    .setMessage("Please create atleast one tag")
-                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            // continue with delete
-                                        }
-                                    })
-                                    .setIcon(android.R.drawable.ic_dialog_alert)
-                                    .show();
-                            cancel=true;
-                        }
-                        else {
-                            pg=ProgressDialog.show(ListingProcessActivity.this,"Please Wait","adding",false,false);
-                            pg.setCancelable(false);
-                            pg.setMessage("please wait..");
-                        }
-                    }
-
-                    @Override
-                    protected void onPostExecute(String s) {
-                        super.onPostExecute(s);
-                        if(cancel)
-                            return;
-                        pg.dismiss();
-                        Intent i = new Intent(getApplicationContext(),ListingProcessDoneActivity.class);
-                        if(s.equals("success")){
-                            i.putExtra("isSuccess", true);
-                            //i.putExtra("im", tempBitmap.get(0));
-                            startActivity(i);
-                        }else{
-                            i.putExtra("isSuccess", false);
-                            startActivity(i);
-                        }
-                        finish();
-
-
-                    }
-
-                    @Override
-                    protected String doInBackground(String... voids) {
-                        if(cancel)
-                            return null;
-                        try {
-                            tags=getAllTagNames(tagFlowLayout);
-                            String[] tagarray = new String[tags.size()];
-
-                            for(int i=0;i<tags.size();i++)
-                            {
-                                tagarray[i]=tags.get(i);
-                            }
-
-                            //     int i=s.get;
-                            SoapPrimitive r= RegisterWebService.sendDataToServer(title,description,tagarray,tempBitmap.toArray(),i, userdata.userid,cat);
-                            result=r.getValue().toString();
-                            int i=0;
-                            if(tempBitmap.size()==0)
-                            {
-                                Drawable myDrawable = ContextCompat.getDrawable(ListingProcessActivity.this, R.mipmap.ic_image_thumbnail);
-                                Bitmap myLogo = ((BitmapDrawable) myDrawable).getBitmap();
-                                tempBitmap.add(myLogo);
-                            }
-
-                            for(Bitmap b:tempBitmap)
-                            {
-                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                b.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                                byte[] byteArray = stream.toByteArray();
-                                sendDImage(Integer.parseInt(result),byteArray,i);
-
-                                i++;
-                            }
-                            for(String t:tags)
-                                sendtag(Integer.parseInt(result),t);
-//
-                            return "success";
-
-                        } catch (Exception e) {
-                            result=e.toString();
-                            e.printStackTrace();
-                            return "failed";
-
-                        }
-
-                    }
-                };
                 if(tempBitmap.size()==0)
                 {
                     new AlertDialog.Builder(ListingProcessActivity.this)
@@ -479,7 +346,7 @@ final AsyncTask asyncTask= new AsyncTask<String,String,String>()
                             .setPositiveButton("Continue anways", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     // continue with delete
-                                    asyncTask.execute();
+                                    excute();
                      dialog.dismiss();
                                 }
                             }).setNegativeButton("Ok", new DialogInterface.OnClickListener() {
@@ -492,7 +359,7 @@ final AsyncTask asyncTask= new AsyncTask<String,String,String>()
 
                 }
                 else{
-                    asyncTask.execute();
+                    excute();
                 }
                 //        a.execute(" ","","");
                 //         break;
@@ -500,6 +367,143 @@ final AsyncTask asyncTask= new AsyncTask<String,String,String>()
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    public  void excute()
+    {
+        final   EditText tv=(EditText)findViewById(R.id.section1_edit);
+        final    EditText desc=(EditText)findViewById(R.id.section4_edit);
+        final     SeekBar s=(SeekBar)findViewById(R.id.seekBar1);
+        final      int i=s.getProgress();
+        final String title=tv.getText().toString();
+        final String description=desc.getText().toString();
+        final String cat=spinner.getSelectedItem().toString();
+         new AsyncTask<String,String,String>()
+        {
+            boolean cancel;
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                if(Constants.userid==0)
+                {
+                    if(Constants.db==null)
+                    {
+                        Constants.db = openOrCreateDatabase("tradepostdb.db", MODE_PRIVATE, null);
+
+                    }
+                    Cursor c1 =Constants.db.rawQuery("select * from login", null);
+                    c1.moveToFirst();
+                    if(c1.getCount()>0) {
+                        Constants.userid = c1.getInt(c1.getColumnIndex("userid"));
+                        Variables.email = c1.getString(c1.getColumnIndex("email"));
+                        Variables.username = c1.getString(c1.getColumnIndex("username"));
+                        userdata.name = Variables.username;
+                        userdata.userid = Constants.userid;
+                    }
+                    c1.close();
+                }
+                if(title==null||title.trim().length()<=0)
+                {
+                    new AlertDialog.Builder(ListingProcessActivity.this)
+                            .setTitle("Error")
+                            .setMessage("item title cannot be empty")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // continue with delete
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                    cancel=true;
+                    return;
+                }
+                if( getAllTagNames(tagFlowLayout).size()<=0)
+                {
+                    new AlertDialog.Builder(ListingProcessActivity.this)
+                            .setTitle("Error")
+                            .setMessage("Please create atleast one tag")
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // continue with delete
+                                }
+                            })
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+                    cancel=true;
+                }
+                else {
+                    pg=ProgressDialog.show(ListingProcessActivity.this,"Please Wait","adding",false,false);
+                    pg.setCancelable(false);
+                    pg.setMessage("please wait..");
+                }
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                if(cancel)
+                    return;
+                pg.dismiss();
+                Intent i = new Intent(getApplicationContext(),ListingProcessDoneActivity.class);
+                if(s.equals("success")){
+                    i.putExtra("isSuccess", true);
+                    //i.putExtra("im", tempBitmap.get(0));
+                    startActivity(i);
+                }else{
+                    i.putExtra("isSuccess", false);
+                    startActivity(i);
+                }
+                finish();
+
+
+            }
+
+            @Override
+            protected String doInBackground(String... voids) {
+                if(cancel)
+                    return null;
+                try {
+                    tags=getAllTagNames(tagFlowLayout);
+                    String[] tagarray = new String[tags.size()];
+
+                    for(int i=0;i<tags.size();i++)
+                    {
+                        tagarray[i]=tags.get(i);
+                    }
+
+                    //     int i=s.get;
+                    SoapPrimitive r= RegisterWebService.sendDataToServer(title,description,tagarray,tempBitmap.toArray(),i, userdata.userid,cat);
+                    result=r.getValue().toString();
+                    int i=0;
+                    if(tempBitmap.size()==0)
+                    {
+                        Drawable myDrawable = ContextCompat.getDrawable(ListingProcessActivity.this, R.mipmap.ic_image_thumbnail);
+                        Bitmap myLogo = ((BitmapDrawable) myDrawable).getBitmap();
+                        tempBitmap.add(myLogo);
+                    }
+
+                    for(Bitmap b:tempBitmap)
+                    {
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        b.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byte[] byteArray = stream.toByteArray();
+                        sendDImage(Integer.parseInt(result),byteArray,i);
+
+                        i++;
+                    }
+                    for(String t:tags)
+                        sendtag(Integer.parseInt(result),t);
+//
+                    return "success";
+
+                } catch (Exception e) {
+                    result=e.toString();
+                    e.printStackTrace();
+                    return "failed";
+
+                }
+
+            }
+        }.execute();
     }
     public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
         int width = bm.getWidth();
