@@ -8,7 +8,7 @@
 
 
     <!-- welcome -->
-    <string name="welcome_text">We\'re currently perfecting the trading experience, but in the meantime get set up. We\'ll be rolling out frequent updates bringing you closer to the things you truly want.</string>
+    <string name="welcome_text">	We’re currently perfecting the trading experience. In the meantime let’s get you setup. We’ll be rolling out frequent updates to bring you closer to the things you want.</string>
 
     <!-- listing process -->
     <string name="section1_text">Name Your Item</string>

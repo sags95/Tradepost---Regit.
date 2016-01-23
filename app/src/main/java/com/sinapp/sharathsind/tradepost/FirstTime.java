@@ -147,7 +147,7 @@ Snackbar s;
     @Override
     public void onClick(View v) {
         // TODO Auto-generated method stub
-        Toast.makeText(this,"here",Toast.LENGTH_LONG).show();
+     //   Toast.makeText(this,"here",Toast.LENGTH_LONG).show();
         Permission per= new Permission(this,null);
         if (per.isPermissionDenied(Manifest.permission.GET_ACCOUNTS) == 0 ) {
             if (!mGoogleApiClient.isConnecting()) {
@@ -219,7 +219,7 @@ Snackbar s;
             new AsyncTask<String,String,String>()
             {
                 SQLiteDatabase myDB;
-                ProgressDialog pd;
+
 
                 ContentValues cv;
                 @Override
@@ -227,7 +227,7 @@ Snackbar s;
 
                     super.onPostExecute(s);
                     Constants.db.insert("login",null,cv);
-                    pd.dismiss();
+                 //   pd.dismiss();
                     start();
                 }
 
@@ -236,7 +236,7 @@ Snackbar s;
 
 
                     super.onPreExecute();
-                    pd=ProgressDialog.show(FirstTime.this,"Please Wait","signing in",true,false);
+                  //  pd=ProgressDialog.show(FirstTime.this,"Please Wait","signing in",true,false);
 
 
                 }
