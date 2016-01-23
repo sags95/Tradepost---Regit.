@@ -16,6 +16,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "923650940708-r8p5t7nap5qjnr74qdivsv5iup4m5nau.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sinapp.sharathsind.tradepost",
+            "certificate_hash": "C3B723E6D143B9DF9895BD029EFB9064DBD245E8"
+          }
+        },
+        {
           "client_id": "923650940708-hqfa839unvj9lhmqln8h7fi203bq8j6a.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

@@ -89,7 +89,7 @@
                 android:textColor="@color/textColor"
                 android:layout_centerVertical="true"
                 android:textStyle="italic"
-
+                android:layout_alignParentRight="true"
 
 
                 />

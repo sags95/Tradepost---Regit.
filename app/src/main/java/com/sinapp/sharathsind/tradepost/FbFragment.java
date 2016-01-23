@@ -1,5 +1,6 @@
 package com.sinapp.sharathsind.tradepost;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -26,6 +28,8 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.common.SignInButton;
 
 import org.json.JSONException;
@@ -46,15 +50,10 @@ public class FbFragment extends Fragment {
     public static CallbackManager b;
 
     public FbFragment() {
-
+f= (FirstTime) getActivity();
     }
 
-    public FbFragment(FirstTime firstTime) {
-        // TODO Auto-generated constructor stub
-
-        f = firstTime;
-    }
-
+long start,end;
     @Override
     public void onResume() {
         super.onResume();
@@ -118,6 +117,8 @@ public class FbFragment extends Fragment {
 authButton.setOnClickListener(new OnClickListener() {
     @Override
     public void onClick(View v) {
+         start = System.currentTimeMillis();
+
         LoginManager.getInstance().logInWithReadPermissions(getActivity(), Arrays.asList("public_profile", "email"));
     }
 
@@ -140,6 +141,9 @@ authButton.setBackground(ContextCompat.getDrawable(getActivity().getApplicationC
                                     JSONObject object,
                                     GraphResponse response) {
                                 // Application code
+
+
+                           //     Toast.makeText(getActivity(),"fblogin"+totalTime,Toast.LENGTH_LONG).show();
                                 JSONObject c = response.getJSONObject();
                                 c = object;
                                 try {
@@ -164,27 +168,44 @@ authButton.setBackground(ContextCompat.getDrawable(getActivity().getApplicationC
                                     new AsyncTask<String, String, String>() {
                                         ContentValues cv;
                                         SQLiteDatabase myDB;
-
+ProgressDialog pd;
                                         @Override
                                         protected void onPostExecute(String s) {
                                             super.onPostExecute(s);
                                             long l = Constants.db.insert("login", null, cv);
-                                            f.start();
+                                            pd.dismiss();
+                                            if(f==null)
+                                            {
+                                                f =(FirstTime)getActivity();
+                                            }
+
+                                            startActivity(new Intent(getActivity(), WelcomeActivity.class));
+                                           getActivity(). finish();
 
                                         }
 
                                         @Override
                                         protected void onPreExecute() {
-
+pd=ProgressDialog.show(getActivity(),"Please Wait","signing in",true,false);
 
                                             super.onPreExecute();
 
                                         }
 
                                         @Override
-                                        protected String doInBackground(String... params) {
-                                            cv = RegisterWebService.signUp(Variables.username, Variables.email, " ", "fb", Variables.profilepic, true, Constants.db);
+                                        protected void onProgressUpdate(String... values) {
+                                            super.onProgressUpdate(values);
+                                            Toast.makeText(getActivity(),values[0],Toast.LENGTH_LONG).show();
 
+                                        }
+
+                                        @Override
+                                        protected String doInBackground(String... params) {
+                                            long totalTime = end - start;
+                                        //  publishProgress("start"+totalTime);
+                                            cv = RegisterWebService.signUp(Variables.username, Variables.email, " ", "fb", Variables.profilepic, true, Constants.db);
+                                             totalTime = end - start;
+                                      //      publishProgress("start"+totalTime);
                                             return "";
 
                                         }
@@ -192,6 +213,14 @@ authButton.setBackground(ContextCompat.getDrawable(getActivity().getApplicationC
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
+                                    Tracker t =
+                                            ((TradePost) getActivity().getApplication()).getDefaultTracker();
+
+// Build and send exception.
+                                    t.send(new HitBuilders.ExceptionBuilder()
+                                            .setDescription(e.getMessage() + ":" + e.toString())
+
+                                            .build());
                                 }
 
                             }
@@ -218,7 +247,7 @@ authButton.setBackground(ContextCompat.getDrawable(getActivity().getApplicationC
         });
 
         Button google = (Button) view.findViewById(R.id.google_sign_in_btn);
-        google.setOnClickListener(f);
+        google.setOnClickListener((FirstTime)getActivity());
 google.setBackground(ContextCompat.getDrawable(getActivity().getApplicationContext(), R.mipmap.sign_in_gplus));
 
         return view;

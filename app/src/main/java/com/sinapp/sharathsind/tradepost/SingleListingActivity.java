@@ -116,7 +116,7 @@ public class SingleListingActivity extends AppCompatActivity {
         itemDateAdded = (CustomTextView)singleListingHeader.findViewById(R.id.single_listing_header_time);
         tagsLayout = (FlowLayout)includeView.findViewById(R.id.single_listing_tags);
         itemUsername = (CustomTextView)singleListingHeader.findViewById(R.id.single_listing_header_username);
-        itemDistance = (CustomTextView)singleListingHeader.findViewById(R.id.single_listing_header_distance);
+      //  itemDistance = (CustomTextView)singleListingHeader.findViewById(R.id.single_listing_header_distance);
 
         //favouriteItemStatus.setOnClickListener(addedTofavourite);
         //floating action button

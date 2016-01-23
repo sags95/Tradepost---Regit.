@@ -2,6 +2,7 @@ package com.sinapp.sharathsind.tradepost;
 
 import android.*;
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 import com.google.android.gms.analytics.ExceptionReporter;
 import com.google.android.gms.analytics.Tracker;
@@ -87,7 +89,7 @@ public class FirstTime extends FragmentActivity implements OnClickListener,
                 .build();
         if (savedInstanceState == null) {
             // Add the fragment on initial activity setup
-            mainFragment = new FbFragment(this);
+            mainFragment = new FbFragment();
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(android.R.id.content, mainFragment)
@@ -145,6 +147,7 @@ Snackbar s;
     @Override
     public void onClick(View v) {
         // TODO Auto-generated method stub
+        Toast.makeText(this,"here",Toast.LENGTH_LONG).show();
         Permission per= new Permission(this,null);
         if (per.isPermissionDenied(Manifest.permission.GET_ACCOUNTS) == 0 ) {
             if (!mGoogleApiClient.isConnecting()) {
@@ -216,12 +219,15 @@ Snackbar s;
             new AsyncTask<String,String,String>()
             {
                 SQLiteDatabase myDB;
+                ProgressDialog pd;
+
                 ContentValues cv;
                 @Override
                 protected void onPostExecute(String s) {
 
                     super.onPostExecute(s);
                     Constants.db.insert("login",null,cv);
+                    pd.dismiss();
                     start();
                 }
 
@@ -230,6 +236,8 @@ Snackbar s;
 
 
                     super.onPreExecute();
+                    pd=ProgressDialog.show(FirstTime.this,"Please Wait","signing in",true,false);
+
 
                 }
 
