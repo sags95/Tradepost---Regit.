@@ -250,6 +250,13 @@ new AsyncTask<Void, Void,Void>(){
         } catch (IOException e) {
             e.printStackTrace();
         }
+        SharedPreferences.Editor editor = MainActivity.this.getSharedPreferences("loctradepost", MainActivity.this.MODE_PRIVATE).edit();
+        //editor.putInt("rad", radius);
+        editor.putFloat("lat", userdata.mylocation.latitude);
+        editor.putFloat("long", userdata.mylocation.Longitude);
+        editor.putString("city", null);
+        editor.putBoolean("done", false);
+        boolean b=   editor.commit();
         c.close();
         Constants.db.close();
         deleteDatabase("tradepostdb.db");

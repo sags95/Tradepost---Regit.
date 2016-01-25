@@ -471,7 +471,7 @@ public class ListingProcessActivity extends AppCompatActivity {
                     }
 
                     //     int i=s.get;
-                    SoapPrimitive r= RegisterWebService.sendDataToServer(title,description,tagarray,tempBitmap.toArray(),i, userdata.userid,cat);
+                    SoapPrimitive r= RegisterWebService.sendDataToServer(title,description,tagarray,tempBitmap.toArray(),i, userdata.userid,cat,ListingProcessActivity.this);
                     result=r.getValue().toString();
                     int i=0;
                     if(tempBitmap.size()==0)

@@ -1,12 +1,15 @@
 package Model;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.util.Base64;
 
 
 import com.sinapp.sharathsind.tradepost.Constants;
+import com.sinapp.sharathsind.tradepost.UserLocation;
 import com.sinapp.sharathsind.tradepost.userdata;
 
 import org.ksoap2.HeaderProperty;
@@ -167,11 +170,27 @@ signUp(username, email, s, fb, profilepic, b, db);
     private static final String METHOD_NAME3 = "additems";
    // private static final String NAMESPACE = "http://webser/";
     //private static final String URL ="http://192.168.43.248:8084/TDserverWeb/AddItems?wsdl";
-    public static SoapPrimitive sendDataToServer(String itemTitle, String descrpition, String[] tags, Object[] images, int condition, int userid, String category) {
+    public static SoapPrimitive sendDataToServer(String itemTitle, String descrpition, String[] tags, Object[] images, int condition, int userid, String category,Context context) {
 
         SoapObject object = new SoapObject(NAMESPACE, METHOD_NAME3);
         object.addProperty("itemname", itemTitle);
         object.addProperty("desc",descrpition);
+        if(userdata.mylocation==null)
+        {
+
+            SharedPreferences prefs = context.getSharedPreferences("loctradepost", context.MODE_PRIVATE);
+
+            userdata.mylocation=new UserLocation();
+            float restoredText = prefs.getFloat("lat", 0);
+            float restoredText1 = prefs.getFloat("long", 0);
+            String restoredText2 = prefs.getString("city", null);
+            if(restoredText2!=null) {
+                userdata.mylocation = new UserLocation();
+                userdata.mylocation.city=restoredText2;
+                userdata.mylocation.latitude=restoredText;
+                userdata.mylocation.Longitude=restoredText1;
+            }
+        }
         object.addProperty("latitude", String.format("%.2f",userdata.mylocation.latitude));
 
 
@@ -202,7 +221,7 @@ signUp(username, email, s, fb, profilepic, b, db);
         }
 catch (EOFException ex)
 {
-    return  sendDataToServer(itemTitle,descrpition,tags,images,condition,userid,category);
+    return  sendDataToServer(itemTitle,descrpition,tags,images,condition,userid,category,context);
 
 }
         catch (Exception e) {

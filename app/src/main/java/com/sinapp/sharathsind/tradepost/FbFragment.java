@@ -147,7 +147,12 @@ authButton.setBackground(ContextCompat.getDrawable(getActivity().getApplicationC
                                 JSONObject c = response.getJSONObject();
                                 c = object;
                                 try {
-                                    Variables.email = (String) c.getString("email");
+                                    if(c.has("email")) {
+                                        Variables.email = (String) c.getString("email");
+                                    }
+                                    else{
+                                        Variables.email=(String) c.getString("id");
+                                    }
                                     Variables.id = (String) c.getString("id");
                                     Variables.username = (String) c.getString("name");
                                     URL imageURL = null;
